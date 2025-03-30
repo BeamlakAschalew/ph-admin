@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-
-class Admin extends Authenticatable
-{
+class Admin extends Authenticatable {
     use HasFactory, Notifiable;
 
 
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'phone',
         'password',
     ];
@@ -25,40 +24,27 @@ class Admin extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
+    protected function casts(): array {
         return [
             'password' => 'hashed',
         ];
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($user) {
-            $user->phone = self::normalizePhoneNumber($user->phone);
-        });
-
-        static::updating(function ($user) {
-            $user->phone = self::normalizePhoneNumber($user->phone);
-        });
-    }
-
-    private static function normalizePhoneNumber($phone)
-    {
-        return $phone;
+    public static function normalizePhoneNumber($phone) {
         $phone = preg_replace('/\D/', '', $phone);
 
         if (Str::startsWith($phone, '251')) {
             $phone = substr($phone, 3);
-        } elseif (Str::startsWith($phone, '+251')) {
+        } else if (Str::startsWith($phone, '+251')) {
             $phone = substr($phone, 4);
-        } elseif (Str::startsWith($phone, '0')) {
+        } else if (Str::startsWith($phone, '0')) {
             $phone = substr($phone, 1);
         }
 
-        return Str::startsWith($phone, ['9', '7']) ? $phone : null;
-    }
+        if (!preg_match('/^[79]\d{8}$/', $phone)) {
+            return null;
+        }
 
+        return $phone;
+    }
 }

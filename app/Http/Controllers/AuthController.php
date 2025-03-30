@@ -8,65 +8,66 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class AuthController extends Controller
-{
-    public function showLogin()
-    {
+class AuthController extends Controller {
+    public function showLogin() {
         return Inertia::render('Auth/Login');
     }
 
-    public function login(Request $request)
-    {
+    public function login(Request $request) {
         $request->validate([
             'phone' => 'required',
             'password' => 'required'
         ]);
 
-        $phone = $request->phone;
+        $phone = Admin::normalizePhoneNumber($request->phone); // Normalize the phone number
 
         if (!$phone) {
             return back()->withErrors(['phone' => 'Invalid phone number format']);
         }
 
-        if (Auth::attempt(['phone' => $phone, 'password' => $request->password])) {
+        if (Auth::attempt(['phone' => $phone, 'password' => $request->password], true)) {
             return redirect()->route('dashboard');
         }
 
-        return back()->withErrors(['phone' => 'Invalid credentials']);
+        return back()->withErrors(['phone' => 'Invalid password or phone number']);
     }
 
-    public function showRegister()
-    {
-        return Inertia::render('Auth/Register');
+    public function showRegister() {
+        return Inertia::render('Auth/Signup');
     }
 
-    public function register(Request $request)
-    {
+    public function register(Request $request) {
+
         $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|numeric|unique:users,phone',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone_number' => 'required',
             'password' => 'required|min:6|confirmed'
         ]);
 
-        $phone = $request->phone;
+        $phone = Admin::normalizePhoneNumber($request->phone_number);
 
         if (!$phone) {
-            return back()->withErrors(['phone' => 'Invalid phone number format']);
+            return back()->withErrors(['phone_number' => 'Invalid phone number format']);
+        }
+
+        if (Admin::where('phone', $phone)->exists()) {
+            return back()->withErrors(['phone_number' => 'The phone number has already been taken']);
         }
 
         $user = Admin::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'phone' => $phone,
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($user);
+        Auth::login($user, true);
 
         return redirect()->route('dashboard');
     }
 
-    public function logout()
-    {
+    public function logout() {
         Auth::logout();
         return redirect()->route('login');
     }
