@@ -1,5 +1,5 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 let form = useForm({
     first_name: '',
@@ -15,6 +15,7 @@ let submit = () => {
 </script>
 
 <template>
+    <Head title="Signup"></Head>
     <div class="flex h-screen items-center bg-gray-100 py-16">
         <main id="content" class="mx-auto min-h-screen w-full max-w-md p-6">
             <div

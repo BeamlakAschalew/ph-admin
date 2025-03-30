@@ -1,4 +1,5 @@
 <template>
+    <Head title="Dashboard"></Head>
     <div class="flex min-h-screen flex-col">
         <!-- Preline UI Navbar -->
         <header
@@ -621,7 +622,7 @@
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 const mobileMenuOpen = ref(false);
 const usersDropdownOpen = ref(false);
