@@ -34,7 +34,7 @@ class ProductUnitSeeder extends Seeder {
         ];
 
         foreach ($staticUnits as $name) {
-            ProductUnit::create(['name' => $name]);
+            ProductUnit::create(['unit_name' => $name]);
         }
     }
 }

@@ -69,6 +69,11 @@ const user = usePage().props.auth.user;
                     <Link class="font-medium text-white" href="/">Home</Link>
                     <Link
                         class="font-medium text-gray-300 hover:text-white"
+                        href="/products"
+                        >Products</Link
+                    >
+                    <Link
+                        class="font-medium text-gray-300 hover:text-white"
                         href="/admins"
                         >Admins</Link
                     >
@@ -134,7 +139,7 @@ const user = usePage().props.auth.user;
                             aria-label="Dropdown"
                         >
                             <span
-                                class="inline-flex size-11 items-center justify-center rounded-full bg-red-500 font-semibold text-white"
+                                class="inline-flex size-8 items-center justify-center rounded-full bg-red-500 font-semibold text-white"
                             >
                                 AC
                             </span>

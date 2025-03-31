@@ -12,7 +12,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('product_name');
             $table->foreignIdFor(ProductUnit::class)->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
         });

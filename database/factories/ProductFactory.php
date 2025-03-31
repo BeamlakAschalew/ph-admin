@@ -15,7 +15,7 @@ class ProductFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'name' => fake()->word(),
+            'product_name' => fake()->word(),
             'product_unit_id' => fake()->numberBetween(1, 20),
             'created_at' => now(),
             'updated_at' => now(),
