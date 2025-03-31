@@ -3,11 +3,15 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\=Consumer>
  */
 class ConsumerFactory extends Factory {
+    protected static ?string $password;
+
     /**
      * Define the model's default state.
      *
@@ -17,6 +21,7 @@ class ConsumerFactory extends Factory {
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
+            'password' => static::$password ??= Hash::make('password'),
             'institution_name' => fake()->company(),
             'primary_phone' => $this->generatePhoneNumber(),
             'secondary_phone' => $this->generatePhoneNumber(),
@@ -25,6 +30,7 @@ class ConsumerFactory extends Factory {
             'special_place' => fake()->address(),
             'woreda' => fake()->numberBetween(1, 12),
             'approved' => fake()->boolean(),
+            'remember_token' => Str::random(10),
             'deleted_at' => null,
             'created_at' => now(),
             'updated_at' => now(),
