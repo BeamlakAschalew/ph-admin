@@ -20,7 +20,7 @@ const logout = () => {
             aria-label="Global"
         >
             <div class="flex items-center justify-between">
-                <a class="flex-none text-xl font-bold text-amber-500" href="#"
+                <a class="flex-none text-xl font-bold text-white" href="#"
                     >PH</a
                 >
                 <div class="sm:hidden">

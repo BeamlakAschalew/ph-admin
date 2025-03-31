@@ -126,7 +126,12 @@ return new class extends Migration {
         $superadmin = Role::create(['name' => 'superadmin']);
 
         $modifyAdmins = Permission::create(['name' => 'modifyAdmins']);
+        $modifyUsers = Permission::create(['name' => 'modifyUsers']);
+
+
         $modifyAdmins->assignRole($superadmin);
+        $modifyUsers->assignRole($superadmin);
+
         app('cache')
             ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
             ->forget(config('permission.cache.key'));
