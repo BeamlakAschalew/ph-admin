@@ -1,8 +1,9 @@
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
 const mobileMenuOpen = ref(false);
-const usersDropdownOpen = ref(false);
+
 const logout = () => {
     let logout = useForm();
     logout.post('/logout');
@@ -66,88 +67,70 @@ const logout = () => {
                     <Link class="font-medium text-white" href="/">Home</Link>
                     <Link
                         class="font-medium text-gray-300 hover:text-white"
-                        href="/users"
-                        >Pending Users</Link
-                    >
-                    <Link
-                        class="font-medium text-gray-300 hover:text-white"
                         href="/admins"
                         >Admins</Link
                     >
-                    <div class="relative">
+
+                    <div class="hs-dropdown relative inline-flex">
                         <button
+                            id="hs-dropdown-default"
                             type="button"
-                            @click="usersDropdownOpen = !usersDropdownOpen"
-                            class="flex w-full items-center font-medium text-gray-300 hover:text-white"
+                            class="hs-dropdown-toggle focus:outline-hidden flex w-full items-center font-medium text-gray-300 hover:text-white"
+                            aria-haspopup="menu"
+                            aria-expanded="false"
+                            aria-label="Dropdown"
                         >
                             Users
                             <svg
-                                class="ml-2 h-2.5 w-2.5"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
+                                class="size-4 hs-dropdown-open:rotate-180"
                                 xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
                             >
-                                <path
-                                    d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                ></path>
+                                <path d="m6 9 6 6 6-6" />
                             </svg>
                         </button>
+
                         <div
-                            v-show="usersDropdownOpen"
-                            class="absolute left-0 z-10 mt-2 w-48 rounded-lg bg-white p-2 shadow-md"
+                            class="hs-dropdown-menu duration mt-2 hidden min-w-60 rounded-lg bg-white opacity-0 shadow-md transition-[opacity,margin] before:absolute before:-top-4 before:start-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:start-0 after:h-4 after:w-full hs-dropdown-open:opacity-100"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="hs-dropdown-default"
                         >
-                            <a
-                                class="flex items-center gap-x-3.5 rounded-md px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500"
-                                href="#"
-                            >
-                                Manage Users
-                            </a>
-                            <a
-                                class="flex items-center gap-x-3.5 rounded-md px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500"
-                                href="#"
-                            >
-                                Add User
-                            </a>
-                            <a
-                                class="flex items-center gap-x-3.5 rounded-md px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500"
-                                href="#"
-                            >
-                                User Roles
-                            </a>
+                            <div class="space-y-0.5 p-1">
+                                <a
+                                    class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                    href="#"
+                                >
+                                    Newsletter
+                                </a>
+                                <a
+                                    class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                    href="#"
+                                >
+                                    Purchases
+                                </a>
+                                <a
+                                    class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                    href="#"
+                                >
+                                    Downloads
+                                </a>
+                                <a
+                                    class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                    href="#"
+                                >
+                                    Team Account
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <button
-                        type="button"
-                        class="text-gray-300 hover:text-white"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="h-5 w-5"
-                        >
-                            <circle cx="12" cy="12" r="4"></circle>
-                            <path d="M12 2v2"></path>
-                            <path d="M12 20v2"></path>
-                            <path d="m4.93 4.93 1.41 1.41"></path>
-                            <path d="m17.66 17.66 1.41 1.41"></path>
-                            <path d="M2 12h2"></path>
-                            <path d="M20 12h2"></path>
-                            <path d="m6.34 17.66-1.41 1.41"></path>
-                            <path d="m19.07 4.93-1.41 1.41"></path>
-                        </svg>
-                    </button>
                     <form @submit.prevent="logout">
                         <button
                             type="submit"

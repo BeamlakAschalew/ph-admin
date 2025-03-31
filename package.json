@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "pinia": "^3.0.1",
-        "vue-tsc": "^2.2.8"
+        "vue-tsc": "^2.2.8",
+        "preline": "^2.7.0"
     }
 }
