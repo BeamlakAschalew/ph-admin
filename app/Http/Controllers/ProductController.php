@@ -17,7 +17,8 @@ class ProductController extends Controller {
                     $query->where('product_name', 'like', "%{$search}%");
                 })
                 ->paginate(10)
-                ->withQueryString()
+                ->withQueryString(),
+            'filters' => $request->only('search'),
         ]);
     }
     /**

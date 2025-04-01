@@ -1,5 +1,5 @@
 <script setup>
-import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
 import { ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
@@ -10,6 +10,7 @@ defineOptions({
 
 const props = defineProps({
     products: Object,
+    filters: Object,
 });
 
 // Create a local reactive copy of products data
@@ -24,10 +25,10 @@ watch(
 );
 
 // Search functionality
-const searchQuery = ref('');
+const searchQuery = ref(props.filters.search);
 
 const debouncedSearch = debounce((query) => {
-    Inertia.get(
+    router.get(
         '/products',
         { search: query },
         {
