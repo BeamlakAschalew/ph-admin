@@ -8,6 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@inertiajs/inertia':
+        specifier: ^0.11.1
+        version: 0.11.1
+      '@inertiajs/vue3':
+        specifier: ^2.0.0
+        version: 2.0.5(vue@3.5.13(typescript@5.8.2))
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       pinia:
         specifier: ^3.0.1
         version: 3.0.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
@@ -18,9 +27,6 @@ importers:
         specifier: ^2.2.8
         version: 2.2.8(typescript@5.8.2)
     devDependencies:
-      '@inertiajs/vue3':
-        specifier: ^2.0.0
-        version: 2.0.5(vue@3.5.13(typescript@5.8.2))
       '@rushstack/eslint-patch':
         specifier: ^1.8.0
         version: 1.11.0
@@ -282,6 +288,9 @@ packages:
 
   '@inertiajs/core@2.0.5':
     resolution: {integrity: sha512-AEhWsfkn+rHCO35mArmLQVVkbzETJby8QZ9iwRxTz891kbWS+ZAiEPa7ROJkDg3iaPYKVGBnI126xCUVxxesJg==}
+
+  '@inertiajs/inertia@0.11.1':
+    resolution: {integrity: sha512-btmV53c54oW4Z9XF0YyTdIUnM7ue0ONy3/KJOz6J1C5CYIwimiKfDMpz8ZbGJuxS+SPdOlNsqj2ZhlHslpJRZg==}
 
   '@inertiajs/vue3@2.0.5':
     resolution: {integrity: sha512-FdXJ/yY4rTpRygEHJY7b/Wc/02nI4PZPyLRy4dr/7dVFaVKGljVm1bcX8oBVowXxw7reT01sW2YwjqTSUmXjbg==}
@@ -650,6 +659,9 @@ packages:
     hasBin: true
     peerDependencies:
       postcss: ^8.1.0
+
+  axios@0.21.4:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
 
   axios@1.8.4:
     resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
@@ -1953,6 +1965,14 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  '@inertiajs/inertia@0.11.1':
+    dependencies:
+      axios: 0.21.4
+      deepmerge: 4.3.1
+      qs: 6.14.0
+    transitivePeerDependencies:
+      - debug
+
   '@inertiajs/vue3@2.0.5(vue@3.5.13(typescript@5.8.2))':
     dependencies:
       '@inertiajs/core': 2.0.5
@@ -2302,6 +2322,12 @@ snapshots:
       picocolors: 1.1.1
       postcss: 8.5.3
       postcss-value-parser: 4.2.0
+
+  axios@0.21.4:
+    dependencies:
+      follow-redirects: 1.15.9
+    transitivePeerDependencies:
+      - debug
 
   axios@1.8.4:
     dependencies:

@@ -1,25 +1,44 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
+import { debounce } from 'lodash';
+import { ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
+
 defineOptions({
     layout: MainLayout,
 });
 
-let products = usePage().props.products;
+const props = defineProps({
+    products: Object,
+});
+
+// Create a local reactive copy of products data
+const localProducts = ref(props.products.data);
+
+// Sync localProducts when the products prop changes
+watch(
+    () => props.products,
+    (newProducts) => {
+        localProducts.value = newProducts.data;
+    },
+);
 
 // Search functionality
 const searchQuery = ref('');
 
-const filteredProducts = computed(() => {
-    if (!searchQuery.value) return products.data;
-
-    const query = searchQuery.value.toLowerCase();
-    return products.value.filter(
-        (product) =>
-            product.name.toLowerCase().includes(query) ||
-            product.unit.toLowerCase().includes(query),
+const debouncedSearch = debounce((query) => {
+    Inertia.get(
+        '/products',
+        { search: query },
+        {
+            preserveState: true,
+            replace: true,
+        },
     );
+}, 300);
+
+watch(searchQuery, (newQuery) => {
+    debouncedSearch(newQuery);
 });
 
 // Edit product functionality
@@ -32,9 +51,11 @@ const openEditModal = (product) => {
 };
 
 const saveProduct = () => {
-    const index = products.findIndex((p) => p.id === editingProduct.value.id);
+    const index = localProducts.value.findIndex(
+        (p) => p.id === editingProduct.value.id,
+    );
     if (index !== -1) {
-        products[index] = { ...editingProduct.value };
+        localProducts.value[index] = { ...editingProduct.value };
     }
     showEditModal.value = false;
 };
@@ -49,7 +70,9 @@ const openDeleteModal = (productId) => {
 };
 
 const confirmDelete = () => {
-    products = products.filter((p) => p.id !== productToDelete.value);
+    localProducts.value = localProducts.value.filter(
+        (p) => p.id !== productToDelete.value,
+    );
     showDeleteModal.value = false;
     productToDelete.value = null;
 };
@@ -64,11 +87,11 @@ const openAddModal = () => {
 };
 
 const addProduct = () => {
-    const newId = Math.max(...products.map((p) => p.id)) + 1;
-    products.push({
+    const newId = Math.max(...localProducts.value.map((p) => p.id)) + 1;
+    localProducts.value.push({
         id: newId,
-        name: newProduct.value.name,
-        unit: newProduct.value.unit,
+        product_name: newProduct.value.name,
+        unit: { unit_name: newProduct.value.unit },
     });
     showAddModal.value = false;
 };
@@ -140,7 +163,7 @@ const addProduct = () => {
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            <tr v-if="filteredProducts.length === 0">
+                            <tr v-if="localProducts.length === 0">
                                 <td
                                     colspan="3"
                                     class="px-6 py-8 text-center text-gray-500"
@@ -149,7 +172,7 @@ const addProduct = () => {
                                 </td>
                             </tr>
                             <tr
-                                v-for="product in filteredProducts"
+                                v-for="product in localProducts"
                                 :key="product.id"
                                 class="hover:bg-gray-100"
                             >
@@ -237,6 +260,48 @@ const addProduct = () => {
                     </table>
                 </div>
             </div>
+
+            <!-- Pagination -->
+            <nav
+                class="mt-5 flex items-center -space-x-px"
+                aria-label="Pagination"
+            >
+                <template v-if="products.links && products.links.length">
+                    <template
+                        v-for="(link, index) in products.links"
+                        :key="index"
+                    >
+                        <Link
+                            v-if="link.url"
+                            :href="link.url"
+                            :class="[
+                                index === 0 ? 'rounded-l-md' : '',
+                                index === products.links.length - 1
+                                    ? 'rounded-r-md'
+                                    : '',
+                                'min-h-9.5 min-w-9.5 flex items-center justify-center px-3 py-2 text-sm',
+                                link.active
+                                    ? 'bg-gray-600 text-white'
+                                    : 'border border-gray-200 text-gray-800 hover:bg-gray-100',
+                            ]"
+                        >
+                            <span v-html="link.label"></span>
+                        </Link>
+                        <span
+                            v-else
+                            v-html="link.label"
+                            :class="[
+                                index === 0 ? 'rounded-l-md' : '',
+                                index === products.links.length - 1
+                                    ? 'rounded-r-md'
+                                    : '',
+                                'min-h-9.5 min-w-9.5 flex items-center justify-center border border-gray-200 px-3 py-2 text-gray-800',
+                            ]"
+                        ></span>
+                    </template>
+                </template>
+            </nav>
+            <!-- End Pagination -->
         </div>
     </main>
 

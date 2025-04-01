@@ -10,13 +10,16 @@ class ProductController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        $products = Product::with('unit')->paginate(3);
+    public function index(Request $request) {
         return Inertia::render('Products', [
-            'products' => $products,
+            'products' => Product::with('unit')
+                ->when($request->input('search'), function ($query, $search) {
+                    $query->where('product_name', 'like', "%{$search}%");
+                })
+                ->paginate(10)
+                ->withQueryString()
         ]);
     }
-
     /**
      * Show the form for creating a new resource.
      */
