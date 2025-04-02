@@ -17,7 +17,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/signup', [AuthController::class, 'register']);
 });
 
-Route::group(['auth'], function () {
+Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/', function () {
         return Inertia::render('Dashboard');
@@ -37,10 +37,11 @@ Route::group(['auth'], function () {
 
 
 
-Route::group(['auth', 'role:superadmin'], function () {
+Route::group(['middleware' => ['auth', 'role:superadmin']], function () {
     Route::get('/admins', [AdminController::class, 'index']);
     Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
 
     Route::put('/admins/{admin}', [AdminController::class, 'update']);
+    Route::post('/admins', [AdminController::class, 'store']);
 });

@@ -1,17 +1,37 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
+import { debounce } from 'lodash';
 import { ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
 
 const props = defineProps({
     admins: Array,
+    filters: Object,
 });
 
 defineOptions({
     layout: MainLayout,
 });
 
-const localAdmins = ref(props.admins);
+const localAdmins = ref(props.admins.data);
+
+const searchQuery = ref(props.filters.search);
+
+const debouncedSearch = debounce((query) => {
+    router.get(
+        '/admins',
+        { search: query },
+        {
+            preserveState: true,
+            replace: true,
+            except: ['units'],
+        },
+    );
+}, 300);
+
+watch(searchQuery, (newQuery) => {
+    debouncedSearch(newQuery);
+});
 
 watch(
     () => props.admins,
@@ -36,8 +56,7 @@ const newAdmin = ref({
     first_name: '',
     last_name: '',
     phone: '',
-    role: 'Admin',
-    active: true,
+    password: '',
 });
 
 function editAdmin(admin) {
@@ -83,31 +102,18 @@ function removeAdmin() {
 }
 
 function addAdmin() {
-    const newId = Math.max(...admins.value.map((a) => a.id)) + 1;
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
+    router.post('/admins', {
+        first_name: newAdmin.value.first_name,
+        last_name: newAdmin.value.last_name,
+        phone_number: newAdmin.value.phone,
+        password: newAdmin.value.password,
     });
 
-    admins.value.push({
-        id: newId,
-        name: newAdmin.value.name,
-        lastName: newAdmin.value.lastName,
-        email: newAdmin.value.email,
-        role: newAdmin.value.role,
-        active: newAdmin.value.active,
-        addedDate: formattedDate,
-    });
-
-    // Reset form
     newAdmin.value = {
-        name: '',
-        lastName: '',
-        email: '',
-        role: 'Admin',
-        active: true,
+        first_name: '',
+        last_name: '',
+        phone: '',
+        password: '',
     };
 
     showAddAdminModal.value = false;
@@ -193,7 +199,7 @@ function addAdmin() {
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             <tr
-                                v-for="admin in localAdmins"
+                                v-for="admin in localAdmins.data"
                                 :key="admin.id"
                                 class="hover:bg-gray-100"
                             >
@@ -333,6 +339,47 @@ function addAdmin() {
                     </table>
                 </div>
             </div>
+            <!-- Pagination -->
+            <nav
+                class="mt-5 flex items-center -space-x-px"
+                aria-label="Pagination"
+            >
+                <template v-if="admins.links && admins.links.length">
+                    <template
+                        v-for="(link, index) in admins.links"
+                        :key="index"
+                    >
+                        <Link
+                            v-if="link.url"
+                            :href="link.url"
+                            :class="[
+                                index === 0 ? 'rounded-l-md' : '',
+                                index === admins.links.length - 1
+                                    ? 'rounded-r-md'
+                                    : '',
+                                'min-h-9.5 min-w-9.5 flex items-center justify-center px-3 py-2 text-sm',
+                                link.active
+                                    ? 'bg-gray-600 text-white'
+                                    : 'border border-gray-200 text-gray-800 hover:bg-gray-100',
+                            ]"
+                        >
+                            <span v-html="link.label"></span>
+                        </Link>
+                        <span
+                            v-else
+                            v-html="link.label"
+                            :class="[
+                                index === 0 ? 'rounded-l-md' : '',
+                                index === admins.links.length - 1
+                                    ? 'rounded-r-md'
+                                    : '',
+                                'min-h-9.5 min-w-9.5 flex items-center justify-center border border-gray-200 px-3 py-2 text-gray-800',
+                            ]"
+                        ></span>
+                    </template>
+                </template>
+            </nav>
+            <!-- End Pagination -->
         </div>
     </main>
 
@@ -508,7 +555,7 @@ function addAdmin() {
                                     <input
                                         type="text"
                                         id="add-name"
-                                        v-model="newAdmin.name"
+                                        v-model="newAdmin.first_name"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>
@@ -521,7 +568,7 @@ function addAdmin() {
                                     <input
                                         type="text"
                                         id="add-lastName"
-                                        v-model="newAdmin.lastName"
+                                        v-model="newAdmin.last_name"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>
@@ -534,43 +581,22 @@ function addAdmin() {
                                     <input
                                         type="text"
                                         id="add-phone"
-                                        v-model="newAdmin.phone"
+                                        v-model="newAdmin.phone_number"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>
                                 <div>
                                     <label
-                                        for="add-role"
+                                        for="add-password"
                                         class="block text-sm font-medium text-gray-700"
-                                        >Role</label
+                                        >Password</label
                                     >
-                                    <select
-                                        id="add-role"
-                                        v-model="newAdmin.role"
-                                        class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                                    >
-                                        <option value="Super Admin">
-                                            Super Admin
-                                        </option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="Moderator">
-                                            Moderator
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="flex items-center">
                                     <input
-                                        type="checkbox"
-                                        id="add-active"
-                                        v-model="newAdmin.active"
-                                        class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        type="password"
+                                        id="add-password"
+                                        v-model="newAdmin.password"
+                                        class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
-                                    <label
-                                        for="add-active"
-                                        class="ml-2 block text-sm text-gray-900"
-                                    >
-                                        Active
-                                    </label>
                                 </div>
                             </div>
                         </div>

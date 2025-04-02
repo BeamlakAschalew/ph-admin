@@ -22,8 +22,8 @@ const user = usePage().props.auth.user;
             aria-label="Global"
         >
             <div class="flex items-center justify-between">
-                <a class="flex-none text-xl font-bold text-white" href="#"
-                    >PH Admin</a
+                <Link class="flex-none text-xl font-bold text-white" href="/"
+                    >PH Admin</Link
                 >
                 <div class="sm:hidden">
                     <button

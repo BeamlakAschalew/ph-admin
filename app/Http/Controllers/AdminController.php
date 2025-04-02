@@ -14,14 +14,25 @@ class AdminController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index(Request $request) {
 
         return Inertia::render('Admins', [
-            'admins' => Admin::withTrashed()->get()->map(function ($admin) {
-                $admin->status = $admin->deleted_at ? 'Inactive' : 'Active';
-                $admin->role = $admin->hasRole('superadmin') ? 'Super Admin' : 'Regular Admin';
-                return $admin;
-            })
+            'admins' => Admin::withTrashed()
+                ->when($request->search, function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%");
+                    });
+                })
+                ->orderBy('updated_at', 'desc')
+                ->paginate(10)
+                ->withQueryString()
+                ->through(function ($admin) {
+                    $admin->status = $admin->deleted_at ? 'Inactive' : 'Active';
+                    $admin->role = $admin->hasRole('superadmin') ? 'Super Admin' : 'Regular Admin';
+                    return $admin;
+                }),
+            'filters' => fn() => $request->only('search'),
         ]);
     }
 
@@ -36,7 +47,46 @@ class AdminController extends Controller {
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        //
+
+        try {
+            $request->validate([
+                'first_name' => 'required|string|min:3|max:255',
+                'last_name' => 'required|string|min:3|max:255',
+                'phone_number' => 'required',
+                'password' => 'required|min:6'
+            ]);
+
+            $phone = Admin::normalizePhoneNumber($request->phone_number);
+
+            if (!$phone) {
+                return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
+            }
+
+            if (Admin::where('phone', $phone)->exists()) {
+                return redirect()->back()->with(['name' => 'The phone number has already been taken', 'type' => 'error']);
+            }
+
+            $admin = Admin::create([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'phone' => $phone,
+                'password' => Hash::make($request->password),
+            ]);
+            $admin->assignRole('admin');
+            $admin->syncRoles(['admin']);
+            return redirect()->back()->with('message', ['name' => 'Admin created successfully', 'type' => 'success']);
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->with('message', [
+                    'name' => 'Admin creation failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        } catch (Exception $e) {
+            Log::error($e);
+            return redirect()->back()->with('message', ['name' => 'An error occurred while creating the admin.', 'type' => 'error']);
+        }
     }
 
     /**
@@ -99,7 +149,6 @@ class AdminController extends Controller {
             return redirect()->back()->with('message', ['name' => 'Admin updated successfully.', 'type' => 'success']);
         } catch (ValidationException $e) {
             return redirect()->back()
-                ->withErrors($e->errors())
                 ->with('message', [
                     'name' => 'Admin update failed. ' . implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);

@@ -11,6 +11,9 @@ class AdminSeeder extends Seeder {
      * Run the database seeds.
      */
     public function run(): void {
-        Admin::factory()->count(5)->create();
+        Admin::factory()->count(5)->create()->each(function ($admin) {
+            $role = collect(['admin', 'superadmin'])->random();
+            $admin->assignRole($role);
+        });
     }
 }
