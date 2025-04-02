@@ -11,7 +11,8 @@ class ConsumerSupplierController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
+
+    public function consumerndex(Request $request) {
 
         return Inertia::render('PendingUsers', [
             'consumers' => fn() => Consumer::with('subcity')->when($request->input('search'), function ($query, $search) {
@@ -24,16 +25,7 @@ class ConsumerSupplierController extends Controller {
                 ->orderBy('updated_at', 'desc')
                 ->paginate(10)
                 ->withQueryString(),
-            'suppliers' => fn() => Supplier::with('subcity')->when($request->input('search'), function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('institution_name', 'like', "%{$search}%");
-                });
-            })
-                ->orderBy('updated_at', 'desc')
-                ->paginate(10)
-                ->withQueryString(),
+
         ]);
     }
 

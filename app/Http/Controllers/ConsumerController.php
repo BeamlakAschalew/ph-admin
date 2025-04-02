@@ -14,6 +14,34 @@ class ConsumerController extends Controller {
         return Inertia::render('Consumers');
     }
 
+    public function pendingIndex(Request $request) {
+        return Inertia::render('PendingConsumers', [
+            'consumers' => fn() => Consumer::with('subcity')
+                ->where('approved', false)
+                ->when($request->input('search'), function ($query, $search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                            ->orWhere('institution_name', 'like', "%{$search}%");
+                    });
+                })
+                ->orderBy('updated_at', 'desc')
+                ->paginate(10)
+                ->withQueryString(),
+        ]);
+    }
+
+    function approveOrReject(Request $request) {
+        $consumer = Consumer::find($request->input('id'));
+        if ($request->input('action') == 'approve') {
+            $consumer->update(['approved' => true]);
+            return redirect()->back()->with('success', 'Consumer approved.');
+        } else {
+            $consumer->delete();
+        }
+        return redirect()->back()->with('success', 'Consumer rejected.');
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -46,7 +74,6 @@ class ConsumerController extends Controller {
      * Update the specified resource in storage.
      */
     public function update(Request $request, Consumer $consumer) {
-        //
     }
 
     /**

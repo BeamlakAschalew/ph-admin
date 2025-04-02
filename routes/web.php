@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConsumerController;
-use App\Http\Controllers\ConsumerSupplierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 
@@ -30,7 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
 
-    Route::get('/pending-users', [ConsumerSupplierController::class, 'index'])->name('pending-users.index');
+    Route::get('/pending-consumers', [ConsumerController::class, 'pendingIndex'])->name('pending-consumers.index');
+    Route::get('/pending-suppliers', [SupplierController::class, 'pendingIndex'])->name('pending-suppliers.index');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');

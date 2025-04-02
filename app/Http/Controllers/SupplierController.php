@@ -14,6 +14,33 @@ class SupplierController extends Controller {
         return Inertia::render('Suppliers');
     }
 
+    public function pendingIndex(Request $request) {
+        return Inertia::render('PendingSuppliers', [
+            'suppliers' => fn() => Supplier::with('subcity')->where('approved', false)->when($request->input('search'), function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('institution_name', 'like', "%{$search}%");
+                });
+            })
+                ->orderBy('updated_at', 'desc')
+                ->paginate(10)
+                ->withQueryString(),
+
+        ]);
+    }
+
+    function approveOrReject(Request $request) {
+        $consumer = Supplier::find($request->input('id'));
+        if ($request->input('action') == 'approve') {
+            $consumer->update(['approved' => true]);
+            return redirect()->back()->with('success', 'Supplier approved.');
+        } else {
+            $consumer->delete();
+        }
+        return redirect()->back()->with('success', 'Supplier rejected.');
+    }
+
     /**
      * Show the form for creating a new resource.
      */

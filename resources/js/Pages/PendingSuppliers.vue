@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
 
 defineOptions({
@@ -7,73 +7,42 @@ defineOptions({
 });
 
 const props = defineProps({
-    consumers: {
-        type: Object,
-    },
     suppliers: {
         type: Object,
     },
 });
 
-// Active tab state
-const activeTab = ref('consumers');
-
-// Use local copies for table data
-const localConsumers = ref(props.consumers.data);
+// Use local copy for consumers data
 const localSuppliers = ref(props.suppliers.data);
 
-// Search functionality using local data based on the active tab
+watch(
+    () => props.suppliers,
+    (newSuppliers) => {
+        localSuppliers.value = newSuppliers.data;
+    },
+);
+
+// Search functionality for consumers only
 const searchQuery = ref('');
 
-const filteredUsers = computed(() => {
-    const currentUsers =
-        activeTab.value === 'consumers'
-            ? localConsumers.value
-            : localSuppliers.value;
-    if (!searchQuery.value) return currentUsers;
-
-    const query = searchQuery.value.toLowerCase();
-    return currentUsers.filter(
-        (user) =>
-            user.institution.toLowerCase().includes(query) ||
-            user.contact.toLowerCase().includes(query) ||
-            user.location.toLowerCase().includes(query) ||
-            user.phone.includes(query),
-    );
-});
-
-// Dynamic pagination links based on active tab
+// Pagination links for consumers
 const paginationLinks = computed(() => {
-    return activeTab.value === 'consumers'
-        ? props.consumers.links
-        : props.suppliers.links;
+    return props.suppliers.links;
 });
 
-// Approve and reject functionality using local copies
+// Approve and reject functionality for consumers
 const approveUser = (id) => {
     console.log('Approve user', id);
-    if (activeTab.value === 'consumers') {
-        localCounsumers.value = localConsumers.value.filter(
-            (user) => user.id !== id,
-        );
-    } else {
-        localSuppliers.value = localSuppliers.value.filter(
-            (user) => user.id !== id,
-        );
-    }
+    localSuppliers.value = localSuppliers.value.filter(
+        (user) => user.id !== id,
+    );
 };
 
 const rejectUser = (id) => {
     console.log('Reject user', id);
-    if (activeTab.value === 'consumers') {
-        localCounsumers.value = localConsumers.value.filter(
-            (user) => user.id !== id,
-        );
-    } else {
-        localSuppliers.value = localSuppliers.value.filter(
-            (user) => user.id !== id,
-        );
-    }
+    localSuppliers.value = localSuppliers.value.filter(
+        (user) => user.id !== id,
+    );
 };
 </script>
 <template>
@@ -83,7 +52,7 @@ const rejectUser = (id) => {
             <div class="mx-auto w-full max-w-6xl px-4 py-6">
                 <div class="mb-6 flex items-center justify-between">
                     <h1 class="text-2xl font-bold text-gray-800">
-                        Pending Users
+                        Pending Suppliers
                     </h1>
                 </div>
 
@@ -93,36 +62,8 @@ const rejectUser = (id) => {
                         type="text"
                         v-model="searchQuery"
                         class="block w-full rounded-lg border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Search pending users..."
+                        placeholder="Search pending consumers..."
                     />
-                </div>
-
-                <!-- Tabs -->
-                <div class="mb-5 border-b border-blue-200">
-                    <nav class="flex space-x-12" aria-label="Tabs">
-                        <button
-                            @click="activeTab = 'consumers'"
-                            class="inline-flex items-center gap-x-2 whitespace-nowrap border-b-2 px-4 py-4 text-sm font-medium"
-                            :class="
-                                activeTab === 'consumers'
-                                    ? 'border-blue-600 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:border-blue-300 hover:text-blue-600'
-                            "
-                        >
-                            Consumers
-                        </button>
-                        <button
-                            @click="activeTab = 'suppliers'"
-                            class="inline-flex items-center gap-x-2 whitespace-nowrap border-b-2 px-4 py-4 text-sm font-medium"
-                            :class="
-                                activeTab === 'suppliers'
-                                    ? 'border-blue-600 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:border-blue-300 hover:text-blue-600'
-                            "
-                        >
-                            Suppliers
-                        </button>
-                    </nav>
                 </div>
 
                 <!-- Pending Users Table -->
@@ -160,16 +101,16 @@ const rejectUser = (id) => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
-                                <tr v-if="filteredUsers.length === 0">
+                                <tr v-if="localSuppliers.length === 0">
                                     <td
                                         colspan="4"
                                         class="px-6 py-8 text-center text-gray-500"
                                     >
-                                        No pending {{ activeTab }} found
+                                        No pending consumers found
                                     </td>
                                 </tr>
                                 <tr
-                                    v-for="user in filteredUsers"
+                                    v-for="user in localSuppliers"
                                     :key="user.id"
                                     class="hover:bg-gray-100"
                                 >
@@ -198,7 +139,7 @@ const rejectUser = (id) => {
                                             +251{{ user.primary_phone }}
                                         </div>
                                         <div
-                                            v-if="user.phoneAlt"
+                                            v-if="user.secondary_phone"
                                             class="text-sm text-gray-500"
                                         >
                                             +251{{ user.secondary_phone }}
