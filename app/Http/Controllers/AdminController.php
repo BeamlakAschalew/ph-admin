@@ -18,7 +18,7 @@ class AdminController extends Controller {
 
         return Inertia::render('Admins', [
             'admins' => Admin::withTrashed()
-                ->when($request->search, function ($query, $search) {
+                ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
                         $query->where('first_name', 'like', "%{$search}%")
                             ->orWhere('last_name', 'like', "%{$search}%");

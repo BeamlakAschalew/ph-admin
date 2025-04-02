@@ -15,6 +15,13 @@ defineOptions({
 
 const localAdmins = ref(props.admins.data);
 
+watch(
+    () => props.admins,
+    (newAdmins) => {
+        localAdmins.value = newAdmins.data;
+    },
+);
+
 const searchQuery = ref(props.filters.search);
 
 const debouncedSearch = debounce((query) => {
@@ -24,7 +31,6 @@ const debouncedSearch = debounce((query) => {
         {
             preserveState: true,
             replace: true,
-            except: ['units'],
         },
     );
 }, 300);
@@ -32,13 +38,6 @@ const debouncedSearch = debounce((query) => {
 watch(searchQuery, (newQuery) => {
     debouncedSearch(newQuery);
 });
-
-watch(
-    () => props.admins,
-    (newAdmins) => {
-        localAdmins.value = newAdmins;
-    },
-);
 
 const showEditModal = ref(false);
 const showAddAdminModal = ref(false);
@@ -199,7 +198,7 @@ function addAdmin() {
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             <tr
-                                v-for="admin in localAdmins.data"
+                                v-for="admin in localAdmins"
                                 :key="admin.id"
                                 class="hover:bg-gray-100"
                             >

@@ -1,6 +1,6 @@
 <script setup>
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const mobileMenuOpen = ref(false);
 
@@ -10,6 +10,17 @@ const logout = () => {
 };
 
 const user = usePage().props.auth.user;
+
+const currentPage = computed(() => usePage().component);
+
+watch(currentPage, (newPage, oldPage) => {
+    console.log(`Page changed from ${oldPage} to ${newPage}`);
+});
+
+const dynamicNavClass = (page) =>
+    currentPage.value === page
+        ? 'font-bold text-white'
+        : 'font-medium text-gray-300 hover:text-white';
 </script>
 
 <template>
@@ -66,15 +77,13 @@ const user = usePage().props.auth.user;
                 <div
                     class="mt-5 flex flex-col gap-5 sm:mt-0 sm:flex-row sm:items-center sm:justify-end sm:pl-5"
                 >
-                    <Link class="font-medium text-white" href="/">Home</Link>
-                    <Link
-                        class="font-medium text-gray-300 hover:text-white"
-                        href="/products"
+                    <Link :class="dynamicNavClass('Dashboard')" href="/"
+                        >Home</Link
+                    >
+                    <Link :class="dynamicNavClass('Products')" href="/products"
                         >Products</Link
                     >
-                    <Link
-                        class="font-medium text-gray-300 hover:text-white"
-                        href="/admins"
+                    <Link :class="dynamicNavClass('Admins')" href="/admins"
                         >Admins</Link
                     >
 
