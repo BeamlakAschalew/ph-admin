@@ -78,6 +78,7 @@ const rejectUser = (id) => {
 };
 </script>
 <template>
+    <Head title="Pending suppliers" />
     <div class="flex min-h-screen flex-col">
         <!-- Main Content -->
         <main class="flex-1">

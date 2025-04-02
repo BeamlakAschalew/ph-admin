@@ -1,6 +1,6 @@
 <script setup>
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
 const mobileMenuOpen = ref(false);
 
@@ -13,9 +13,7 @@ const user = usePage().props.auth.user;
 
 const currentPage = computed(() => usePage().component);
 
-watch(currentPage, (newPage, oldPage) => {
-    console.log(`Page changed from ${oldPage} to ${newPage}`);
-});
+watchEffect(currentPage);
 
 const dynamicNavClass = (page) =>
     currentPage.value === page
