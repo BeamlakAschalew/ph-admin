@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/pending-consumers', [ConsumerController::class, 'pendingIndex'])->name('pending-consumers.index');
     Route::get('/pending-suppliers', [SupplierController::class, 'pendingIndex'])->name('pending-suppliers.index');
 
+    Route::post('/pending-consumers', [ConsumerController::class, 'approveOrReject'])->name('approve-consumer');
+    Route::post('/pending-suppliers', [SupplierController::class, 'approveOrReject'])->name('approve-supplier');
+
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');

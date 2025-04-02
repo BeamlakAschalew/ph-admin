@@ -1,5 +1,8 @@
 <script setup>
+import { router } from '@inertiajs/vue3';
+import { debounce } from 'lodash';
 import { computed, ref, watch } from 'vue';
+
 import MainLayout from './MainLayout.vue';
 
 defineOptions({
@@ -25,6 +28,21 @@ watch(
 // Search functionality for consumers only
 const searchQuery = ref('');
 
+const debouncedSearch = debounce((query) => {
+    router.get(
+        '/pending-consumers',
+        { search: query },
+        {
+            preserveState: true,
+            replace: true,
+        },
+    );
+}, 300);
+
+watch(searchQuery, (newQuery) => {
+    debouncedSearch(newQuery);
+});
+
 // Pagination links for consumers
 const paginationLinks = computed(() => {
     return props.consumers.links;
@@ -32,16 +50,30 @@ const paginationLinks = computed(() => {
 
 // Approve and reject functionality for consumers
 const approveUser = (id) => {
-    console.log('Approve user', id);
-    localConsumers.value = localConsumers.value.filter(
-        (user) => user.id !== id,
+    router.post(
+        '/pending-consumers',
+        {
+            id: id,
+            action: 'approve',
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        },
     );
 };
 
 const rejectUser = (id) => {
-    console.log('Reject user', id);
-    localConsumers.value = localConsumers.value.filter(
-        (user) => user.id !== id,
+    router.post(
+        '/pending-consumers',
+        {
+            id: id,
+            action: 'reject',
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        },
     );
 };
 </script>

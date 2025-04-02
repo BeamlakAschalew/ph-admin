@@ -78,11 +78,55 @@ const user = usePage().props.auth.user;
                         >Admins</Link
                     >
 
-                    <Link
-                        class="font-medium text-gray-300 hover:text-white"
-                        href="/pending-users"
-                        >Pending users</Link
-                    >
+                    <div class="hs-dropdown relative inline-flex">
+                        <button
+                            id="hs-dropdown-default"
+                            type="button"
+                            class="hs-dropdown-toggle focus:outline-hidden flex w-full items-center font-medium text-gray-300 hover:text-white"
+                            aria-haspopup="menu"
+                            aria-expanded="false"
+                            aria-label="Dropdown"
+                        >
+                            Pending
+                            <svg
+                                class="size-4 hs-dropdown-open:rotate-180"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </button>
+
+                        <div
+                            class="hs-dropdown-menu duration mt-2 hidden min-w-60 rounded-lg bg-white opacity-0 shadow-md transition-[opacity,margin] before:absolute before:-top-4 before:start-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:start-0 after:h-4 after:w-full hs-dropdown-open:opacity-100"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="hs-dropdown-default"
+                        >
+                            <div class="space-y-0.5 p-1">
+                                <Link
+                                    class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                    href="/pending-consumers"
+                                >
+                                    Pending Consumers
+                                </Link>
+                                <Link
+                                    class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                    href="/pending-suppliers"
+                                >
+                                    Pending Suppliers
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Dropdown -->
 
                     <div class="hs-dropdown relative inline-flex">
                         <button

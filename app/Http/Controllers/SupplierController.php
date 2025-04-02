@@ -34,11 +34,11 @@ class SupplierController extends Controller {
         $consumer = Supplier::find($request->input('id'));
         if ($request->input('action') == 'approve') {
             $consumer->update(['approved' => true]);
-            return redirect()->back()->with('success', 'Supplier approved.');
+            return redirect()->back()->with('message', ['name' => 'Supplier approved.', 'type' => 'success']);
         } else {
             $consumer->delete();
+            return redirect()->back()->with('message', ['name' => 'Supplier rejected.', 'type' => 'success']);
         }
-        return redirect()->back()->with('success', 'Supplier rejected.');
     }
 
     /**

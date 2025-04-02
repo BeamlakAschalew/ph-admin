@@ -35,11 +35,11 @@ class ConsumerController extends Controller {
         $consumer = Consumer::find($request->input('id'));
         if ($request->input('action') == 'approve') {
             $consumer->update(['approved' => true]);
-            return redirect()->back()->with('success', 'Consumer approved.');
+            return redirect()->back()->with('message', ['name' => 'Consumer accepted.', 'type' => 'success']);
         } else {
             $consumer->delete();
+            return redirect()->back()->with('message', ['name' => 'Consumer rejected.', 'type' => 'success']);
         }
-        return redirect()->back()->with('success', 'Consumer rejected.');
     }
 
     /**
