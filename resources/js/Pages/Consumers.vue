@@ -1,5 +1,10 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import MainLayout from './MainLayout.vue';
+
+defineOptions({
+    layout: MainLayout,
+});
 
 // Consumers data
 const consumers = ref([
@@ -87,8 +92,8 @@ const deleteConsumer = (id) => {
 
 <template>
     <!-- Main Content -->
-    <main class="flex-1 bg-amber-50">
-        <div class="mx-auto w-full px-4 py-6">
+    <main class="flex-1">
+        <div class="mx-auto w-full max-w-4xl px-4 py-6">
             <div class="mb-6 flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-gray-800">Consumers List</h1>
                 <button
@@ -201,7 +206,7 @@ const deleteConsumer = (id) => {
                                         </button>
                                         <button
                                             @click="deleteConsumer(consumer.id)"
-                                            class="inline-flex items-center gap-x-1 rounded-lg border border-gray-300 bg-gray-400 px-3 py-1 text-sm font-medium text-white hover:bg-gray-500"
+                                            class="inline-flex items-center gap-x-1 rounded-lg border border-gray-300 bg-red-500 px-3 py-1 text-sm font-medium text-white hover:bg-gray-500"
                                         >
                                             Delete
                                         </button>

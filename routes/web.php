@@ -5,7 +5,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConsumerController;
+use App\Http\Controllers\ConsumerSupplierController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SupplierController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -23,6 +26,11 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::get('/admins', [AdminController::class, 'index']);
+
+    Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+
+    Route::get('/pending-users', [ConsumerSupplierController::class, 'index'])->name('pending-users.index');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');

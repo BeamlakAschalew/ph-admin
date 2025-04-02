@@ -78,6 +78,12 @@ const user = usePage().props.auth.user;
                         >Admins</Link
                     >
 
+                    <Link
+                        class="font-medium text-gray-300 hover:text-white"
+                        href="/pending-users"
+                        >Pending users</Link
+                    >
+
                     <div class="hs-dropdown relative inline-flex">
                         <button
                             id="hs-dropdown-default"
@@ -111,18 +117,18 @@ const user = usePage().props.auth.user;
                             aria-labelledby="hs-dropdown-default"
                         >
                             <div class="space-y-0.5 p-1">
-                                <a
+                                <Link
                                     class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    href="#"
+                                    href="/consumers"
                                 >
-                                    All users
-                                </a>
-                                <a
+                                    Consumers
+                                </Link>
+                                <Link
                                     class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    href="#"
+                                    href="/suppliers"
                                 >
-                                    Pending users
-                                </a>
+                                    Suppliers
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -141,7 +147,7 @@ const user = usePage().props.auth.user;
                             <span
                                 class="inline-flex size-8 items-center justify-center rounded-full bg-red-500 font-semibold text-white"
                             >
-                                AC
+                                {{ user.first_name[0] }}{{ user.last_name[0] }}
                             </span>
                         </button>
 
@@ -160,31 +166,19 @@ const user = usePage().props.auth.user;
                                 </p>
                             </div>
                             <div class="space-y-0.5 p-1.5">
-                                <a
+                                <Link
                                     class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    href="#"
+                                    href="/profile"
+                                    >Edit profile</Link
                                 >
-                                    <svg
-                                        class="size-4 shrink-0"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
+                                <form @submit.prevent="logout">
+                                    <button
+                                        class="focus:outline-hidden flex w-full items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                        href="#"
                                     >
-                                        <path
-                                            d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
-                                        />
-                                        <path
-                                            d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
-                                        />
-                                    </svg>
-                                    Newsletter
-                                </a>
+                                        Logout
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

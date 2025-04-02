@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Consumer;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class ConsumerController extends Controller {
+class SupplierController extends Controller {
     /**
      * Display a listing of the resource.
      */
     public function index() {
-        return Inertia::render('Consumers');
+        return Inertia::render('Suppliers');
     }
 
     /**
@@ -31,28 +31,28 @@ class ConsumerController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Consumer $consumer) {
+    public function show(Supplier $supplier) {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Consumer $consumer) {
+    public function edit(Supplier $supplier) {
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Consumer $consumer) {
+    public function update(Request $request, Supplier $supplier) {
         //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Consumer $consumer) {
+    public function destroy(Supplier $supplier) {
         //
     }
 }
