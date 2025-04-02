@@ -1,9 +1,24 @@
 <script setup>
-import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
+
+const props = defineProps({
+    admins: Array,
+});
+
 defineOptions({
     layout: MainLayout,
 });
+
+const localAdmins = ref(props.admins);
+
+watch(
+    () => props.admins,
+    (newAdmins) => {
+        localAdmins.value = newAdmins;
+    },
+);
 
 const showEditModal = ref(false);
 const showAddAdminModal = ref(false);
@@ -11,103 +26,45 @@ const showConfirmModal = ref(false);
 const adminToRemove = ref(null);
 const editingAdmin = ref({
     id: null,
-    name: '',
-    lastName: '',
-    email: '',
-    role: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
     active: true,
     addedDate: '',
 });
 const newAdmin = ref({
-    name: '',
-    lastName: '',
-    email: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
     role: 'Admin',
     active: true,
 });
-const admins = ref([
-    {
-        id: 1,
-        name: 'Abebe',
-        lastName: 'Kebede',
-        email: 'abebe.kebede@example.com',
-        role: 'Super Admin',
-        active: true,
-        addedDate: '12 Jan 2023',
-    },
-    {
-        id: 2,
-        name: 'Tigist',
-        lastName: 'Haile',
-        email: 'tigist.haile@example.com',
-        role: 'Admin',
-        active: true,
-        addedDate: '03 Mar 2023',
-    },
-    {
-        id: 3,
-        name: 'Dawit',
-        lastName: 'Tadesse',
-        email: 'dawit.tadesse@example.com',
-        role: 'Moderator',
-        active: true,
-        addedDate: '15 Apr 2023',
-    },
-    {
-        id: 4,
-        name: 'Hiwot',
-        lastName: 'Girma',
-        email: 'hiwot.girma@example.com',
-        role: 'Admin',
-        active: false,
-        addedDate: '22 Jun 2023',
-    },
-    {
-        id: 5,
-        name: 'Yonas',
-        lastName: 'Bekele',
-        email: 'yonas.bekele@example.com',
-        role: 'Moderator',
-        active: true,
-        addedDate: '10 Aug 2023',
-    },
-]);
-const pendingAdmins = ref([
-    {
-        id: 101,
-        name: 'Meron',
-        lastName: 'Alemu',
-        email: 'meron.alemu@example.com',
-        requestedRole: 'Admin',
-        requestDate: '05 May 2024',
-    },
-    {
-        id: 102,
-        name: 'Bereket',
-        lastName: 'Tesfaye',
-        email: 'bereket.tesfaye@example.com',
-        requestedRole: 'Moderator',
-        requestDate: '12 May 2024',
-    },
-    {
-        id: 103,
-        name: 'Selam',
-        lastName: 'Negash',
-        email: 'selam.negash@example.com',
-        requestedRole: 'Admin',
-        requestDate: '18 May 2024',
-    },
-]);
 
 function editAdmin(admin) {
-    editingAdmin.value = { ...admin };
+    editingAdmin.value = {
+        id: admin.id,
+        first_name: admin.first_name,
+        last_name: admin.last_name,
+        phone: admin.phone,
+        role: admin.role,
+        active: admin.status === 'Active',
+        password: '',
+        created_at: admin.created_at,
+    };
     showEditModal.value = true;
 }
-
 function saveAdmin() {
-    const index = admins.value.findIndex((a) => a.id === editingAdmin.value.id);
+    const index = localAdmins.value.findIndex(
+        (a) => a.id === editingAdmin.value.id,
+    );
     if (index !== -1) {
-        admins.value[index] = { ...editingAdmin.value };
+        router.put(`/admins/${editingAdmin.value.id}`, {
+            first_name: editingAdmin.value.first_name,
+            last_name: editingAdmin.value.last_name,
+            phone_number: editingAdmin.value.phone,
+            password: editingAdmin.value.password,
+            status: editingAdmin.value.active,
+        });
     }
     showEditModal.value = false;
 }
@@ -155,428 +112,225 @@ function addAdmin() {
 
     showAddAdminModal.value = false;
 }
-
-function approveAdmin(id) {
-    const pendingAdmin = pendingAdmins.value.find((a) => a.id === id);
-    if (pendingAdmin) {
-        const newId = Math.max(...admins.value.map((a) => a.id)) + 1;
-        const today = new Date();
-        const formattedDate = today.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-        });
-
-        admins.value.push({
-            id: newId,
-            name: pendingAdmin.name,
-            lastName: pendingAdmin.lastName,
-            email: pendingAdmin.email,
-            role: pendingAdmin.requestedRole,
-            active: true,
-            addedDate: formattedDate,
-        });
-
-        pendingAdmins.value = pendingAdmins.value.filter((a) => a.id !== id);
-    }
-}
-
-function rejectAdmin(id) {
-    pendingAdmins.value = pendingAdmins.value.filter((a) => a.id !== id);
-}
 </script>
 <template>
     <Head title="Admins" />
     <!-- Main Content -->
     <main class="flex-1">
-        <div class="mx-auto w-full px-2 py-6 sm:px-4">
-            <div class="flex flex-col gap-6 2xl:flex-row">
-                <!-- Current Admins List -->
-                <div class="w-full 2xl:w-1/2">
-                    <div class="mb-4 flex items-center justify-between">
-                        <h2 class="text-xl font-bold text-gray-800">
-                            Current Admins
-                        </h2>
-                        <button
-                            @click="showAddAdminModal = true"
-                            class="inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="h-4 w-4"
+        <div class="mx-auto w-full max-w-6xl px-4 py-6">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-gray-800">Current Admins</h2>
+                <button
+                    @click="showAddAdminModal = true"
+                    class="inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="h-4 w-4"
+                    >
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5v14"></path>
+                    </svg>
+                    Add Admin
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <input
+                    type="text"
+                    v-model="searchQuery"
+                    class="block w-full rounded-lg border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="Search admins"
+                />
+            </div>
+
+            <div
+                class="mt-6 overflow-hidden rounded-xl border bg-white shadow-sm"
+            >
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
+                                >
+                                    Full name
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
+                                >
+                                    Phone number
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
+                                >
+                                    Role
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
+                                >
+                                    Status
+                                </th>
+                                <th
+                                    scope="col"
+                                    class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-500"
+                                >
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr
+                                v-for="admin in localAdmins"
+                                :key="admin.id"
+                                class="hover:bg-gray-100"
                             >
-                                <path d="M5 12h14"></path>
-                                <path d="M12 5v14"></path>
-                            </svg>
-                            Add Admin
-                        </button>
-                    </div>
-
-                    <div class="mb-4">
-                        <input
-                            type="text"
-                            class="block w-full rounded-lg border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500"
-                            placeholder="Search admins"
-                        />
-                    </div>
-
-                    <div class="rounded-xl border bg-white shadow-sm">
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Name
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Email
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Role
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Status
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200">
-                                    <tr
-                                        v-for="admin in admins"
-                                        :key="admin.id"
-                                        class="hover:bg-gray-100"
-                                    >
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="h-10 w-10 flex-shrink-0"
-                                                >
-                                                    <div
-                                                        class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-500"
-                                                    >
-                                                        {{ admin.name.charAt(0)
-                                                        }}{{
-                                                            admin.lastName.charAt(
-                                                                0,
-                                                            )
-                                                        }}
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div
-                                                        class="text-sm font-medium text-gray-900"
-                                                    >
-                                                        {{ admin.name }}
-                                                        {{ admin.lastName }}
-                                                    </div>
-                                                    <div
-                                                        class="text-sm text-gray-500"
-                                                    >
-                                                        Added on
-                                                        {{ admin.addedDate }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="text-sm text-gray-900">
-                                                {{ admin.email }}
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="text-sm text-gray-900">
-                                                {{ admin.role }}
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <span
-                                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                                                :class="
-                                                    admin.active
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-gray-100 text-gray-800'
-                                                "
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 flex-shrink-0">
+                                            <div
+                                                class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-500"
                                             >
-                                                {{
-                                                    admin.active
-                                                        ? 'Active'
-                                                        : 'Inactive'
+                                                {{ admin.first_name.charAt(0)
+                                                }}{{
+                                                    admin.last_name.charAt(0)
                                                 }}
-                                            </span>
-                                        </td>
-                                        <td
-                                            class="whitespace-nowrap px-6 py-4 text-end"
-                                        >
-                                            <div class="flex justify-end gap-2">
-                                                <button
-                                                    @click="editAdmin(admin)"
-                                                    class="inline-flex items-center rounded-lg border border-gray-200 bg-white p-2 text-sm font-medium text-gray-500 hover:bg-gray-100"
-                                                    title="Edit Admin"
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="16"
-                                                        height="16"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        class="h-4 w-4"
-                                                    >
-                                                        <path
-                                                            d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
-                                                        ></path>
-                                                        <path
-                                                            d="m15 5 4 4"
-                                                        ></path>
-                                                    </svg>
-                                                </button>
-                                                <button
-                                                    @click="
-                                                        confirmRemoveAdmin(
-                                                            admin.id,
-                                                        )
-                                                    "
-                                                    class="inline-flex items-center rounded-lg border border-gray-200 bg-white p-2 text-sm font-medium text-red-500 hover:bg-red-50"
-                                                    title="Remove Admin"
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="16"
-                                                        height="16"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        class="h-4 w-4"
-                                                    >
-                                                        <path
-                                                            d="M3 6h18"
-                                                        ></path>
-                                                        <path
-                                                            d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
-                                                        ></path>
-                                                        <path
-                                                            d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
-                                                        ></path>
-                                                        <line
-                                                            x1="10"
-                                                            x2="10"
-                                                            y1="11"
-                                                            y2="17"
-                                                        ></line>
-                                                        <line
-                                                            x1="14"
-                                                            x2="14"
-                                                            y1="11"
-                                                            y2="17"
-                                                        ></line>
-                                                    </svg>
-                                                </button>
                                             </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pending Admins List -->
-                <div class="mt-8 w-full 2xl:mt-0 2xl:w-1/2">
-                    <h2 class="mb-4 text-xl font-bold text-gray-800">
-                        Pending Admin Requests
-                    </h2>
-                    <div class="mb-4">
-                        <input
-                            type="text"
-                            class="block w-full rounded-lg border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500"
-                            placeholder="Search pending requests"
-                        />
-                    </div>
-                    <div class="rounded-xl border bg-white shadow-sm">
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Name
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Email
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Requested Role
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Date
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-500"
-                                        >
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200">
-                                    <tr v-if="pendingAdmins.length === 0">
-                                        <td
-                                            colspan="5"
-                                            class="px-6 py-8 text-center text-gray-500"
-                                        >
-                                            No pending admin requests
-                                        </td>
-                                    </tr>
-                                    <tr
-                                        v-for="admin in pendingAdmins"
-                                        :key="admin.id"
-                                        class="hover:bg-gray-100"
+                                        </div>
+                                        <div class="ml-4">
+                                            <div
+                                                class="text-sm font-medium text-gray-900"
+                                            >
+                                                {{ admin.first_name }}
+                                                {{ admin.last_name }}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                Added on
+                                                {{
+                                                    new Date(
+                                                        admin.created_at,
+                                                    ).toLocaleDateString(
+                                                        'en-GB',
+                                                        {
+                                                            day: '2-digit',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                        },
+                                                    )
+                                                }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <div class="text-sm text-gray-900">
+                                        +251{{ admin.phone }}
+                                    </div>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <div class="text-sm text-gray-900">
+                                        {{ admin.role }}
+                                    </div>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <span
+                                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                        :class="
+                                            admin.status === 'Active'
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-gray-100 text-gray-800'
+                                        "
                                     >
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="h-10 w-10 flex-shrink-0"
-                                                >
-                                                    <div
-                                                        class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 font-semibold text-gray-500"
-                                                    >
-                                                        {{ admin.name.charAt(0)
-                                                        }}{{
-                                                            admin.lastName.charAt(
-                                                                0,
-                                                            )
-                                                        }}
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div
-                                                        class="text-sm font-medium text-gray-900"
-                                                    >
-                                                        {{ admin.name }}
-                                                        {{ admin.lastName }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="text-sm text-gray-900">
-                                                {{ admin.email }}
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="text-sm text-gray-900">
-                                                {{ admin.requestedRole }}
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4">
-                                            <div class="text-sm text-gray-900">
-                                                {{ admin.requestDate }}
-                                            </div>
-                                        </td>
-                                        <td
-                                            class="whitespace-nowrap px-6 py-4 text-end"
+                                        {{ admin.status }}
+                                    </span>
+                                </td>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 text-end"
+                                >
+                                    <div
+                                        v-if="admin.role !== 'Super Admin'"
+                                        class="flex justify-end gap-2"
+                                    >
+                                        <button
+                                            @click="editAdmin(admin)"
+                                            class="inline-flex items-center rounded-lg border border-gray-200 bg-white p-2 text-sm font-medium text-gray-500 hover:bg-gray-100"
+                                            title="Edit Admin"
                                         >
-                                            <div class="flex justify-end gap-2">
-                                                <button
-                                                    @click="
-                                                        approveAdmin(admin.id)
-                                                    "
-                                                    class="inline-flex items-center gap-x-1 rounded-lg border border-transparent bg-green-500 px-3 py-1 text-sm font-medium text-white hover:bg-green-600"
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="16"
-                                                        height="16"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        class="h-4 w-4"
-                                                    >
-                                                        <polyline
-                                                            points="20 6 9 17 4 12"
-                                                        ></polyline>
-                                                    </svg>
-                                                    Approve
-                                                </button>
-                                                <button
-                                                    @click="
-                                                        rejectAdmin(admin.id)
-                                                    "
-                                                    class="inline-flex items-center gap-x-1 rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm font-medium text-red-500 hover:bg-red-50"
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="16"
-                                                        height="16"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        class="h-4 w-4"
-                                                    >
-                                                        <path
-                                                            d="M18 6 6 18"
-                                                        ></path>
-                                                        <path
-                                                            d="m6 6 12 12"
-                                                        ></path>
-                                                    </svg>
-                                                    Reject
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="h-4 w-4"
+                                            >
+                                                <path
+                                                    d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+                                                ></path>
+                                                <path d="m15 5 4 4"></path>
+                                            </svg>
+                                        </button>
+                                        <button
+                                            @click="
+                                                confirmRemoveAdmin(admin.id)
+                                            "
+                                            class="inline-flex items-center rounded-lg border border-gray-200 bg-white p-2 text-sm font-medium text-red-500 hover:bg-red-50"
+                                            title="Remove Admin"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="h-4 w-4"
+                                            >
+                                                <path d="M3 6h18"></path>
+                                                <path
+                                                    d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
+                                                ></path>
+                                                <path
+                                                    d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
+                                                ></path>
+                                                <line
+                                                    x1="10"
+                                                    x2="10"
+                                                    y1="11"
+                                                    y2="17"
+                                                ></line>
+                                                <line
+                                                    x1="14"
+                                                    x2="14"
+                                                    y1="11"
+                                                    y2="17"
+                                                ></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -619,12 +373,13 @@ function rejectAdmin(id) {
                                     <label
                                         for="edit-name"
                                         class="block text-sm font-medium text-gray-700"
-                                        >First Name</label
                                     >
+                                        First Name
+                                    </label>
                                     <input
                                         type="text"
                                         id="edit-name"
-                                        v-model="editingAdmin.name"
+                                        v-model="editingAdmin.first_name"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>
@@ -632,48 +387,45 @@ function rejectAdmin(id) {
                                     <label
                                         for="edit-lastName"
                                         class="block text-sm font-medium text-gray-700"
-                                        >Last Name</label
                                     >
+                                        Last Name
+                                    </label>
                                     <input
                                         type="text"
                                         id="edit-lastName"
-                                        v-model="editingAdmin.lastName"
+                                        v-model="editingAdmin.last_name"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>
                                 <div>
                                     <label
-                                        for="edit-email"
+                                        for="edit-phone"
                                         class="block text-sm font-medium text-gray-700"
-                                        >Email</label
                                     >
+                                        Phone number
+                                    </label>
                                     <input
-                                        type="email"
-                                        id="edit-email"
-                                        v-model="editingAdmin.email"
+                                        type="text"
+                                        id="edit-phone"
+                                        v-model="editingAdmin.phone"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>
                                 <div>
                                     <label
-                                        for="edit-role"
+                                        for="edit-password"
                                         class="block text-sm font-medium text-gray-700"
-                                        >Role</label
                                     >
-                                    <select
-                                        id="edit-role"
-                                        v-model="editingAdmin.role"
+                                        New password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="edit-password"
+                                        v-model="editingAdmin.password"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                                    >
-                                        <option value="Super Admin">
-                                            Super Admin
-                                        </option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="Moderator">
-                                            Moderator
-                                        </option>
-                                    </select>
+                                    />
                                 </div>
+
                                 <div class="flex items-center">
                                     <input
                                         type="checkbox"
@@ -775,14 +527,14 @@ function rejectAdmin(id) {
                                 </div>
                                 <div>
                                     <label
-                                        for="add-email"
+                                        for="add-phone"
                                         class="block text-sm font-medium text-gray-700"
-                                        >Email</label
+                                        >Phone number</label
                                     >
                                     <input
-                                        type="email"
-                                        id="add-email"
-                                        v-model="newAdmin.email"
+                                        type="text"
+                                        id="add-phone"
+                                        v-model="newAdmin.phone"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     />
                                 </div>

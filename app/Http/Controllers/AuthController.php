@@ -41,8 +41,8 @@ class AuthController extends Controller {
         $makeSuperAdmin = false;
 
         $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'first_name' => 'required|string|min:3|max:255',
+            'last_name' => 'required|string|min:3|max:255',
             'phone_number' => 'required',
             'password' => 'required|min:6|confirmed'
         ]);

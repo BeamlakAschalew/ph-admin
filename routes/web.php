@@ -17,18 +17,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/signup', [AuthController::class, 'register']);
 });
 
-
-
-Route::middleware(['auth', 'role:superadmin'])->group(function () {
+Route::group(['auth'], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-
-    Route::get('/admins', [AdminController::class, 'index'])->middleware('role:superadmin');
-
-    Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
-    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
 
     Route::get('/pending-consumers', [ConsumerController::class, 'pendingIndex'])->name('pending-consumers.index');
     Route::get('/pending-suppliers', [SupplierController::class, 'pendingIndex'])->name('pending-suppliers.index');
@@ -40,4 +33,14 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+});
+
+
+
+Route::group(['auth', 'role:superadmin'], function () {
+    Route::get('/admins', [AdminController::class, 'index']);
+    Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+
+    Route::put('/admins/{admin}', [AdminController::class, 'update']);
 });
