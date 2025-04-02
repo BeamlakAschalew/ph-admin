@@ -23,7 +23,6 @@ class AdminFactory extends Factory {
             'last_name' => fake()->lastName(),
             'phone' => $this->generatePhoneNumber(),
             'password' => static::$password ??= Hash::make('password'),
-            'approved' => fake()->boolean(),
             'deleted_at' => null,
             'created_at' => now(),
             'updated_at' => now(),

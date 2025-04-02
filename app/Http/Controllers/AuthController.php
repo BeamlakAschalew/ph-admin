@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
+use App\Models\AdminSecret;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
@@ -37,6 +38,7 @@ class AuthController extends Controller {
     }
 
     public function register(Request $request) {
+        $makeSuperAdmin = false;
 
         $request->validate([
             'first_name' => 'required|string|max:255',
@@ -55,14 +57,33 @@ class AuthController extends Controller {
             return back()->withErrors(['phone_number' => 'The phone number has already been taken']);
         }
 
-        $user = Admin::create([
+        if ($request->filled('superadmin_secret')) {
+            $matchedSecrets = AdminSecret::all()->filter(function ($adminSecretRecord) use ($request) {
+                return Hash::check($request->superadmin_secret, $adminSecretRecord->secret);
+            });
+            if ($matchedSecrets->isEmpty()) {
+                return back()->withErrors(['superadmin_secret' => 'Invalid superadmin secret, leave the field empty if you are a regular admin']);
+            }
+            $makeSuperAdmin = true;
+        } else {
+            $makeSuperAdmin = false;
+        }
+
+        $admin = Admin::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'phone' => $phone,
             'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($user, true);
+        if ($makeSuperAdmin) {
+            $admin->assignRole('superadmin');
+        } else {
+            $admin->assignRole('admin');
+        }
+        $admin->syncRoles([$makeSuperAdmin ? 'superadmin' : 'admin']);
+
+        Auth::login($admin, true);
 
         return redirect()->route('dashboard');
     }

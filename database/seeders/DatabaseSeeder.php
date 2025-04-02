@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder {
             AdminSeeder::class,
             ProductUnitSeeder::class,
             ProductSeeder::class,
-            SupplierSeeder::class
+            SupplierSeeder::class,
+            AdminSecretSeeder::class,
         ]);
     }
 }

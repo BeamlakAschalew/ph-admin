@@ -37,14 +37,25 @@ class ProductController extends Controller {
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        $request->validate([
-            'product_name' => 'required|string|max:255|min:3',
-            'product_unit_id' => 'required|exists:product_units,id',
-        ]);
+        try {
+            $request->validate([
+                'product_name' => 'required|string|max:255|min:3',
+                'product_unit_id' => 'required|exists:product_units,id',
+            ]);
 
-        Product::create($request->only('product_name', 'product_unit_id',));
+            Product::create($request->only('product_name', 'product_unit_id',));
 
-        return redirect()->back()->with('message', ['name' => 'Product created successfully.', 'type' => 'success']);
+            return redirect()->back()->with('message', ['name' => 'Product created successfully.', 'type' => 'success']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->with('message', [
+                    'name' => 'Product creation failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        }
     }
 
     /**
@@ -65,14 +76,25 @@ class ProductController extends Controller {
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product) {
-        $request->validate([
-            'product_name' => 'required|string|max:255|min:3',
-            'product_unit_id' => 'required|exists:product_units,id',
-        ]);
+        try {
+            $request->validate([
+                'product_name' => 'required|string|max:255|min:3',
+                'product_unit_id' => 'required|exists:product_units,id',
+            ]);
 
-        $product->update($request->only('product_name', 'product_unit_id',));
+            $product->update($request->only('product_name', 'product_unit_id'));
 
-        return redirect()->back()->with('message', ['name' => 'Product updated successfully.', 'type' => 'success']);
+            return redirect()->back()->with('message', ['name' => 'Product updated successfully.', 'type' => 'success']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->with('message', [
+                    'name' => 'Product update failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        }
     }
 
     /**

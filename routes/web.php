@@ -19,12 +19,13 @@ Route::middleware('guest')->group(function () {
 
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-    Route::get('/admins', [AdminController::class, 'index']);
+
+    Route::get('/admins', [AdminController::class, 'index'])->middleware('role:superadmin');
 
     Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
