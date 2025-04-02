@@ -43,4 +43,8 @@ class Consumer extends Model {
 
         return $phone;
     }
+
+    public function subcity() {
+        return $this->belongsTo(Subcity::class);
+    }
 }

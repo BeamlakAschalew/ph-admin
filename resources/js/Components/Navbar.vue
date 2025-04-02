@@ -183,14 +183,6 @@ const user = usePage().props.auth.user;
                         </div>
                     </div>
                     <!-- End Dropdown -->
-                    <form @submit.prevent="logout">
-                        <button
-                            type="submit"
-                            class="font-medium text-gray-300 hover:text-white"
-                        >
-                            Logout
-                        </button>
-                    </form>
                 </div>
             </div>
         </nav>

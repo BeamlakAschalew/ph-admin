@@ -26,7 +26,7 @@ class SubcitySeeder extends Seeder {
         ];
 
         foreach ($staticNames as $name) {
-            Subcity::create(['name' => $name]);
+            Subcity::create(['subcity_name' => $name]);
         }
     }
 }

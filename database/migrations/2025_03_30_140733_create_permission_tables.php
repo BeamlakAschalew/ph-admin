@@ -126,11 +126,13 @@ return new class extends Migration {
         $superadmin = Role::create(['name' => 'superadmin']);
 
         $modifyAdmins = Permission::create(['name' => 'modifyAdmins']);
-        $modifyUsers = Permission::create(['name' => 'modifyUsers']);
+        $modifyConsumers = Permission::create(['name' => 'modifyConsumers']);
+        $modifySuppliers = Permission::create(['name' => 'modifySuppliers']);
 
 
         $modifyAdmins->assignRole($superadmin);
-        $modifyUsers->assignRole($superadmin);
+        $modifyConsumers->assignRole($superadmin);
+        $modifySuppliers->assignRole($superadmin);
 
         app('cache')
             ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)

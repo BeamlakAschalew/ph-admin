@@ -11,8 +11,52 @@ class ConsumerSupplierController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        return Inertia::render('PendingUsers');
+    public function index(Request $request) {
+
+        return Inertia::render('PendingUsers', [
+            'consumers' => fn() => Consumer::with('subcity')->when($request->input('search'), function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('institution_name', 'like', "%{$search}%");
+                });
+            })
+                ->orderBy('updated_at', 'desc')
+                ->paginate(10)
+                ->withQueryString(),
+            'suppliers' => fn() => Supplier::with('subcity')->when($request->input('search'), function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('institution_name', 'like', "%{$search}%");
+                });
+            })
+                ->orderBy('updated_at', 'desc')
+                ->paginate(10)
+                ->withQueryString(),
+        ]);
+    }
+
+    public function acceptUser($type, $id) {
+        $modelClass = $this->getModelClass($type);
+        if (!$modelClass) {
+            abort(404, 'Resource not found');
+        }
+        $item = $modelClass::findOrFail($id);
+        $item->update(['approved' => true]);
+
+        return redirect()->back()->with('success', ucfirst($type) . ' accepted successfully.');
+    }
+
+    public function rejectUser($type, $id) {
+        $modelClass = $this->getModelClass($type);
+        if (!$modelClass) {
+            abort(404, 'Resource not found');
+        }
+        $item = $modelClass::findOrFail($id);
+        $item->delete();
+
+        return redirect()->back()->with('success', ucfirst($type) . ' rejected successfully.');
     }
 
     /**

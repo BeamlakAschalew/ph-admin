@@ -6,61 +6,34 @@ defineOptions({
     layout: MainLayout,
 });
 
+const props = defineProps({
+    consumers: {
+        type: Object,
+    },
+    suppliers: {
+        type: Object,
+    },
+});
+
 // Active tab state
 const activeTab = ref('consumers');
 
-// Pending users data
-const pendingUsers = ref({
-    consumers: [
-        {
-            id: 1,
-            institution: 'Tikur Anbessa Hospital',
-            contact: 'Amanuel Tadesse',
-            location: 'ARADA',
-            locationDetail: 'Woreda 4, Bole Medhanialem',
-            phone: '+251922334455',
-            phoneAlt: '+251933445566',
-        },
-        {
-            id: 2,
-            institution: 'Example Inc',
-            contact: 'Supplier Test',
-            location: 'ARADA',
-            locationDetail: 'Woreda 7, Lideta area street',
-            phone: '+251911223345',
-            phoneAlt: '0911223345',
-        },
-    ],
-    suppliers: [
-        {
-            id: 3,
-            institution: 'Teshome Med Supplies',
-            contact: 'Meles Teshome',
-            location: 'AKAKI_KALITY',
-            locationDetail: 'Woreda 2, Kality Market',
-            phone: '+251966778899',
-            phoneAlt: '',
-        },
-        {
-            id: 4,
-            institution: 'Abyssinia Pharmaceuticals',
-            contact: 'Selam Haile',
-            location: 'BOLE',
-            locationDetail: 'Woreda 5, Gerji Area',
-            phone: '+251911334455',
-            phoneAlt: '+251922445566',
-        },
-    ],
-});
+// Use local copies for table data
+const localConsumers = ref(props.consumers.data);
+const localSuppliers = ref(props.suppliers.data);
 
-// Search functionality
+// Search functionality using local data based on the active tab
 const searchQuery = ref('');
 
 const filteredUsers = computed(() => {
-    if (!searchQuery.value) return pendingUsers.value[activeTab.value];
+    const currentUsers =
+        activeTab.value === 'consumers'
+            ? localConsumers.value
+            : localSuppliers.value;
+    if (!searchQuery.value) return currentUsers;
 
     const query = searchQuery.value.toLowerCase();
-    return pendingUsers.value[activeTab.value].filter(
+    return currentUsers.filter(
         (user) =>
             user.institution.toLowerCase().includes(query) ||
             user.contact.toLowerCase().includes(query) ||
@@ -69,26 +42,40 @@ const filteredUsers = computed(() => {
     );
 });
 
-// Approve and reject functionality
+// Dynamic pagination links based on active tab
+const paginationLinks = computed(() => {
+    return activeTab.value === 'consumers'
+        ? props.consumers.links
+        : props.suppliers.links;
+});
+
+// Approve and reject functionality using local copies
 const approveUser = (id) => {
-    // Implement approve functionality
     console.log('Approve user', id);
-    // Remove from pending list
-    pendingUsers.value[activeTab.value] = pendingUsers.value[
-        activeTab.value
-    ].filter((user) => user.id !== id);
+    if (activeTab.value === 'consumers') {
+        localCounsumers.value = localConsumers.value.filter(
+            (user) => user.id !== id,
+        );
+    } else {
+        localSuppliers.value = localSuppliers.value.filter(
+            (user) => user.id !== id,
+        );
+    }
 };
 
 const rejectUser = (id) => {
-    // Implement reject functionality
     console.log('Reject user', id);
-    // Remove from pending list
-    pendingUsers.value[activeTab.value] = pendingUsers.value[
-        activeTab.value
-    ].filter((user) => user.id !== id);
+    if (activeTab.value === 'consumers') {
+        localCounsumers.value = localConsumers.value.filter(
+            (user) => user.id !== id,
+        );
+    } else {
+        localSuppliers.value = localSuppliers.value.filter(
+            (user) => user.id !== id,
+        );
+    }
 };
 </script>
-
 <template>
     <div class="flex min-h-screen flex-col">
         <!-- Main Content -->
@@ -190,29 +177,31 @@ const rejectUser = (id) => {
                                         <div
                                             class="text-sm font-medium text-gray-900"
                                         >
-                                            {{ user.institution }}
+                                            {{ user.institution_name }}
                                         </div>
                                         <div class="text-sm text-gray-500">
-                                            {{ user.contact }}
+                                            {{ user.first_name }}
+                                            {{ user.last_name }}
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <div class="text-sm text-gray-900">
-                                            {{ user.location }}
+                                            {{ user.subcity.subcity_name }}
                                         </div>
                                         <div class="text-sm text-gray-500">
-                                            {{ user.locationDetail }}
+                                            Woreda {{ user.woreda }}
+                                            {{ user.special_place }}
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-4">
                                         <div class="text-sm text-gray-900">
-                                            {{ user.phone }}
+                                            +251{{ user.primary_phone }}
                                         </div>
                                         <div
                                             v-if="user.phoneAlt"
                                             class="text-sm text-gray-500"
                                         >
-                                            {{ user.phoneAlt }}
+                                            +251{{ user.secondary_phone }}
                                         </div>
                                     </td>
                                     <td
@@ -238,6 +227,49 @@ const rejectUser = (id) => {
                         </table>
                     </div>
                 </div>
+                <!-- Pagination -->
+                <nav
+                    class="mt-5 flex items-center -space-x-px"
+                    aria-label="Pagination"
+                >
+                    <template v-if="paginationLinks && paginationLinks.length">
+                        <template
+                            v-for="(link, index) in paginationLinks"
+                            :key="index"
+                        >
+                            <Link
+                                v-if="link.url"
+                                :href="link.url"
+                                preserve-state
+                                preserve-scroll
+                                :class="[
+                                    index === 0 ? 'rounded-l-md' : '',
+                                    index === paginationLinks.length - 1
+                                        ? 'rounded-r-md'
+                                        : '',
+                                    'min-h-9.5 min-w-9.5 flex items-center justify-center px-3 py-2 text-sm',
+                                    link.active
+                                        ? 'bg-gray-600 text-white'
+                                        : 'border border-gray-200 text-gray-800 hover:bg-gray-100',
+                                ]"
+                            >
+                                <span v-html="link.label"></span>
+                            </Link>
+                            <span
+                                v-else
+                                v-html="link.label"
+                                :class="[
+                                    index === 0 ? 'rounded-l-md' : '',
+                                    index === paginationLinks.length - 1
+                                        ? 'rounded-r-md'
+                                        : '',
+                                    'min-h-9.5 min-w-9.5 flex items-center justify-center border border-gray-200 px-3 py-2 text-gray-800',
+                                ]"
+                            ></span>
+                        </template>
+                    </template>
+                </nav>
+                <!-- End Pagination -->
             </div>
         </main>
     </div>
