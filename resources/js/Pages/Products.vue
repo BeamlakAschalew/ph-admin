@@ -11,7 +11,10 @@ defineOptions({
 const props = defineProps({
     products: Object,
     filters: Object,
+    units: Array,
 });
+
+const unitsOptions = ref(props.units);
 
 // Create a local reactive copy of products data
 const localProducts = ref(props.products.data);
@@ -34,6 +37,7 @@ const debouncedSearch = debounce((query) => {
         {
             preserveState: true,
             replace: true,
+            except: ['units'],
         },
     );
 }, 300);
@@ -44,10 +48,21 @@ watch(searchQuery, (newQuery) => {
 
 // Edit product functionality
 const showEditModal = ref(false);
-const editingProduct = ref({ id: null, name: '', unit: '' });
+const editingProduct = ref({
+    id: null,
+    name: '',
+    unit: unitsOptions.value[0].id,
+});
 
 const openEditModal = (product) => {
-    editingProduct.value = { ...product };
+    editingProduct.value = {
+        id: product.id,
+        name: product.product_name,
+        unit:
+            unitsOptions.value.find(
+                (u) => u.unit_name === product.unit.unit_name,
+            )?.id || unitsOptions.value[0].id,
+    };
     showEditModal.value = true;
 };
 
@@ -55,8 +70,22 @@ const saveProduct = () => {
     const index = localProducts.value.findIndex(
         (p) => p.id === editingProduct.value.id,
     );
+    const selectedUnit = unitsOptions.value.find(
+        (u) => u.id === editingProduct.value.unit,
+    );
     if (index !== -1) {
-        localProducts.value[index] = { ...editingProduct.value };
+        router.put(
+            `/products/${editingProduct.value.id}`,
+            {
+                product_name: editingProduct.value.name,
+                product_unit_id: selectedUnit ? selectedUnit.id : '',
+            },
+            {
+                preserveState: true,
+                replace: true,
+                except: ['units'],
+            },
+        );
     }
     showEditModal.value = false;
 };
@@ -74,26 +103,40 @@ const confirmDelete = () => {
     localProducts.value = localProducts.value.filter(
         (p) => p.id !== productToDelete.value,
     );
+    router.delete(`/products/${productToDelete.value}`, {
+        preserveState: true,
+        replace: true,
+        except: ['units'],
+    });
     showDeleteModal.value = false;
-    productToDelete.value = null;
 };
 
 // Add product functionality
 const showAddModal = ref(false);
-const newProduct = ref({ name: '', unit: '' });
+const newProduct = ref({ name: '', unit: unitsOptions.value[0].id });
 
 const openAddModal = () => {
-    newProduct.value = { name: '', unit: '' };
+    newProduct.value = { name: '', unit: unitsOptions.value[0].id };
     showAddModal.value = true;
 };
 
 const addProduct = () => {
-    const newId = Math.max(...localProducts.value.map((p) => p.id)) + 1;
-    localProducts.value.push({
-        id: newId,
-        product_name: newProduct.value.name,
-        unit: { unit_name: newProduct.value.unit },
-    });
+    const selectedUnit = unitsOptions.value.find(
+        (u) => u.id === newProduct.value.unit,
+    );
+
+    router.post(
+        `/products`,
+        {
+            product_name: newProduct.value.name,
+            product_unit_id: selectedUnit ? selectedUnit.id : '',
+        },
+        {
+            preserveState: true,
+            replace: true,
+            except: ['units'],
+        },
+    );
     showAddModal.value = false;
 };
 </script>
@@ -363,16 +406,13 @@ const addProduct = () => {
                                         v-model="editingProduct.unit"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     >
-                                        <option value="tablet">Tablet</option>
-                                        <option value="capsule">Capsule</option>
-                                        <option value="g">Gram (g)</option>
-                                        <option value="ml">
-                                            Milliliter (ml)
+                                        <option
+                                            v-for="unit in unitsOptions"
+                                            :value="unit.id"
+                                            :key="unit.id"
+                                        >
+                                            {{ unit.unit_name }}
                                         </option>
-                                        <option value="ampoule">Ampoule</option>
-                                        <option value="vial">Vial</option>
-                                        <option value="bottle">Bottle</option>
-                                        <option value="sachet">Sachet</option>
                                     </select>
                                 </div>
                             </div>
@@ -540,16 +580,13 @@ const addProduct = () => {
                                         v-model="newProduct.unit"
                                         class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                                     >
-                                        <option value="tablet">Tablet</option>
-                                        <option value="capsule">Capsule</option>
-                                        <option value="g">Gram (g)</option>
-                                        <option value="ml">
-                                            Milliliter (ml)
+                                        <option
+                                            v-for="unit in unitsOptions"
+                                            :value="unit.id"
+                                            v-bind:key="unit.id"
+                                        >
+                                            {{ unit.unit_name }}
                                         </option>
-                                        <option value="ampoule">Ampoule</option>
-                                        <option value="vial">Vial</option>
-                                        <option value="bottle">Bottle</option>
-                                        <option value="sachet">Sachet</option>
                                     </select>
                                 </div>
                             </div>

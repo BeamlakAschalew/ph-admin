@@ -23,5 +23,9 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::get('/admins', [AdminController::class, 'index']);
+
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });

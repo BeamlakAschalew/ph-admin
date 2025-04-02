@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductUnit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use function Illuminate\Log\log;
 
 class ProductController extends Controller {
     /**
@@ -12,13 +15,15 @@ class ProductController extends Controller {
      */
     public function index(Request $request) {
         return Inertia::render('Products', [
-            'products' => Product::with('unit')
+            'products' => fn() => Product::with('unit')
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where('product_name', 'like', "%{$search}%");
                 })
+                ->orderBy('updated_at', 'desc')
                 ->paginate(10)
                 ->withQueryString(),
-            'filters' => $request->only('search'),
+            'filters' => fn() => $request->only('search'),
+            'units' => fn() => ProductUnit::distinct()->select('id', 'unit_name')->get(),
         ]);
     }
     /**
@@ -32,7 +37,14 @@ class ProductController extends Controller {
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        //
+        $request->validate([
+            'product_name' => 'required|string|max:255|min:3',
+            'product_unit_id' => 'required|exists:product_units,id',
+        ]);
+
+        Product::create($request->only('product_name', 'product_unit_id',));
+
+        return redirect()->back()->with('message', ['name' => 'Product created successfully.', 'type' => 'success']);
     }
 
     /**
@@ -53,13 +65,22 @@ class ProductController extends Controller {
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product) {
-        //
+        $request->validate([
+            'product_name' => 'required|string|max:255|min:3',
+            'product_unit_id' => 'required|exists:product_units,id',
+        ]);
+
+        $product->update($request->only('product_name', 'product_unit_id',));
+
+        return redirect()->back()->with('message', ['name' => 'Product updated successfully.', 'type' => 'success']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Product $product) {
-        //
+        $product->delete();
+
+        return redirect()->back()->with('message', ['name' => 'Product deleted successfully.', 'type' => 'success']);
     }
 }
