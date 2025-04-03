@@ -161,7 +161,13 @@ class AdminController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Admin $admin) {
-        //
+    public function destroy($id) {
+        $admin = Admin::withTrashed()->findOrFail($id);
+        try {
+            $admin->forceDelete();
+            return redirect()->back()->with('message', ['name' => 'Admin permanently deleted successfully.', 'type' => 'success']);
+        } catch (Exception $e) {
+            return redirect()->back()->with('message', ['name' => 'An error occurred while permanently deleting the admin.', 'type' => 'error']);
+        }
     }
 }

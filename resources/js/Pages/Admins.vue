@@ -93,9 +93,11 @@ function confirmRemoveAdmin(id) {
 }
 
 function removeAdmin() {
-    admins.value = admins.value.filter(
-        (admin) => admin.id !== adminToRemove.value,
-    );
+    console.log(adminToRemove.value);
+    router.delete(`/admins/${adminToRemove.value}`, {
+        preserveState: true,
+        replace: true,
+    });
     showConfirmModal.value = false;
     adminToRemove.value = null;
 }
