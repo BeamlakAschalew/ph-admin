@@ -10,8 +10,24 @@ class ConsumerController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        return Inertia::render('Consumers');
+    public function index(Request $request) {
+        return Inertia::render('Consumers', [
+            'consumers' => Consumer::withTrashed()
+                ->when($request->input('search'), function ($query, $search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%");
+                    });
+                })
+                ->orderBy('updated_at', 'desc')
+                ->paginate(10)
+                ->withQueryString()
+                ->through(function ($consumer) {
+                    $consumer->status = $consumer->deleted_at ? 'Inactive' : 'Active';
+                    return $consumer;
+                }),
+            'filters' => fn() => $request->only('search'),
+        ]);
     }
 
     public function pendingIndex(Request $request) {

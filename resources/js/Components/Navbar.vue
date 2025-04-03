@@ -81,7 +81,10 @@ const dynamicNavClass = (page) =>
                     <Link :class="dynamicNavClass('Products')" href="/products"
                         >Products</Link
                     >
-                    <Link :class="dynamicNavClass('Admins')" href="/admins"
+                    <Link
+                        v-if="$page.props.auth.user_role === 'superadmin'"
+                        :class="dynamicNavClass('Admins')"
+                        href="/admins"
                         >Admins</Link
                     >
 
@@ -135,7 +138,10 @@ const dynamicNavClass = (page) =>
                     </div>
                     <!-- Dropdown -->
 
-                    <div class="hs-dropdown relative inline-flex">
+                    <div
+                        v-if="$page.props.auth.user_role === 'superadmin'"
+                        class="hs-dropdown relative inline-flex"
+                    >
                         <button
                             id="hs-dropdown-default"
                             type="button"
