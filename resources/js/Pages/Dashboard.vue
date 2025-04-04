@@ -5,91 +5,20 @@ import MainLayout from './MainLayout.vue';
 defineOptions({
     layout: MainLayout,
 });
+
+const props = defineProps({
+    orders: Object,
+});
+
+const localOrders = ref(props.orders.data);
+
 const activeDropdown = ref(null);
 const activeTab = ref('All');
 const tabs = ref([
     { label: 'All Orders', value: 'All' },
-    { label: 'Delivered', value: 'Delivered' },
+    { label: 'Completed', value: 'Completed' },
     { label: 'Pending', value: 'Pending' },
     { label: 'Cancelled', value: 'Cancelled' },
-]);
-const orders = ref([
-    {
-        id: 1,
-        consumer: "St. Paul's Hospital",
-        consumerDetail: 'Hana Gebremichael',
-        location: 'BOLE',
-        locationDetail: 'Woreda 3, CMC Michael',
-        phone: '+251987654321',
-        phoneAlt: '+251911223344',
-        status: 'Delivered',
-        expanded: true,
-        medicines: [
-            { name: 'Azithromycin', unit: 'g', quantity: 2 },
-            { name: 'Hydrocortisone', unit: 'ml', quantity: 50 },
-            { name: 'Furosemide', unit: 'ampoule', quantity: 15 },
-        ],
-    },
-    {
-        id: 2,
-        consumer: "St. Paul's Hospital",
-        consumerDetail: 'Hana Gebremichael',
-        location: 'BOLE',
-        locationDetail: 'Woreda 3, CMC Michael',
-        phone: '+251987654321',
-        phoneAlt: '+251911223344',
-        status: 'Pending',
-        expanded: false,
-        medicines: [
-            { name: 'Paracetamol', unit: 'tablet', quantity: 100 },
-            { name: 'Amoxicillin', unit: 'capsule', quantity: 30 },
-        ],
-    },
-    {
-        id: 3,
-        consumer: 'Hana Pharmacy',
-        consumerDetail: 'Hana Gebremariam',
-        location: 'KIRKOS',
-        locationDetail: 'Woreda 3, Near Dembel City Center',
-        phone: '+251966677788',
-        phoneAlt: '',
-        status: 'Delivered',
-        expanded: false,
-        medicines: [
-            { name: 'Metformin', unit: 'tablet', quantity: 60 },
-            { name: 'Insulin', unit: 'vial', quantity: 5 },
-        ],
-    },
-    {
-        id: 4,
-        consumer: 'Amanu Hospital',
-        consumerDetail: 'Amanuel Teshome',
-        location: 'ARADA',
-        locationDetail: 'Woreda 4, Bole Medhanialem',
-        phone: '+251923334455',
-        phoneAlt: '+251933445566',
-        status: 'Cancelled',
-        expanded: false,
-        medicines: [
-            { name: 'Ceftriaxone', unit: 'vial', quantity: 20 },
-            { name: 'Diazepam', unit: 'ampoule', quantity: 10 },
-        ],
-    },
-    {
-        id: 5,
-        consumer: 'Aster Pharmacy',
-        consumerDetail: 'Aster Abebe',
-        location: 'YEKKA',
-        locationDetail: 'Woreda 4, Summit Area',
-        phone: '+251911223344',
-        phoneAlt: '+251922334455',
-        status: 'Pending',
-        expanded: false,
-        medicines: [
-            { name: 'Omeprazole', unit: 'capsule', quantity: 40 },
-            { name: 'Ciprofloxacin', unit: 'tablet', quantity: 20 },
-        ],
-    },
 ]);
 const suppliers = ref([
     {
@@ -136,13 +65,15 @@ const suppliers = ref([
 
 const filteredOrders = computed(() => {
     if (activeTab.value === 'All') {
-        return orders.value;
+        return localOrders.value;
     }
-    return orders.value.filter((order) => order.status === activeTab.value);
+    return localOrders.value.filter(
+        (order) => order.status === activeTab.value,
+    );
 });
 
 const toggleExpand = (id) => {
-    const order = orders.value.find((o) => o.id === id);
+    const order = localOrders.value.find((o) => o.id === id);
     if (order) {
         order.expanded = !order.expanded;
     }
@@ -153,7 +84,7 @@ const toggleStatusOptions = (id) => {
 };
 
 const setOrderStatus = (id, status) => {
-    const order = orders.value.find((o) => o.id === id);
+    const order = localOrders.value.find((o) => o.id === id);
     if (order) {
         order.status = status;
     }
@@ -161,9 +92,9 @@ const setOrderStatus = (id, status) => {
 
 const getOrderCountByStatus = (status) => {
     if (status === 'All') {
-        return orders.value.length;
+        return localOrders.value.length;
     }
-    return orders.value.filter((order) => order.status === status).length;
+    return localOrders.value.filter((order) => order.status === status).length;
 };
 
 const getStatusBadgeClass = (status) => {
@@ -263,7 +194,7 @@ const getStatusBadgeClass = (status) => {
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
                                         <template
-                                            v-if="filteredOrders.length === 0"
+                                            v-if="localOrders.length === 0"
                                         >
                                             <tr>
                                                 <td
@@ -290,13 +221,21 @@ const getStatusBadgeClass = (status) => {
                                                     <div
                                                         class="text-sm font-medium text-gray-900"
                                                     >
-                                                        {{ order.consumer }}
+                                                        {{
+                                                            order.consumer
+                                                                .institution_name
+                                                        }}
                                                     </div>
                                                     <div
                                                         class="text-sm text-gray-500"
                                                     >
                                                         {{
-                                                            order.consumerDetail
+                                                            order.consumer
+                                                                .first_name
+                                                        }}
+                                                        {{
+                                                            order.consumer
+                                                                .last_name
                                                         }}
                                                     </div>
                                                 </td>
@@ -306,13 +245,23 @@ const getStatusBadgeClass = (status) => {
                                                     <div
                                                         class="text-sm text-gray-900"
                                                     >
-                                                        {{ order.location }}
+                                                        {{
+                                                            order.consumer
+                                                                .subcity
+                                                                .subcity_name
+                                                        }}
                                                     </div>
                                                     <div
                                                         class="text-sm text-gray-500"
                                                     >
+                                                        Woreda
                                                         {{
-                                                            order.locationDetail
+                                                            order.consumer
+                                                                .woreda
+                                                        }},
+                                                        {{
+                                                            order.consumer
+                                                                .special_place
                                                         }}
                                                     </div>
                                                 </td>
@@ -322,12 +271,18 @@ const getStatusBadgeClass = (status) => {
                                                     <div
                                                         class="text-sm text-gray-900"
                                                     >
-                                                        {{ order.phone }}
+                                                        +251{{
+                                                            order.consumer
+                                                                .primary_phone
+                                                        }}
                                                     </div>
                                                     <div
                                                         class="text-sm text-gray-500"
                                                     >
-                                                        {{ order.phoneAlt }}
+                                                        +251{{
+                                                            order.consumer
+                                                                .secondary_phone
+                                                        }}
                                                     </div>
                                                 </td>
                                                 <td
@@ -342,7 +297,7 @@ const getStatusBadgeClass = (status) => {
                                                             :class="{
                                                                 'bg-green-500 hover:bg-green-600':
                                                                     order.status ===
-                                                                    'Delivered',
+                                                                    'Completed',
                                                                 'bg-yellow-500 hover:bg-yellow-600':
                                                                     order.status ===
                                                                     'Pending',
@@ -485,7 +440,7 @@ const getStatusBadgeClass = (status) => {
                                                                         scope="col"
                                                                         class="px-6 py-2 text-start text-xs font-medium uppercase text-gray-500"
                                                                     >
-                                                                        Medicine
+                                                                        Product
                                                                         Name
                                                                     </th>
                                                                     <th
@@ -506,12 +461,9 @@ const getStatusBadgeClass = (status) => {
                                                                 class="divide-y divide-gray-200"
                                                             >
                                                                 <tr
-                                                                    v-for="(
-                                                                        medicine,
-                                                                        medIndex
-                                                                    ) in order.medicines"
+                                                                    v-for="product in order.items"
                                                                     :key="
-                                                                        medIndex
+                                                                        product.product_id
                                                                     "
                                                                     class="hover:bg-gray-100"
                                                                 >
@@ -519,21 +471,26 @@ const getStatusBadgeClass = (status) => {
                                                                         class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
                                                                     >
                                                                         {{
-                                                                            medicine.name
+                                                                            product
+                                                                                .product
+                                                                                .product_name
                                                                         }}
                                                                     </td>
                                                                     <td
                                                                         class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
                                                                     >
                                                                         {{
-                                                                            medicine.unit
+                                                                            product
+                                                                                .product
+                                                                                .unit
+                                                                                .unit_name
                                                                         }}
                                                                     </td>
                                                                     <td
                                                                         class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
                                                                     >
                                                                         {{
-                                                                            medicine.quantity
+                                                                            product.quantity
                                                                         }}
                                                                     </td>
                                                                 </tr>

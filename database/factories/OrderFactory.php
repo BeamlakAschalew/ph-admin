@@ -17,7 +17,7 @@ class OrderFactory extends Factory {
     public function definition(): array {
         return [
             'consumer_id' => Consumer::inRandomOrder()->first()->id,
-            'status' => $this->faker->randomElement(['pending', 'completed', 'canceled']),
+            'status' => $this->faker->randomElement(['Pending', 'Completed', 'Cancelled']),
         ];
     }
 }
