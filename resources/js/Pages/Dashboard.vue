@@ -20,48 +20,6 @@ const tabs = ref([
     { label: 'Pending', value: 'Pending' },
     { label: 'Cancelled', value: 'Cancelled' },
 ]);
-const suppliers = ref([
-    {
-        institution: 'Meskel Pharmacy',
-        institutionDetail: 'Teodros Mengitsu',
-        location: 'KIRKOS',
-        locationDetail: 'Woreda 2, Sarhot Roundabout',
-        phone: '+251944556677',
-        phoneAlt: '+251955667788',
-    },
-    {
-        institution: 'Ethiomed',
-        institutionDetail: 'Abdi Girma',
-        location: 'BOLE',
-        locationDetail: 'Woreda 3, Bole Medhanialem',
-        phone: '+251911112233',
-        phoneAlt: '+251922334455',
-    },
-    {
-        institution: 'MedTech Supplies',
-        institutionDetail: 'Samuel Haile',
-        location: 'KOLFE KERANIO',
-        locationDetail: 'Woreda 11, Kolfe, Idi Mazoria',
-        phone: '+251933445566',
-        phoneAlt: '+251944556677',
-    },
-    {
-        institution: 'Mekdes Pharmacy',
-        institutionDetail: 'Mekdes Alemayehu',
-        location: 'LIDETA',
-        locationDetail: 'Woreda 5, Mehanna',
-        phone: '+251988776655',
-        phoneAlt: '+251977665544',
-    },
-    {
-        institution: 'Daniel Pharma',
-        institutionDetail: 'Daniel Tadesse',
-        location: 'ARADA',
-        locationDetail: 'Woreda 6, Near Addis Ababa University',
-        phone: '+251988776655',
-        phoneAlt: '+251911223344',
-    },
-]);
 
 const filteredOrders = computed(() => {
     if (activeTab.value === 'All') {
@@ -121,9 +79,11 @@ const getStatusBadgeClass = (status) => {
         <!-- Main Content -->
         <main class="bg-white-50 flex-1">
             <div class="mx-auto w-full px-2 py-6 sm:px-4">
-                <div class="flex flex-col gap-6 2xl:flex-row">
+                <div
+                    class="flex flex-col items-center justify-center gap-6 2xl:flex-row"
+                >
                     <!-- Orders List -->
-                    <div class="w-full 2xl:w-1/2">
+                    <div class="w-full max-w-7xl px-4 py-6">
                         <h2 class="mb-4 text-xl font-bold text-gray-800">
                             Orders List
                         </h2>
@@ -504,106 +464,50 @@ const getStatusBadgeClass = (status) => {
                                 </table>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Suppliers List -->
-                    <div class="mt-8 w-full 2xl:mt-0 2xl:w-1/2">
-                        <h2 class="mb-4 text-xl font-bold text-gray-800">
-                            Suppliers List
-                        </h2>
-                        <div class="mb-4">
-                            <input
-                                type="text"
-                                class="block w-full rounded-lg border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="Search users"
-                            />
-                        </div>
-                        <div class="rounded-xl border bg-white shadow-sm">
-                            <div class="overflow-x-auto">
-                                <table
-                                    class="min-w-full divide-y divide-gray-200"
+                        <!-- Pagination -->
+                        <nav
+                            class="mt-5 flex items-center -space-x-px"
+                            aria-label="Pagination"
+                        >
+                            <template
+                                v-if="orders.links && orders.links.length"
+                            >
+                                <template
+                                    v-for="(link, index) in orders.links"
+                                    :key="index"
                                 >
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th
-                                                scope="col"
-                                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                            >
-                                                Institution
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                            >
-                                                Location
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
-                                            >
-                                                Phone
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200">
-                                        <tr
-                                            v-for="(
-                                                supplier, index
-                                            ) in suppliers"
-                                            :key="index"
-                                            class="hover:bg-gray-100"
-                                        >
-                                            <td
-                                                class="whitespace-nowrap px-6 py-4"
-                                            >
-                                                <div
-                                                    class="text-sm font-medium text-gray-900"
-                                                >
-                                                    {{ supplier.institution }}
-                                                </div>
-                                                <div
-                                                    class="text-sm text-gray-500"
-                                                >
-                                                    {{
-                                                        supplier.institutionDetail
-                                                    }}
-                                                </div>
-                                            </td>
-                                            <td
-                                                class="whitespace-nowrap px-6 py-4"
-                                            >
-                                                <div
-                                                    class="text-sm text-gray-900"
-                                                >
-                                                    {{ supplier.location }}
-                                                </div>
-                                                <div
-                                                    class="text-sm text-gray-500"
-                                                >
-                                                    {{
-                                                        supplier.locationDetail
-                                                    }}
-                                                </div>
-                                            </td>
-                                            <td
-                                                class="whitespace-nowrap px-6 py-4"
-                                            >
-                                                <div
-                                                    class="text-sm text-gray-900"
-                                                >
-                                                    {{ supplier.phone }}
-                                                </div>
-                                                <div
-                                                    class="text-sm text-gray-500"
-                                                >
-                                                    {{ supplier.phoneAlt }}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                    <Link
+                                        v-if="link.url"
+                                        prserve-scroll
+                                        :href="link.url"
+                                        :class="[
+                                            index === 0 ? 'rounded-l-md' : '',
+                                            index === orders.links.length - 1
+                                                ? 'rounded-r-md'
+                                                : '',
+                                            'min-h-9.5 min-w-9.5 flex items-center justify-center px-3 py-2 text-sm',
+                                            link.active
+                                                ? 'bg-gray-600 text-white'
+                                                : 'border border-gray-200 text-gray-800 hover:bg-gray-100',
+                                        ]"
+                                    >
+                                        <span v-html="link.label"></span>
+                                    </Link>
+                                    <span
+                                        v-else
+                                        v-html="link.label"
+                                        :class="[
+                                            index === 0 ? 'rounded-l-md' : '',
+                                            index === orders.links.length - 1
+                                                ? 'rounded-r-md'
+                                                : '',
+                                            'min-h-9.5 min-w-9.5 flex items-center justify-center border border-gray-200 px-3 py-2 text-gray-800',
+                                        ]"
+                                    ></span>
+                                </template>
+                            </template>
+                        </nav>
+                        <!-- End Pagination -->
                     </div>
                 </div>
             </div>

@@ -15,7 +15,8 @@ class OrderController extends Controller {
         return Inertia::render('Dashboard', [
             'orders' => Order::with('consumer.subcity')
                 ->with(['items.product.unit'])
-                ->paginate(10),
+                ->orderBy('created_at', 'desc')
+                ->paginate(15),
         ]);
     }
 
