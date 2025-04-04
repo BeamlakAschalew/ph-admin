@@ -14,7 +14,15 @@ class Consumer extends Model {
 
 
     protected $fillable = [
-        'approved'
+        'approved',
+        'first_name',
+        'last_name',
+        'primary_phone',
+        'secondary_phone',
+        'institution_name',
+        'subcity_id',
+        'woreda',
+
     ];
 
 

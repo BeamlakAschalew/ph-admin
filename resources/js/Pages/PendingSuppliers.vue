@@ -95,7 +95,7 @@ const rejectUser = (id) => {
                         type="text"
                         v-model="searchQuery"
                         class="block w-full rounded-lg border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500"
-                        placeholder="Search pending consumers..."
+                        placeholder="Search pending suppliers..."
                     />
                 </div>
 

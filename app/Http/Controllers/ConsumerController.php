@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Consumer;
+use App\Models\Subcity;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,7 +13,7 @@ class ConsumerController extends Controller {
      */
     public function index(Request $request) {
         return Inertia::render('Consumers', [
-            'consumers' => Consumer::withTrashed()
+            'consumers' => Consumer::withTrashed()->with('subcity')
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
                         $query->where('first_name', 'like', "%{$search}%")
@@ -27,6 +28,7 @@ class ConsumerController extends Controller {
                     return $consumer;
                 }),
             'filters' => fn() => $request->only('search'),
+            'subcities' => fn() => Subcity::all(),
         ]);
     }
 
@@ -90,12 +92,61 @@ class ConsumerController extends Controller {
      * Update the specified resource in storage.
      */
     public function update(Request $request, Consumer $consumer) {
+        try {
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'special_place' => 'required|string|max:255',
+                'subcity_id' => 'required|exists:subcities,id',
+                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consumer->id,
+                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consumer->id,
+                'institution_name' => 'required|string|max:255',
+                'woreda' => 'required',
+            ]);
+
+            $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
+            $secondaryPhone = Consumer::normalizePhoneNumber($request->input('secondary_phone'));
+            if (!$primaryPhone || !$secondaryPhone) {
+                return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
+            }
+            $request->merge([
+                'primary_phone' => $primaryPhone,
+                'secondary_phone' => $secondaryPhone,
+            ]);
+
+            if ($request->input('primary_phone') == $request->input('secondary_phone')) {
+                return redirect()->back()->with('message', ['name' => 'Primary and secondary phone numbers cannot be the same', 'type' => 'error']);
+            }
+
+            $consumer->update($request->only(
+                'first_name',
+                'last_name',
+                'special_place',
+                'subcity_id',
+                'primary_phone',
+                'secondary_phone',
+                'woreda',
+                'institution_name'
+            ));
+
+            return redirect()->back()->with('message', ['name' => 'Consumer updated.', 'type' => 'success']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->with('message', [
+                    'name' => 'Consumer update failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Consumer $consumer) {
-        //
+        $consumer->forceDelete();
+        return redirect()->back()->with('message', ['name' => 'Consumer deleted.', 'type' => 'success']);
     }
 }

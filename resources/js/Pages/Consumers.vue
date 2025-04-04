@@ -11,6 +11,7 @@ defineOptions({
 const props = defineProps({
     consumers: Object,
     filters: Object,
+    subcities: Array,
 });
 
 const localConsumers = ref(props.consumers.data);
@@ -44,17 +45,19 @@ const showConfirmModal = ref(false);
 const consumerToRemove = ref(null);
 const editingConsumer = ref({
     id: null,
-    institution: '',
-    contact: '',
-    location: '',
-    phone: '',
-    active: true,
+    institution_name: '',
+    first_name: '',
+    last_name: '',
+    special_place: '',
+    primary_phone: '',
+    secondary_phone: '',
+    subcity_id: null,
 });
 
 function editConsumer(consumer) {
+    console.log(consumer);
     editingConsumer.value = {
         ...consumer,
-        active: consumer.status === 'Active',
     };
     showEditModal.value = true;
 }
@@ -64,9 +67,9 @@ function saveConsumer() {
         (c) => c.id === editingConsumer.value.id,
     );
     if (index !== -1) {
+        console.log(editingConsumer.value);
         router.put(`/consumers/${editingConsumer.value.id}`, {
             ...editingConsumer.value,
-            status: editingConsumer.value.active,
         });
     }
     showEditModal.value = false;
@@ -91,7 +94,7 @@ function removeConsumer() {
     <Head title="Consumers" />
     <!-- Main Content -->
     <main class="flex-1">
-        <div class="mx-auto w-full max-w-4xl px-4 py-6">
+        <div class="mx-auto w-full max-w-5xl px-4 py-6">
             <div class="mb-6 flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-gray-800">Consumers List</h1>
                 <button
@@ -167,29 +170,31 @@ function removeConsumer() {
                                     <div
                                         class="text-sm font-medium text-gray-900"
                                     >
-                                        {{ consumer.institution }}
+                                        {{ consumer.institution_name }}
                                     </div>
                                     <div class="text-sm text-gray-500">
-                                        {{ consumer.contact }}
+                                        {{ consumer.first_name }}
+                                        {{ consumer.last_name }}
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="text-sm text-gray-900">
-                                        {{ consumer.location }}
+                                        {{ consumer.subcity.subcity_name }}
                                     </div>
                                     <div class="text-sm text-gray-500">
-                                        {{ consumer.locationDetail }}
+                                        Woreda {{ consumer.woreda }}
+                                        {{ consumer.special_place }}
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="text-sm text-gray-900">
-                                        {{ consumer.phone }}
+                                        {{ consumer.primary_phone }}
                                     </div>
                                     <div
-                                        v-if="consumer.phoneAlt"
+                                        v-if="consumer.secondary_phone"
                                         class="text-sm text-gray-500"
                                     >
-                                        {{ consumer.phoneAlt }}
+                                        {{ consumer.secondary_phone }}
                                     </div>
                                 </td>
                                 <td
@@ -247,43 +252,102 @@ function removeConsumer() {
                     <div class="mt-4 space-y-4">
                         <div>
                             <label
-                                for="edit-institution"
+                                for="edit-firstname"
                                 class="block text-sm font-medium text-gray-700"
                             >
-                                Institution
+                                First name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="edit-firstname"
+                                v-model="editingConsumer.first_name"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="edit-lastname"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                Last name
                             </label>
                             <input
                                 type="text"
                                 id="edit-institution"
-                                v-model="editingConsumer.institution"
+                                v-model="editingConsumer.last_name"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
                         <div>
                             <label
-                                for="edit-contact"
+                                for="edit-institution"
                                 class="block text-sm font-medium text-gray-700"
                             >
-                                Contact
+                                Institution name
                             </label>
                             <input
                                 type="text"
-                                id="edit-contact"
-                                v-model="editingConsumer.contact"
+                                id="edit-institution"
+                                v-model="editingConsumer.institution_name"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
+
                         <div>
                             <label
-                                for="edit-location"
+                                for="edit-subcity"
                                 class="block text-sm font-medium text-gray-700"
                             >
-                                Location
+                                Subcity
+                            </label>
+                            <select
+                                id="edit-subcity"
+                                v-model="editingConsumer.subcity_id"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            >
+                                <option disabled value="">
+                                    Select Subcity
+                                </option>
+                                <option
+                                    v-for="subcity in subcities"
+                                    :key="subcity.id"
+                                    :value="subcity.id"
+                                >
+                                    {{ subcity.subcity_name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label
+                                for="edit-woreda"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                Woreda
+                            </label>
+                            <select
+                                id="edit-woreda"
+                                v-model="editingConsumer.woreda"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            >
+                                <option disabled value="">Select Woreda</option>
+                                <option v-for="n in 12" :key="n" :value="n">
+                                    {{ n }}
+                                </option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                for="edit-special-place"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                Special Place
                             </label>
                             <input
                                 type="text"
-                                id="edit-location"
-                                v-model="editingConsumer.location"
+                                id="edit-special-place"
+                                v-model="editingConsumer.special_place"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
@@ -292,12 +356,26 @@ function removeConsumer() {
                                 for="edit-phone"
                                 class="block text-sm font-medium text-gray-700"
                             >
-                                Phone
+                                Primary Phone
                             </label>
                             <input
                                 type="text"
                                 id="edit-phone"
-                                v-model="editingConsumer.phone"
+                                v-model="editingConsumer.primary_phone"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="edit-phone"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                Secondary Phone
+                            </label>
+                            <input
+                                type="text"
+                                id="edit-phone"
+                                v-model="editingConsumer.secondary_phone"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
