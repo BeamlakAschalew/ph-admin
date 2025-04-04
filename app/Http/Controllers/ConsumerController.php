@@ -157,7 +157,7 @@ class ConsumerController extends Controller {
                 'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consumer->id,
                 'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consumer->id,
                 'institution_name' => 'required|string|max:255',
-                'password' => 'required|string|min:6',
+                'password' => 'nullable|string|min:6',
                 'woreda' => 'required',
             ]);
 

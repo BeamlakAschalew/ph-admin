@@ -196,6 +196,14 @@ function addConsumer() {
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
+                            <tr v-if="localConsumers.length === 0">
+                                <td
+                                    colspan="3"
+                                    class="px-6 py-8 text-center text-gray-500"
+                                >
+                                    No consumers found
+                                </td>
+                            </tr>
                             <tr
                                 v-for="consumer in localConsumers"
                                 :key="consumer.id"

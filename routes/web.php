@@ -49,4 +49,8 @@ Route::group(['middleware' => ['auth', 'role:superadmin']], function () {
     Route::put('/consumers/{consumer}', [ConsumerController::class, 'update'])->name('consumers.update');
     Route::post('/consumers', [ConsumerController::class, 'store'])->name('consumers.store');
     Route::delete('/consumers/{consumer}', [ConsumerController::class, 'destroy'])->name('consumers.destroy');
+
+    Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
+    Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
+    Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
 });
