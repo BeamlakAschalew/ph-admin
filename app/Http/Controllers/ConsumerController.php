@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Consumer;
 use App\Models\Subcity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class ConsumerController extends Controller {
@@ -71,7 +72,62 @@ class ConsumerController extends Controller {
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        //
+        try {
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'special_place' => 'required|string|max:255',
+                'subcity_id' => 'required|exists:subcities,id',
+                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone',
+                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone',
+                'institution_name' => 'required|string|max:255',
+                'password' => 'required|string|min:6',
+                'woreda' => 'required',
+                'license_number' => 'required|string|max:255',
+            ]);
+
+            $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
+            $secondaryPhone = Consumer::normalizePhoneNumber($request->input('secondary_phone'));
+            if (!$primaryPhone || !$secondaryPhone) {
+                return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
+            }
+            $request->merge([
+                'primary_phone' => $primaryPhone,
+                'secondary_phone' => $secondaryPhone,
+            ]);
+
+            if ($request->input('primary_phone') == $request->input('secondary_phone')) {
+                return redirect()->back()->with('message', ['name' => 'Primary and secondary phone numbers cannot be the same', 'type' => 'error']);
+            }
+
+            $consumer = Consumer::create([
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'special_place' => $request->input('special_place'),
+                'subcity_id' => $request->input('subcity_id'),
+                'primary_phone' => $request->input('primary_phone'),
+                'secondary_phone' => $request->input('secondary_phone'),
+                'woreda' => $request->input('woreda'),
+                'password' => Hash::make($request->input('password')),
+                'institution_name' => $request->input('institution_name'),
+                'license_number' => $request->input('license_number'),
+            ]);
+
+            if ($consumer) {
+                return redirect()->back()->with('message', ['name' => 'Consumer created successfully.', 'type' => 'success']);
+            } else {
+                return redirect()->back()->with('message', ['name' => 'Consumer creation failed.', 'type' => 'error']);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->with('message', [
+                    'name' => 'Consumer creation failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        }
     }
 
     /**
@@ -101,6 +157,7 @@ class ConsumerController extends Controller {
                 'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consumer->id,
                 'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consumer->id,
                 'institution_name' => 'required|string|max:255',
+                'password' => 'required|string|min:6',
                 'woreda' => 'required',
             ]);
 
@@ -126,6 +183,7 @@ class ConsumerController extends Controller {
                 'primary_phone',
                 'secondary_phone',
                 'woreda',
+                'password',
                 'institution_name'
             ));
 

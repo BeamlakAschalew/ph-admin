@@ -21,8 +21,10 @@ class Consumer extends Model {
         'secondary_phone',
         'institution_name',
         'subcity_id',
+        'password',
+        'license_number',
+        'special_place',
         'woreda',
-
     ];
 
 
