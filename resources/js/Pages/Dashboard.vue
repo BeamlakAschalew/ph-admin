@@ -443,7 +443,11 @@ const getStatusBadgeClass = (status) => {
                                                                             product
                                                                                 .product
                                                                                 .unit
-                                                                                .unit_name
+                                                                                ? product
+                                                                                      .product
+                                                                                      .unit
+                                                                                      .unit_name
+                                                                                : 'None'
                                                                         }}
                                                                     </td>
                                                                     <td

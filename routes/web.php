@@ -22,12 +22,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/', [OrderController::class, 'index'])->name('dashboard');
 
-    Route::get('/pending-consumers', [ConsumerController::class, 'pendingIndex'])->name('pending-consumers.index');
-    Route::get('/pending-suppliers', [SupplierController::class, 'pendingIndex'])->name('pending-suppliers.index');
-
-    Route::post('/pending-consumers', [ConsumerController::class, 'approveOrReject'])->name('approve-consumer');
-    Route::post('/pending-suppliers', [SupplierController::class, 'approveOrReject'])->name('approve-supplier');
-
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
@@ -37,6 +31,12 @@ Route::middleware('auth')->group(function () {
 
 
 Route::group(['middleware' => ['auth', 'role:superadmin']], function () {
+    Route::get('/pending-consumers', [ConsumerController::class, 'pendingIndex'])->name('pending-consumers.index');
+    Route::get('/pending-suppliers', [SupplierController::class, 'pendingIndex'])->name('pending-suppliers.index');
+
+    Route::post('/pending-consumers', [ConsumerController::class, 'approveOrReject'])->name('approve-consumer');
+    Route::post('/pending-suppliers', [SupplierController::class, 'approveOrReject'])->name('approve-supplier');
+
     Route::get('/admins', [AdminController::class, 'index']);
     Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');

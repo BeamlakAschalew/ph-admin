@@ -14,7 +14,7 @@ const props = defineProps({
     units: Array,
 });
 
-const unitsOptions = ref(props.units);
+const unitsOptions = ref([{ id: null, unit_name: 'None' }, ...props.units]);
 
 // Create a local reactive copy of products data
 const localProducts = ref(props.products.data);
@@ -58,10 +58,12 @@ const openEditModal = (product) => {
     editingProduct.value = {
         id: product.id,
         name: product.product_name,
-        unit:
-            unitsOptions.value.find(
-                (u) => u.unit_name === product.unit.unit_name,
-            )?.id || unitsOptions.value[0].id,
+        unit: product.unit
+            ? unitsOptions.value.find(
+                  (u) => u.unit_name === product.unit.unit_name,
+              )
+            : unitsOptions.value.find((u) => u.id === null)?.id ||
+              unitsOptions.value[0].id,
     };
     showEditModal.value = true;
 };
@@ -113,10 +115,10 @@ const confirmDelete = () => {
 
 // Add product functionality
 const showAddModal = ref(false);
-const newProduct = ref({ name: '', unit: unitsOptions.value[0].id });
+const newProduct = ref({ name: '', unit: null });
 
 const openAddModal = () => {
-    newProduct.value = { name: '', unit: unitsOptions.value[0].id };
+    newProduct.value = { name: '', unit: null };
     showAddModal.value = true;
 };
 
@@ -230,7 +232,14 @@ const addProduct = () => {
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="text-sm text-gray-900">
-                                        {{ product.unit.unit_name }}
+                                        {{
+                                            product.unit
+                                                ? product.unit.unit_name
+                                                : unitsOptions.find(
+                                                      (unit) =>
+                                                          unit.id === null,
+                                                  ).unit_name
+                                        }}
                                     </div>
                                 </td>
                                 <td

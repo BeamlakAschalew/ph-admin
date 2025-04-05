@@ -40,7 +40,7 @@ class ProductController extends Controller {
         try {
             $request->validate([
                 'product_name' => 'required|string|max:255|min:3',
-                'product_unit_id' => 'required|exists:product_units,id',
+                'product_unit_id' => 'nullable|exists:product_units,id',
             ]);
 
             Product::create($request->only('product_name', 'product_unit_id',));
@@ -79,7 +79,7 @@ class ProductController extends Controller {
         try {
             $request->validate([
                 'product_name' => 'required|string|max:255|min:3',
-                'product_unit_id' => 'required|exists:product_units,id',
+                'product_unit_id' => 'nullable|exists:product_units,id',
             ]);
 
             $product->update($request->only('product_name', 'product_unit_id'));
