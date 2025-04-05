@@ -13,8 +13,12 @@ class OrderController extends Controller {
     public function index() {
         // dd(Order::with('consumer')->with('items.product')->get()->toArray());
         return Inertia::render('Dashboard', [
-            'orders' => Order::with('consumer.subcity')
-                ->with(['items.product.unit'])
+            'orders' => Order::with([
+                'consumer' => function ($query) {
+                    $query->withTrashed()->with('subcity');
+                },
+                'items.product.unit'
+            ])
                 ->orderBy('created_at', 'desc')
                 ->paginate(15),
         ]);
