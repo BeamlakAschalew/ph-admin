@@ -75,6 +75,7 @@ function saveAdmin() {
     const index = localAdmins.value.findIndex(
         (a) => a.id === editingAdmin.value.id,
     );
+    console.log(editingAdmin.value.phone);
     if (index !== -1) {
         router.put(`/admins/${editingAdmin.value.id}`, {
             first_name: editingAdmin.value.first_name,
@@ -93,7 +94,6 @@ function confirmRemoveAdmin(id) {
 }
 
 function removeAdmin() {
-    console.log(adminToRemove.value);
     router.delete(`/admins/${adminToRemove.value}`, {
         preserveState: true,
         replace: true,

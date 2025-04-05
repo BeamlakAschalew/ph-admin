@@ -52,18 +52,22 @@ class AdminController extends Controller {
             $request->validate([
                 'first_name' => 'required|string|min:3|max:255',
                 'last_name' => 'required|string|min:3|max:255',
-                'phone' => 'required',
+                'phone_number' => 'required|unique:admins,phone',
                 'password' => 'required|min:6'
             ]);
 
+
+
             $phone = Admin::normalizePhoneNumber($request->phone_number);
+
+
 
             if (!$phone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
 
             if (Admin::where('phone', $phone)->exists()) {
-                return redirect()->back()->with(['name' => 'The phone number has already been taken', 'type' => 'error']);
+                return redirect()->back()->with('message', ['name' => 'The phone number has already been taken', 'type' => 'error']);
             }
 
             $admin = Admin::create([
@@ -128,7 +132,8 @@ class AdminController extends Controller {
                 return redirect()->back()->with('message', ['name' => 'The phone number has already been taken', 'type' => 'error']);
             }
 
-            $fields = $request->only(['first_name', 'last_name', 'phone_number', 'password', 'status']);
+            $fields = $request->only(['first_name', 'last_name', 'password', 'status']);
+            $fields['phone'] = $phone;
 
             if (!empty($fields['password'])) {
                 $fields['password'] = Hash::make($fields['password']);
