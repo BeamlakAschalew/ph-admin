@@ -52,7 +52,7 @@ class AdminController extends Controller {
             $request->validate([
                 'first_name' => 'required|string|min:3|max:255',
                 'last_name' => 'required|string|min:3|max:255',
-                'phone_number' => 'required',
+                'phone' => 'required',
                 'password' => 'required|min:6'
             ]);
 

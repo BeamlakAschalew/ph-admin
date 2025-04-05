@@ -106,14 +106,14 @@ function addAdmin() {
     router.post('/admins', {
         first_name: newAdmin.value.first_name,
         last_name: newAdmin.value.last_name,
-        phone_number: newAdmin.value.phone,
+        phone_number: newAdmin.value.phone_number,
         password: newAdmin.value.password,
     });
 
     newAdmin.value = {
         first_name: '',
         last_name: '',
-        phone: '',
+        phone_number: '',
         password: '',
     };
 
