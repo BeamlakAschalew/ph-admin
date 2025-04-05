@@ -1,0 +1,144 @@
+{
+  "_lodash-C5DfuX5t.js": {
+    "file": "assets/lodash-C5DfuX5t.js",
+    "name": "lodash",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Admins.vue": {
+    "file": "assets/Admins-vSPEzBxu.js",
+    "name": "Admins",
+    "src": "resources/js/Pages/Admins.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_lodash-C5DfuX5t.js",
+      "resources/js/Pages/MainLayout.vue"
+    ]
+  },
+  "resources/js/Pages/Auth/Login.vue": {
+    "file": "assets/Login-jGyo6RQG.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Auth/Login.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Signup.vue": {
+    "file": "assets/Signup-DihBqr-U.js",
+    "name": "Signup",
+    "src": "resources/js/Pages/Auth/Signup.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Consumers.vue": {
+    "file": "assets/Consumers-BYoyAPdD.js",
+    "name": "Consumers",
+    "src": "resources/js/Pages/Consumers.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "resources/js/Pages/MainLayout.vue"
+    ]
+  },
+  "resources/js/Pages/Dashboard.vue": {
+    "file": "assets/Dashboard-jCBGeN_K.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Dashboard.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "resources/js/Pages/MainLayout.vue"
+    ],
+    "css": [
+      "assets/Dashboard-tn0RQdqM.css"
+    ]
+  },
+  "resources/js/Pages/MainLayout.vue": {
+    "file": "assets/MainLayout-CrGnwOGT.js",
+    "name": "MainLayout",
+    "src": "resources/js/Pages/MainLayout.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/PendingConsumers.vue": {
+    "file": "assets/PendingConsumers-CWbcZE4U.js",
+    "name": "PendingConsumers",
+    "src": "resources/js/Pages/PendingConsumers.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_lodash-C5DfuX5t.js",
+      "resources/js/Pages/MainLayout.vue"
+    ]
+  },
+  "resources/js/Pages/PendingSuppliers.vue": {
+    "file": "assets/PendingSuppliers-J2pu8YWp.js",
+    "name": "PendingSuppliers",
+    "src": "resources/js/Pages/PendingSuppliers.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_lodash-C5DfuX5t.js",
+      "resources/js/Pages/MainLayout.vue"
+    ]
+  },
+  "resources/js/Pages/Products.vue": {
+    "file": "assets/Products-Drob6Zhu.js",
+    "name": "Products",
+    "src": "resources/js/Pages/Products.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_lodash-C5DfuX5t.js",
+      "resources/js/Pages/MainLayout.vue"
+    ]
+  },
+  "resources/js/Pages/Suppliers.vue": {
+    "file": "assets/Suppliers-Bial6yb5.js",
+    "name": "Suppliers",
+    "src": "resources/js/Pages/Suppliers.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "resources/js/Pages/MainLayout.vue"
+    ]
+  },
+  "resources/js/Pages/Welcome.vue": {
+    "file": "assets/Welcome-Ch2vWpLS.js",
+    "name": "Welcome",
+    "src": "resources/js/Pages/Welcome.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BRyHcflp.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Admins.vue",
+      "resources/js/Pages/Auth/Login.vue",
+      "resources/js/Pages/Auth/Signup.vue",
+      "resources/js/Pages/Consumers.vue",
+      "resources/js/Pages/Dashboard.vue",
+      "resources/js/Pages/MainLayout.vue",
+      "resources/js/Pages/PendingConsumers.vue",
+      "resources/js/Pages/PendingSuppliers.vue",
+      "resources/js/Pages/Products.vue",
+      "resources/js/Pages/Suppliers.vue",
+      "resources/js/Pages/Welcome.vue"
+    ],
+    "css": [
+      "assets/app-BFRM1Rnv.css"
+    ]
+  }
+}
