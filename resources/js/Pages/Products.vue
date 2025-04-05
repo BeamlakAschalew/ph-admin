@@ -61,7 +61,7 @@ const openEditModal = (product) => {
         unit: product.unit
             ? unitsOptions.value.find(
                   (u) => u.unit_name === product.unit.unit_name,
-              )
+              )?.id
             : unitsOptions.value.find((u) => u.id === null)?.id ||
               unitsOptions.value[0].id,
     };

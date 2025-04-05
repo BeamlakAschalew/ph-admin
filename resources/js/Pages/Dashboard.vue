@@ -136,6 +136,12 @@ const getStatusBadgeClass = (status) => {
                                                 scope="col"
                                                 class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
                                             >
+                                                Ordered At
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
+                                            >
                                                 Phone
                                             </th>
                                             <th
@@ -200,7 +206,7 @@ const getStatusBadgeClass = (status) => {
                                                     </div>
                                                 </td>
                                                 <td
-                                                    class="whitespace-nowrap px-6 py-4"
+                                                    class="whitespace-normal break-words px-6 py-4"
                                                 >
                                                     <div
                                                         class="text-sm text-gray-900"
@@ -222,6 +228,19 @@ const getStatusBadgeClass = (status) => {
                                                         {{
                                                             order.consumer
                                                                 .special_place
+                                                        }}
+                                                    </div>
+                                                </td>
+                                                <td
+                                                    class="whitespace-nowrap px-6 py-4"
+                                                >
+                                                    <div
+                                                        class="text-sm text-gray-900"
+                                                    >
+                                                        {{
+                                                            new Date(
+                                                                order.created_at,
+                                                            ).toLocaleString()
                                                         }}
                                                     </div>
                                                 </td>
