@@ -231,13 +231,13 @@ function addConsumer() {
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="text-sm text-gray-900">
-                                        {{ consumer.primary_phone }}
+                                        +251{{ consumer.primary_phone }}
                                     </div>
                                     <div
                                         v-if="consumer.secondary_phone"
                                         class="text-sm text-gray-500"
                                     >
-                                        {{ consumer.secondary_phone }}
+                                        +251{{ consumer.secondary_phone }}
                                     </div>
                                 </td>
                                 <td

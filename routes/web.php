@@ -26,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+    Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
 });
 
 
@@ -38,8 +41,6 @@ Route::group(['middleware' => ['auth', 'role:superadmin']], function () {
     Route::post('/pending-suppliers', [SupplierController::class, 'approveOrReject'])->name('approve-supplier');
 
     Route::get('/admins', [AdminController::class, 'index']);
-    Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
-    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
 
     Route::put('/admins/{admin}', [AdminController::class, 'update']);
     Route::post('/admins', [AdminController::class, 'store']);

@@ -132,6 +132,7 @@ function addSupplier() {
             <div class="mb-6 flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-gray-800">Suppliers List</h1>
                 <button
+                    v-if="$page.props.auth.user_role === 'superadmin'"
                     @click="showAddModal = true"
                     class="inline-flex items-center justify-center rounded-full bg-teal-600 p-2 text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
                 >
@@ -188,6 +189,10 @@ function addSupplier() {
                                     Phone
                                 </th>
                                 <th
+                                    v-if="
+                                        $page.props.auth.user_role ===
+                                        'superadmin'
+                                    "
                                     scope="col"
                                     class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-500"
                                 >
@@ -231,16 +236,20 @@ function addSupplier() {
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="text-sm text-gray-900">
-                                        {{ supplier.primary_phone }}
+                                        +251{{ supplier.primary_phone }}
                                     </div>
                                     <div
                                         v-if="supplier.secondary_phone"
                                         class="text-sm text-gray-500"
                                     >
-                                        {{ supplier.secondary_phone }}
+                                        +251{{ supplier.secondary_phone }}
                                     </div>
                                 </td>
                                 <td
+                                    v-if="
+                                        $page.props.auth.user_role ===
+                                        'superadmin'
+                                    "
                                     class="whitespace-nowrap px-6 py-4 text-end"
                                 >
                                     <div class="flex justify-end gap-2">
