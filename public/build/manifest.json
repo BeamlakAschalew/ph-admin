@@ -1,24 +1,24 @@
 {
-  "_lodash-C5DfuX5t.js": {
-    "file": "assets/lodash-C5DfuX5t.js",
+  "_lodash-BU2vMl54.js": {
+    "file": "assets/lodash-BU2vMl54.js",
     "name": "lodash",
     "imports": [
       "resources/js/app.js"
     ]
   },
   "resources/js/Pages/Admins.vue": {
-    "file": "assets/Admins-vSPEzBxu.js",
+    "file": "assets/Admins-BFVZAaXU.js",
     "name": "Admins",
     "src": "resources/js/Pages/Admins.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-C5DfuX5t.js",
+      "_lodash-BU2vMl54.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Auth/Login.vue": {
-    "file": "assets/Login-jGyo6RQG.js",
+    "file": "assets/Login-BFMuWGoF.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.vue",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "resources/js/Pages/Auth/Signup.vue": {
-    "file": "assets/Signup-DihBqr-U.js",
+    "file": "assets/Signup-rHxa7Xhc.js",
     "name": "Signup",
     "src": "resources/js/Pages/Auth/Signup.vue",
     "isDynamicEntry": true,
@@ -36,17 +36,18 @@
     ]
   },
   "resources/js/Pages/Consumers.vue": {
-    "file": "assets/Consumers-BYoyAPdD.js",
+    "file": "assets/Consumers-kBoKQVEh.js",
     "name": "Consumers",
     "src": "resources/js/Pages/Consumers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
+      "_lodash-BU2vMl54.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-jCBGeN_K.js",
+    "file": "assets/Dashboard-DQPzJJ-_.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.vue",
     "isDynamicEntry": true,
@@ -59,7 +60,7 @@
     ]
   },
   "resources/js/Pages/MainLayout.vue": {
-    "file": "assets/MainLayout-CrGnwOGT.js",
+    "file": "assets/MainLayout-Cf05azAW.js",
     "name": "MainLayout",
     "src": "resources/js/Pages/MainLayout.vue",
     "isDynamicEntry": true,
@@ -68,50 +69,51 @@
     ]
   },
   "resources/js/Pages/PendingConsumers.vue": {
-    "file": "assets/PendingConsumers-CWbcZE4U.js",
+    "file": "assets/PendingConsumers-CHvdwanh.js",
     "name": "PendingConsumers",
     "src": "resources/js/Pages/PendingConsumers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-C5DfuX5t.js",
+      "_lodash-BU2vMl54.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/PendingSuppliers.vue": {
-    "file": "assets/PendingSuppliers-J2pu8YWp.js",
+    "file": "assets/PendingSuppliers-BBeCImcQ.js",
     "name": "PendingSuppliers",
     "src": "resources/js/Pages/PendingSuppliers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-C5DfuX5t.js",
+      "_lodash-BU2vMl54.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Products.vue": {
-    "file": "assets/Products-Drob6Zhu.js",
+    "file": "assets/Products-Bn_moKeV.js",
     "name": "Products",
     "src": "resources/js/Pages/Products.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-C5DfuX5t.js",
+      "_lodash-BU2vMl54.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Suppliers.vue": {
-    "file": "assets/Suppliers-Bial6yb5.js",
+    "file": "assets/Suppliers-Zn9aibkq.js",
     "name": "Suppliers",
     "src": "resources/js/Pages/Suppliers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
+      "_lodash-BU2vMl54.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-Ch2vWpLS.js",
+    "file": "assets/Welcome-DHBDdPNO.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
@@ -120,7 +122,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BRyHcflp.js",
+    "file": "assets/app-C-B-Lldz.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -138,7 +140,7 @@
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app-BFRM1Rnv.css"
+      "assets/app-BoTPzKJb.css"
     ]
   }
 }
