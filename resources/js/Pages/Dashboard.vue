@@ -57,7 +57,7 @@ const getOrderCountByStatus = (status) => {
 
 const getStatusBadgeClass = (status) => {
     switch (status) {
-        case 'Delivered':
+        case 'Completed':
             return 'bg-green-100 text-green-800';
         case 'Pending':
             return 'bg-yellow-100 text-yellow-800';
@@ -299,17 +299,17 @@ const getStatusBadgeClass = (status) => {
                                                             <button
                                                                 v-if="
                                                                     order.status !==
-                                                                    'Delivered'
+                                                                    'Completed'
                                                                 "
                                                                 @click="
                                                                     setOrderStatus(
                                                                         order.id,
-                                                                        'Delivered',
+                                                                        'Completed',
                                                                     )
                                                                 "
                                                                 class="rounded bg-green-500 px-2 py-1 text-xs font-medium text-white hover:bg-green-600"
                                                             >
-                                                                Set Delivered
+                                                                Set Completed
                                                             </button>
                                                             <button
                                                                 v-if="
