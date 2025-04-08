@@ -27,7 +27,7 @@ const searchQuery = ref(props.filters.search);
 
 const debouncedSearch = debounce((query) => {
     router.get(
-        '/suppliers',
+        '/admin/suppliers',
         { search: query },
         {
             preserveState: true,
@@ -71,7 +71,7 @@ function saveSupplier() {
     );
     if (index !== -1) {
         console.log(editingSupplier.value);
-        router.put(`/suppliers/${editingSupplier.value.id}`, {
+        router.put(`/admin/suppliers/${editingSupplier.value.id}`, {
             ...editingSupplier.value,
         });
     }
@@ -84,7 +84,7 @@ function confirmRemoveSupplier(id) {
 }
 
 function removeSupplier() {
-    router.delete(`/suppliers/${supplierToRemove.value}`, {
+    router.delete(`/admin/suppliers/${supplierToRemove.value}`, {
         preserveState: true,
         replace: true,
     });
@@ -107,7 +107,7 @@ const newSupplier = ref({
 });
 
 function addSupplier() {
-    router.post('/suppliers', {
+    router.post('/admin/suppliers', {
         ...newSupplier.value,
     });
     showAddModal.value = false;

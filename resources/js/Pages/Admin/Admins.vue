@@ -26,7 +26,7 @@ const searchQuery = ref(props.filters.search);
 
 const debouncedSearch = debounce((query) => {
     router.get(
-        '/admins',
+        '/admin/admins',
         { search: query },
         {
             preserveState: true,
@@ -77,7 +77,7 @@ function saveAdmin() {
     );
     console.log(editingAdmin.value.phone);
     if (index !== -1) {
-        router.put(`/admins/${editingAdmin.value.id}`, {
+        router.put(`/admin/admins/${editingAdmin.value.id}`, {
             first_name: editingAdmin.value.first_name,
             last_name: editingAdmin.value.last_name,
             phone_number: editingAdmin.value.phone,
@@ -94,7 +94,7 @@ function confirmRemoveAdmin(id) {
 }
 
 function removeAdmin() {
-    router.delete(`/admins/${adminToRemove.value}`, {
+    router.delete(`/admin/admins/${adminToRemove.value}`, {
         preserveState: true,
         replace: true,
     });
@@ -103,7 +103,7 @@ function removeAdmin() {
 }
 
 function addAdmin() {
-    router.post('/admins', {
+    router.post('/admin/admins', {
         first_name: newAdmin.value.first_name,
         last_name: newAdmin.value.last_name,
         phone_number: newAdmin.value.phone_number,

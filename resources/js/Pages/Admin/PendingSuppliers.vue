@@ -30,7 +30,7 @@ const searchQuery = ref('');
 
 const debouncedSearch = debounce((query) => {
     router.get(
-        '/pending-suppliers',
+        '/admin/pending-suppliers',
         { search: query },
         {
             preserveState: true,
@@ -51,7 +51,7 @@ const paginationLinks = computed(() => {
 // Approve and reject functionality for consumers
 const approveUser = (id) => {
     router.post(
-        '/pending-suppliers',
+        '/admin/pending-suppliers',
         {
             id: id,
             action: 'approve',
@@ -65,7 +65,7 @@ const approveUser = (id) => {
 
 const rejectUser = (id) => {
     router.post(
-        '/pending-suppliers',
+        'pending-supplierspending-suppliers/pending-suppliers',
         {
             id: id,
             action: 'reject',

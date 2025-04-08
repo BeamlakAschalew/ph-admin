@@ -6,7 +6,7 @@ const mobileMenuOpen = ref(false);
 
 const logout = () => {
     let logout = useForm();
-    logout.post('/logout');
+    logout.post('/admin/logout');
 };
 
 const user = usePage().props.auth.user;
@@ -75,22 +75,24 @@ const dynamicNavClass = (page) =>
                 <div
                     class="mt-5 flex flex-col gap-5 sm:mt-0 sm:flex-row sm:items-center sm:justify-end sm:pl-5"
                 >
-                    <Link :class="dynamicNavClass('Dashboard')" href="/"
+                    <Link :class="dynamicNavClass('Dashboard')" href="/admin/"
                         >Home</Link
                     >
                     <Link
                         :class="dynamicNavClass('Suppliers')"
-                        href="/suppliers"
+                        href="/admin/suppliers"
                         >Suppliers</Link
                     >
-                    <Link :class="dynamicNavClass('Products')" href="/products"
+                    <Link
+                        :class="dynamicNavClass('Products')"
+                        href="/admin/products"
                         >Products</Link
                     >
 
                     <Link
                         v-if="$page.props.auth.user_role === 'superadmin'"
                         :class="dynamicNavClass('Admins')"
-                        href="/admins"
+                        href="/admin/admins"
                         >Admins</Link
                     >
 
@@ -129,13 +131,13 @@ const dynamicNavClass = (page) =>
                             <div class="space-y-0.5 p-1">
                                 <Link
                                     class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    href="/pending-consumers"
+                                    href="/admin/pending-consumers"
                                 >
                                     Pending Consumers
                                 </Link>
                                 <Link
                                     class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    href="/pending-suppliers"
+                                    href="/admin/pending-suppliers"
                                 >
                                     Pending Suppliers
                                 </Link>
@@ -182,13 +184,13 @@ const dynamicNavClass = (page) =>
                             <div class="space-y-0.5 p-1">
                                 <Link
                                     class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    href="/consumers"
+                                    href="/admin/consumers"
                                 >
                                     Consumers
                                 </Link>
                                 <Link
                                     class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    href="/suppliers"
+                                    href="/admin/suppliers"
                                 >
                                     Suppliers
                                 </Link>

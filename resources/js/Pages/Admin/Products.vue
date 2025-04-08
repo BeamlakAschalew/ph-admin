@@ -32,7 +32,7 @@ const searchQuery = ref(props.filters.search);
 
 const debouncedSearch = debounce((query) => {
     router.get(
-        '/products',
+        '/admin/products',
         { search: query },
         {
             preserveState: true,
@@ -77,7 +77,7 @@ const saveProduct = () => {
     );
     if (index !== -1) {
         router.put(
-            `/products/${editingProduct.value.id}`,
+            `/admin/products/${editingProduct.value.id}`,
             {
                 product_name: editingProduct.value.name,
                 product_unit_id: selectedUnit ? selectedUnit.id : '',
@@ -105,7 +105,7 @@ const confirmDelete = () => {
     localProducts.value = localProducts.value.filter(
         (p) => p.id !== productToDelete.value,
     );
-    router.delete(`/products/${productToDelete.value}`, {
+    router.delete(`/admin/products/${productToDelete.value}`, {
         preserveState: true,
         replace: true,
         except: ['units'],
@@ -128,7 +128,7 @@ const addProduct = () => {
     );
 
     router.post(
-        `/products`,
+        `/admin/products`,
         {
             product_name: newProduct.value.name,
             product_unit_id: selectedUnit ? selectedUnit.id : '',

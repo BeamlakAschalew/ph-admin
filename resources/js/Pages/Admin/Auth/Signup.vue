@@ -11,7 +11,7 @@ let form = useForm({
 });
 
 let submit = () => {
-    form.post('/signup');
+    form.post('/admin/signup');
 };
 </script>
 
@@ -31,7 +31,7 @@ let submit = () => {
                             Already have an account?
                             <Link
                                 class="focus:outline-hidden font-medium text-blue-600 decoration-2 hover:underline focus:underline"
-                                href="/login"
+                                href="/admin/login"
                             >
                                 Sign in here
                             </Link>

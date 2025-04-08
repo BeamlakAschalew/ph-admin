@@ -27,7 +27,7 @@ const searchQuery = ref(props.filters.search);
 
 const debouncedSearch = debounce((query) => {
     router.get(
-        '/consumers',
+        '/admin/consumers',
         { search: query },
         {
             preserveState: true,
@@ -71,7 +71,7 @@ function saveConsumer() {
     );
     if (index !== -1) {
         console.log(editingConsumer.value);
-        router.put(`/consumers/${editingConsumer.value.id}`, {
+        router.put(`/admin/consumers/${editingConsumer.value.id}`, {
             ...editingConsumer.value,
         });
     }
@@ -84,7 +84,7 @@ function confirmRemoveConsumer(id) {
 }
 
 function removeConsumer() {
-    router.delete(`/consumers/${consumerToRemove.value}`, {
+    router.delete(`/admin/consumers/${consumerToRemove.value}`, {
         preserveState: true,
         replace: true,
     });
@@ -107,7 +107,7 @@ const newConsumer = ref({
 });
 
 function addConsumer() {
-    router.post('/consumers', {
+    router.post('/admin/consumers', {
         ...newConsumer.value,
     });
     showAddModal.value = false;

@@ -46,7 +46,7 @@ const setOrderStatus = (id, status) => {
     const order = localOrders.value.find((o) => o.id === id);
     if (order) {
         router.put(
-            `/orders/${order.id}`,
+            `/admin/orders/${order.id}`,
             {
                 status: status,
             },
