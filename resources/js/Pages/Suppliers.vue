@@ -233,7 +233,9 @@ function addSupplier() {
                                         {{ supplier.last_name }}
                                     </div>
                                 </td>
-                                <td class="whitespace-nowrap px-6 py-4">
+                                <td
+                                    class="whitespace-normal break-words px-6 py-4"
+                                >
                                     <div class="text-sm text-gray-900">
                                         {{ supplier.subcity.subcity_name }}
                                     </div>
