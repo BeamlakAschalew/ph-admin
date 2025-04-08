@@ -1,14 +1,13 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConsumerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
+use Inertia\Inertia;
 
 Route::prefix('admin')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -57,4 +56,9 @@ Route::prefix('admin')->group(function () {
         Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
         Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
     });
+});
+
+
+Route::get('/', function () {
+    return Inertia::render('Consumer/Home');
 });
