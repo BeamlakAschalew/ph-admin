@@ -16,7 +16,7 @@ const currentPage = computed(() => usePage().component);
 watchEffect(currentPage);
 
 const dynamicNavClass = (page) =>
-    currentPage.value === page
+    currentPage.value === `Admin/${page}`
         ? 'font-bold text-white'
         : 'font-medium text-gray-300 hover:text-white';
 </script>

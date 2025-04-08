@@ -13,7 +13,7 @@ class SupplierController extends Controller {
      * Display a listing of the resource.
      */
     public function index(Request $request) {
-        return Inertia::render('Suppliers', [
+        return Inertia::render('Admin/Suppliers', [
             'suppliers' => Supplier::withTrashed()->with('subcity')
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
@@ -34,7 +34,7 @@ class SupplierController extends Controller {
     }
 
     public function pendingIndex(Request $request) {
-        return Inertia::render('PendingSuppliers', [
+        return Inertia::render('Admin/PendingSuppliers', [
             'suppliers' => fn() => Supplier::with('subcity')->where('approved', false)->when($request->input('search'), function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', "%{$search}%")

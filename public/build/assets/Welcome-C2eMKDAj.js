@@ -1,1 +1,0 @@
-import{y as n,c as r,o as t,d as o,t as s,u as a}from"./app-Od8EqnNQ.js";const _={__name:"Welcome",setup(p){const e=n();return console.log(e.props),(l,c)=>(t(),r("div",null,[o("h1",null,"Welcome, "+s(a(e).props.auth.user.first_name),1),o("p",null,"Phone: "+s(a(e).props.auth.user.phone),1)]))}};export{_ as default};

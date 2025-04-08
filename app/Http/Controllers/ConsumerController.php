@@ -13,7 +13,7 @@ class ConsumerController extends Controller {
      * Display a listing of the resource.
      */
     public function index(Request $request) {
-        return Inertia::render('Consumers', [
+        return Inertia::render('Admin/Consumers', [
             'consumers' => Consumer::withTrashed()->with('subcity')
                 ->where('approved', true)
                 ->when($request->input('search'), function ($query, $search) {
@@ -35,7 +35,7 @@ class ConsumerController extends Controller {
     }
 
     public function pendingIndex(Request $request) {
-        return Inertia::render('PendingConsumers', [
+        return Inertia::render('Admin/PendingConsumers', [
             'consumers' => fn() => Consumer::with('subcity')
                 ->where('approved', false)
                 ->when($request->input('search'), function ($query, $search) {

@@ -14,7 +14,7 @@ class ConsumerSupplierController extends Controller {
 
     public function consumerndex(Request $request) {
 
-        return Inertia::render('PendingUsers', [
+        return Inertia::render('Admin/PendingUsers', [
             'consumers' => fn() => Consumer::with('subcity')->when($request->input('search'), function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', "%{$search}%")

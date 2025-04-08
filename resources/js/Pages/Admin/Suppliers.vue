@@ -2,7 +2,7 @@
 import { router } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
 import { ref, watch } from 'vue';
-import MainLayout from './Admin/MainLayout.vue';
+import MainLayout from './MainLayout.vue';
 
 defineOptions({
     layout: MainLayout,

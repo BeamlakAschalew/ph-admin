@@ -12,7 +12,7 @@ class OrderController extends Controller {
      */
     public function index() {
         // dd(Order::with('consumer')->with('items.product')->get()->toArray());
-        return Inertia::render('Dashboard', [
+        return Inertia::render('Admin/Dashboard', [
             'orders' => Order::with([
                 'consumer' => function ($query) {
                     $query->withTrashed()->with('subcity');

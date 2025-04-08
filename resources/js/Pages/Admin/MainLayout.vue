@@ -1,5 +1,5 @@
 <script setup>
-import Navbar from '@/Components/Navbar.vue';
+import Navbar from '@/Components/Admin/Navbar.vue';
 import { usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 

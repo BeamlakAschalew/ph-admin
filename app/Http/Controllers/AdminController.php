@@ -16,7 +16,7 @@ class AdminController extends Controller {
      */
     public function index(Request $request) {
 
-        return Inertia::render('Admins', [
+        return Inertia::render('Admin/Admins', [
             'admins' => Admin::withTrashed()
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {

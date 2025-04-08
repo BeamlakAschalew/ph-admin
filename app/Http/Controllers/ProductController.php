@@ -14,7 +14,7 @@ class ProductController extends Controller {
      * Display a listing of the resource.
      */
     public function index(Request $request) {
-        return Inertia::render('Products', [
+        return Inertia::render('Admin/Products', [
             'products' => fn() => Product::with('unit')
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where('product_name', 'like', "%{$search}%");

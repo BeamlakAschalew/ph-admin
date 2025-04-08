@@ -11,7 +11,7 @@ use Inertia\Inertia;
 
 class AuthController extends Controller {
     public function showLogin() {
-        return Inertia::render('Auth/Login');
+        return Inertia::render('Admin/Auth/Login');
     }
 
     public function login(Request $request) {
@@ -34,7 +34,7 @@ class AuthController extends Controller {
     }
 
     public function showRegister() {
-        return Inertia::render('Auth/Signup');
+        return Inertia::render('Admin/Auth/Signup');
     }
 
     public function register(Request $request) {
