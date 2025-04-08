@@ -8,7 +8,7 @@
                 class="relative mx-auto w-full max-w-[85rem] px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
                 aria-label="Global"
             >
-                <div class="flex items-center justify-between">
+                <div class="mr-5 flex items-center justify-between">
                     <a
                         class="text-primary flex-none py-4 text-xl font-semibold"
                         href="#"
@@ -54,7 +54,7 @@
                         </div>
 
                         <button
-                            class="bg-primary hover:bg-primary-dark inline-flex items-center gap-x-2 rounded-full border border-transparent px-4 py-2 text-sm font-semibold text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
+                            class="bg-primary hover:bg-primary-dark mb-6 inline-flex items-center gap-x-2 rounded-full border border-transparent px-4 py-2 text-sm font-semibold text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 sm:mb-0"
                             @click="goToCheckout"
                         >
                             <ShoppingCartIcon class="h-4 w-4" />
@@ -117,7 +117,7 @@
 
         <!-- Products Section -->
         <div
-            class="mx-auto max-w-[85rem] flex-grow px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
+            class="mx-auto w-full flex-grow px-4 py-10 sm:w-auto sm:px-6 lg:px-8 lg:py-14"
         >
             <!-- Search Results -->
             <div v-if="searchQuery.trim()">
@@ -160,7 +160,7 @@
                         <div
                             v-for="product in paginatedProducts"
                             :key="product.id"
-                            class="group mx-auto flex h-full w-full max-w-sm flex-col rounded-xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:shadow-md sm:max-w-none"
+                            class="group flex h-full w-full flex-col rounded-xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:shadow-md"
                         >
                             <div class="p-6 md:p-8">
                                 <h3
