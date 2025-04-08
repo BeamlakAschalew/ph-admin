@@ -12,10 +12,10 @@
                     <a
                         class="text-primary flex-none py-4 text-xl font-semibold"
                         href="#"
-                        aria-label="MediShop"
+                        aria-label="PH"
                     >
                         <PillIcon class="mr-2 inline-block h-8 w-8" />
-                        MediShop
+                        PH
                     </a>
                     <div class="sm:hidden">
                         <button
@@ -255,151 +255,33 @@
             >
                 <!-- Grid -->
                 <div
-                    class="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5"
+                    class="flex flex-col items-start justify-between gap-6 sm:flex-row"
                 >
-                    <div class="col-span-full lg:col-span-1">
+                    <div class="flex-shrink-0">
                         <a
-                            class="text-primary flex-none text-xl font-semibold"
+                            class="text-primary text-xl font-semibold"
                             href="#"
-                            aria-label="MediShop"
+                            aria-label="PH"
                         >
                             <PillIcon class="mr-2 h-8 w-8" />
-                            MediShop
+                            PH
                         </a>
                         <p class="mt-3 text-xs text-gray-600 sm:text-sm">
                             Your trusted source for quality medications and
                             health products.
                         </p>
                     </div>
-                    <!-- End Col -->
 
-                    <div class="col-span-1">
-                        <h4 class="font-semibold text-gray-900">Product</h4>
-
-                        <div class="mt-3 grid space-y-3">
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >Pricing</a
-                                >
-                            </p>
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >Medications</a
-                                >
-                            </p>
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >Supplements</a
-                                >
-                            </p>
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >Health Devices</a
-                                >
-                            </p>
+                    <div>
+                        <h4 class="font-semibold text-gray-900">Email</h4>
+                        <div class="my-3">
+                            <p class="text-sm text-gray-600">contact@ph.com</p>
                         </div>
-                    </div>
-                    <!-- End Col -->
-
-                    <div class="col-span-1">
-                        <h4 class="font-semibold text-gray-900">Company</h4>
-
-                        <div class="mt-3 grid space-y-3">
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >About us</a
-                                >
-                            </p>
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >Blog</a
-                                >
-                            </p>
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >Careers</a
-                                >
-                                <span
-                                    class="bg-primary ml-1 inline rounded-full px-2 py-1 text-xs text-white"
-                                    >We're hiring</span
-                                >
-                            </p>
-                            <p>
-                                <a
-                                    class="inline-flex gap-x-2 text-gray-600 hover:text-gray-800"
-                                    href="#"
-                                    >Customers</a
-                                >
-                            </p>
-                        </div>
-                    </div>
-                    <!-- End Col -->
-
-                    <div class="col-span-2">
-                        <h4 class="font-semibold text-gray-900">
-                            Stay connected
-                        </h4>
-
+                        <h4 class="font-semibold text-gray-900">Phone</h4>
                         <div class="mt-3">
-                            <p class="text-sm text-gray-600">
-                                Subscribe to our newsletter for the latest
-                                updates and offers.
-                            </p>
-                            <form>
-                                <div
-                                    class="mt-4 flex flex-col items-center gap-2 rounded-lg bg-white p-2 sm:flex-row sm:gap-3"
-                                >
-                                    <div class="w-full">
-                                        <label for="hero-input" class="sr-only"
-                                            >Search</label
-                                        >
-                                        <input
-                                            type="text"
-                                            id="hero-input"
-                                            name="hero-input"
-                                            class="focus:border-primary focus:ring-primary block w-full rounded-lg border-gray-200 px-4 py-3 text-sm disabled:pointer-events-none disabled:opacity-50"
-                                            placeholder="Enter your email"
-                                        />
-                                    </div>
-                                    <a
-                                        class="bg-primary hover:bg-primary-dark inline-flex w-full items-center justify-center gap-x-2 whitespace-nowrap rounded-lg border border-transparent px-4 py-3 text-sm font-semibold text-white disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
-                                        href="#"
-                                    >
-                                        Subscribe
-                                    </a>
-                                </div>
-                                <p class="mt-3 text-xs text-gray-500">
-                                    By submitting this form you agree to our
-                                    <a
-                                        class="text-primary font-medium decoration-2 hover:underline"
-                                        href="#"
-                                        >terms and conditions</a
-                                    >
-                                    and
-                                    <a
-                                        class="text-primary font-medium decoration-2 hover:underline"
-                                        href="#"
-                                        >privacy policy</a
-                                    >.
-                                </p>
-                            </form>
+                            <p class="text-sm text-gray-600">+251911234567</p>
                         </div>
                     </div>
-                    <!-- End Col -->
                 </div>
                 <!-- End Grid -->
 
@@ -408,7 +290,7 @@
                 >
                     <div class="flex items-center justify-between">
                         <p class="text-sm text-gray-600">
-                            © 2023 MediShop. All rights reserved.
+                            © 2025 PH. All rights reserved.
                         </p>
                     </div>
                     <!-- End Col -->
