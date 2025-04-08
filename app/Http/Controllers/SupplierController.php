@@ -51,8 +51,8 @@ class SupplierController extends Controller {
 
     function approveOrReject(Request $request) {
         $consumer = Supplier::find($request->input('id'));
+        $consumer->update(['approved' => true]);
         if ($request->input('action') == 'approve') {
-            $consumer->update(['approved' => true]);
             return redirect()->back()->with('message', ['name' => 'Supplier approved.', 'type' => 'success']);
         } else {
             $consumer->delete();
@@ -146,7 +146,8 @@ class SupplierController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Supplier $supplier) {
+    public function update(Request $request, $id) {
+        $supplier = Supplier::withTrashed()->findOrFail($id);
         try {
             $request->validate([
                 'first_name' => 'required|string|max:255',
@@ -158,6 +159,7 @@ class SupplierController extends Controller {
                 'institution_name' => 'required|string|max:255',
                 'password' => 'nullable|string|min:6',
                 'woreda' => 'required',
+                'status' => 'required|in:Rejected,Approved',
             ]);
 
             $primaryPhone = Supplier::normalizePhoneNumber($request->input('primary_phone'));
@@ -174,7 +176,7 @@ class SupplierController extends Controller {
                 return redirect()->back()->with('message', ['name' => 'Primary and secondary phone numbers cannot be the same', 'type' => 'error']);
             }
 
-            $supplier->update($request->only(
+            $data = $request->only(
                 'first_name',
                 'last_name',
                 'special_place',
@@ -184,7 +186,15 @@ class SupplierController extends Controller {
                 'woreda',
                 'password',
                 'institution_name'
-            ));
+            );
+
+            if ($request->input('status') === 'Rejected') {
+                $data['deleted_at'] = now();
+            } else {
+                $data['deleted_at'] = null;
+            }
+
+            $supplier->update($data);
 
             return redirect()->back()->with('message', ['name' => 'Supplier updated.', 'type' => 'success']);
         } catch (\Illuminate\Validation\ValidationException $e) {

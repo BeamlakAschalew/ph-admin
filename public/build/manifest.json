@@ -1,24 +1,24 @@
 {
-  "_lodash-DBbqFWLv.js": {
-    "file": "assets/lodash-DBbqFWLv.js",
+  "_lodash-Bi4vdTGi.js": {
+    "file": "assets/lodash-Bi4vdTGi.js",
     "name": "lodash",
     "imports": [
       "resources/js/app.js"
     ]
   },
   "resources/js/Pages/Admins.vue": {
-    "file": "assets/Admins-BAFwQ4tT.js",
+    "file": "assets/Admins-Cw9aISSA.js",
     "name": "Admins",
     "src": "resources/js/Pages/Admins.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-DBbqFWLv.js",
+      "_lodash-Bi4vdTGi.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Auth/Login.vue": {
-    "file": "assets/Login-DE6gzYHt.js",
+    "file": "assets/Login-Bp9G3rqZ.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.vue",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "resources/js/Pages/Auth/Signup.vue": {
-    "file": "assets/Signup-CMcr6P9Q.js",
+    "file": "assets/Signup-DCQeLdXl.js",
     "name": "Signup",
     "src": "resources/js/Pages/Auth/Signup.vue",
     "isDynamicEntry": true,
@@ -36,18 +36,18 @@
     ]
   },
   "resources/js/Pages/Consumers.vue": {
-    "file": "assets/Consumers-CWSvoyCX.js",
+    "file": "assets/Consumers-iCqLqk7k.js",
     "name": "Consumers",
     "src": "resources/js/Pages/Consumers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-DBbqFWLv.js",
+      "_lodash-Bi4vdTGi.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-BbC0pgj5.js",
+    "file": "assets/Dashboard-fCcebvTX.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.vue",
     "isDynamicEntry": true,
@@ -60,7 +60,7 @@
     ]
   },
   "resources/js/Pages/MainLayout.vue": {
-    "file": "assets/MainLayout-I_GZQYzk.js",
+    "file": "assets/MainLayout-Ce7fhzhG.js",
     "name": "MainLayout",
     "src": "resources/js/Pages/MainLayout.vue",
     "isDynamicEntry": true,
@@ -69,51 +69,51 @@
     ]
   },
   "resources/js/Pages/PendingConsumers.vue": {
-    "file": "assets/PendingConsumers-BJ1fPh_n.js",
+    "file": "assets/PendingConsumers-DzXQGUup.js",
     "name": "PendingConsumers",
     "src": "resources/js/Pages/PendingConsumers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-DBbqFWLv.js",
+      "_lodash-Bi4vdTGi.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/PendingSuppliers.vue": {
-    "file": "assets/PendingSuppliers-DPgsPBG8.js",
+    "file": "assets/PendingSuppliers-DVU83JLy.js",
     "name": "PendingSuppliers",
     "src": "resources/js/Pages/PendingSuppliers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-DBbqFWLv.js",
+      "_lodash-Bi4vdTGi.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Products.vue": {
-    "file": "assets/Products-BZ6StP8x.js",
+    "file": "assets/Products-KfY6QF_k.js",
     "name": "Products",
     "src": "resources/js/Pages/Products.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-DBbqFWLv.js",
+      "_lodash-Bi4vdTGi.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Suppliers.vue": {
-    "file": "assets/Suppliers-8OqIn668.js",
+    "file": "assets/Suppliers-CoSpLdUN.js",
     "name": "Suppliers",
     "src": "resources/js/Pages/Suppliers.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_lodash-DBbqFWLv.js",
+      "_lodash-Bi4vdTGi.js",
       "resources/js/Pages/MainLayout.vue"
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-BU3XBVOg.js",
+    "file": "assets/Welcome-C2eMKDAj.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
@@ -122,7 +122,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Ds4Ek5o6.js",
+    "file": "assets/app-Od8EqnNQ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

@@ -15,6 +15,7 @@ class ConsumerController extends Controller {
     public function index(Request $request) {
         return Inertia::render('Consumers', [
             'consumers' => Consumer::withTrashed()->with('subcity')
+                ->where('approved', true)
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
                         $query->where('first_name', 'like', "%{$search}%")
@@ -52,8 +53,8 @@ class ConsumerController extends Controller {
 
     function approveOrReject(Request $request) {
         $consumer = Consumer::find($request->input('id'));
+        $consumer->update(['approved' => true]);
         if ($request->input('action') == 'approve') {
-            $consumer->update(['approved' => true]);
             return redirect()->back()->with('message', ['name' => 'Consumer accepted.', 'type' => 'success']);
         } else {
             $consumer->delete();
@@ -147,18 +148,20 @@ class ConsumerController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Consumer $consumer) {
+    public function update(Request $request, $id) {
+        $consmuer = Consumer::withTrashed()->findOrFail($id);
         try {
             $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'special_place' => 'required|string|max:255',
                 'subcity_id' => 'required|exists:subcities,id',
-                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consumer->id,
-                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consumer->id,
+                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consmuer->id,
+                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consmuer->id,
                 'institution_name' => 'required|string|max:255',
                 'password' => 'nullable|string|min:6',
                 'woreda' => 'required',
+                'status' => 'required|in:Rejected,Approved',
             ]);
 
             $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
@@ -175,7 +178,7 @@ class ConsumerController extends Controller {
                 return redirect()->back()->with('message', ['name' => 'Primary and secondary phone numbers cannot be the same', 'type' => 'error']);
             }
 
-            $consumer->update($request->only(
+            $data = $request->only(
                 'first_name',
                 'last_name',
                 'special_place',
@@ -185,7 +188,15 @@ class ConsumerController extends Controller {
                 'woreda',
                 'password',
                 'institution_name'
-            ));
+            );
+
+            if ($request->input('status') === 'Rejected') {
+                $data['deleted_at'] = now();
+            } else {
+                $data['deleted_at'] = null;
+            }
+
+            $consmuer->update($data);
 
             return redirect()->back()->with('message', ['name' => 'Consumer updated.', 'type' => 'success']);
         } catch (\Illuminate\Validation\ValidationException $e) {

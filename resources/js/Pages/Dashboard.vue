@@ -1,4 +1,5 @@
 <script setup>
+import { router } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import MainLayout from './MainLayout.vue';
 
@@ -44,7 +45,20 @@ const toggleStatusOptions = (id) => {
 const setOrderStatus = (id, status) => {
     const order = localOrders.value.find((o) => o.id === id);
     if (order) {
-        order.status = status;
+        router.put(
+            `/orders/${order.id}`,
+            {
+                status: status,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    order.status = status;
+                    order.expanded = false;
+                    activeDropdown.value = null;
+                },
+            },
+        );
     }
 };
 

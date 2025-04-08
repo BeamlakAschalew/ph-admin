@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
     Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
+
+    Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
 });
 
 

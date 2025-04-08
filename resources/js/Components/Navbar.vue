@@ -78,14 +78,15 @@ const dynamicNavClass = (page) =>
                     <Link :class="dynamicNavClass('Dashboard')" href="/"
                         >Home</Link
                     >
-                    <Link :class="dynamicNavClass('Products')" href="/products"
-                        >Products</Link
-                    >
                     <Link
                         :class="dynamicNavClass('Suppliers')"
                         href="/suppliers"
                         >Suppliers</Link
                     >
+                    <Link :class="dynamicNavClass('Products')" href="/products"
+                        >Products</Link
+                    >
+
                     <Link
                         v-if="$page.props.auth.user_role === 'superadmin'"
                         :class="dynamicNavClass('Admins')"

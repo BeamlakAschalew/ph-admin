@@ -53,12 +53,14 @@ const editingConsumer = ref({
     secondary_phone: '',
     subcity_id: null,
     password: '',
+    status: 'Approved',
 });
 
 function editConsumer(consumer) {
     console.log(consumer);
     editingConsumer.value = {
         ...consumer,
+        status: consumer.deleted_at ? 'Rejected' : 'Approved',
     };
     showEditModal.value = true;
 }
@@ -189,6 +191,12 @@ function addConsumer() {
                                 </th>
                                 <th
                                     scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
+                                >
+                                    Status
+                                </th>
+                                <th
+                                    scope="col"
                                     class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-500"
                                 >
                                     Actions
@@ -239,6 +247,22 @@ function addConsumer() {
                                     >
                                         +251{{ consumer.secondary_phone }}
                                     </div>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <span
+                                        :class="[
+                                            consumer.deleted_at
+                                                ? 'bg-red-100 text-red-800'
+                                                : 'bg-green-100 text-green-800',
+                                            'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                                        ]"
+                                    >
+                                        {{
+                                            consumer.deleted_at
+                                                ? 'Rejected'
+                                                : 'Approved'
+                                        }}
+                                    </span>
                                 </td>
                                 <td
                                     class="whitespace-nowrap px-6 py-4 text-end"
@@ -485,6 +509,22 @@ function addConsumer() {
                                 v-model="editingConsumer.password"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
+                        </div>
+                        <div>
+                            <label
+                                for="edit-status"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                Status
+                            </label>
+                            <select
+                                id="edit-status"
+                                v-model="editingConsumer.status"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            >
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
                         </div>
                     </div>
                 </div>

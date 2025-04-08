@@ -56,7 +56,13 @@ class OrderController extends Controller {
      * Update the specified resource in storage.
      */
     public function update(Request $request, Order $order) {
-        //
+        $request->validate([
+            'status' => 'required|in:Pending,Completed,Cancelled',
+        ]);
+
+        $order->update($request->only('status'));
+
+        return redirect()->back()->with('message', ['name' => 'Order status updated successfully', 'type' => 'success']);
     }
 
     /**

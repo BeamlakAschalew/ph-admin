@@ -25,6 +25,7 @@ class Consumer extends Model {
         'license_number',
         'special_place',
         'woreda',
+        'deleted_at'
     ];
 
 

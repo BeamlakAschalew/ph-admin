@@ -53,12 +53,14 @@ const editingSupplier = ref({
     secondary_phone: '',
     subcity_id: null,
     password: '',
+    status: 'Approved',
 });
 
 function editSupplier(supplier) {
     console.log(supplier);
     editingSupplier.value = {
         ...supplier,
+        status: supplier.deleted_at ? 'Rejected' : 'Approved',
     };
     showEditModal.value = true;
 }
@@ -189,6 +191,12 @@ function addSupplier() {
                                     Phone
                                 </th>
                                 <th
+                                    scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium uppercase text-gray-500"
+                                >
+                                    Status
+                                </th>
+                                <th
                                     v-if="
                                         $page.props.auth.user_role ===
                                         'superadmin'
@@ -244,6 +252,22 @@ function addSupplier() {
                                     >
                                         +251{{ supplier.secondary_phone }}
                                     </div>
+                                </td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <span
+                                        :class="[
+                                            supplier.deleted_at
+                                                ? 'bg-red-100 text-red-800'
+                                                : 'bg-green-100 text-green-800',
+                                            'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                                        ]"
+                                    >
+                                        {{
+                                            supplier.deleted_at
+                                                ? 'Rejected'
+                                                : 'Approved'
+                                        }}
+                                    </span>
                                 </td>
                                 <td
                                     v-if="
@@ -494,6 +518,22 @@ function addSupplier() {
                                 v-model="editingSupplier.password"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
+                        </div>
+                        <div>
+                            <label
+                                for="edit-status"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                Status
+                            </label>
+                            <select
+                                id="edit-status"
+                                v-model="editingSupplier.status"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            >
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
                         </div>
                     </div>
                 </div>
