@@ -3,11 +3,50 @@
 namespace App\Http\Controllers\Consumer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Client\Request;
+use App\Models\Consumer;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ConsumerAuthController extends Controller {
     public function showSignup() {
         return Inertia::render('Consumer/Auth/Signup');
+    }
+
+    public function register(Request $request) {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'special_place' => 'required|string|max:255',
+            'subcity_id' => 'required|exists:subcities,id',
+            'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone',
+            'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone',
+            'institution_name' => 'required|string|max:255',
+            'password' => 'required|string|min:6|confirmed',
+            'woreda' => 'required',
+            'license_number' => 'required|string|max:255',
+        ]);
+
+        $primary_phone = Consumer::normalizePhoneNumber($request->primary_phone);
+        $secondary_phone = Consumer::normalizePhoneNumber($request->secondary_phone);
+
+        if (!$primary_phone) {
+            return back()->withErrors(['primary_phone' => 'Invalid primary phone number format']);
+        }
+
+        if (!$secondary_phone) {
+            return back()->withErrors(['primary_phone' => 'Invalid secondary phone number format']);
+        }
+
+        if (Consumer::where('primary_phone', $primary_phone)->exists()) {
+            return back()->withErrors(['primary_phone' => 'The primary phone number has already been taken']);
+        }
+
+        if (Consumer::where('primary_phone', $secondary_phone)->exists()) {
+            return back()->withErrors(['primary_phone' => 'The secondary phone number has already been taken']);
+        }
+
+        $consumer = Consumer::create($request->all());
+
+        dd($consumer);
     }
 }
