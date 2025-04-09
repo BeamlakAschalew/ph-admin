@@ -69,9 +69,11 @@
         <div
             class="relative overflow-hidden before:absolute before:start-1/2 before:top-0 before:-z-[1] before:size-full before:-translate-x-1/2 before:transform before:bg-[url('https://preline.co/assets/svg/component/polygon-bg-element.svg')] before:bg-top before:bg-no-repeat"
         >
-            <div class="mx-auto max-w-[85rem] px-4 pb-10 pt-16 sm:px-6 lg:px-8">
+            <div
+                class="mx-auto max-w-[85rem] px-4 pb-2 pt-1 sm:px-6 lg:px-8 lg:pb-10 lg:pt-16"
+            >
                 <!-- Title -->
-                <div class="mx-auto mt-5 max-w-2xl text-center">
+                <div class="mx-auto mt-5 hidden max-w-2xl text-center lg:block">
                     <h1
                         class="block text-4xl font-bold text-gray-800 md:text-5xl lg:text-6xl"
                     >
@@ -80,7 +82,7 @@
                 </div>
                 <!-- End Title -->
 
-                <div class="mx-auto mt-5 max-w-3xl text-center">
+                <div class="mx-auto mt-5 hidden max-w-3xl text-center lg:block">
                     <p class="text-lg text-gray-600">
                         Find all your pharmaceutical needs in one place.
                     </p>
@@ -104,7 +106,7 @@
                             />
                         </div>
                         <button
-                            class="bg-primary hover:bg-primary-dark inline-flex w-full items-center justify-center gap-x-2 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
+                            class="bg-primary hover:bg-primary-dark hidden w-full items-center justify-center gap-x-2 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 sm:w-auto lg:inline-flex"
                         >
                             <SearchIcon class="h-4 w-4" />
                             Search
@@ -117,11 +119,13 @@
 
         <!-- Products Section -->
         <div
-            class="mx-auto w-full flex-grow px-4 py-10 sm:w-auto sm:px-6 lg:px-8 lg:py-14"
+            class="mx-auto w-full flex-grow px-4 py-1 sm:w-auto sm:px-6 lg:px-8 lg:py-14"
         >
             <!-- Search Results -->
             <div v-if="searchQuery.trim()">
-                <div class="mx-auto mb-10 max-w-2xl text-center">
+                <div
+                    class="mx-auto mb-10 hidden max-w-2xl text-center lg:block"
+                >
                     <h2
                         class="text-2xl font-bold text-gray-800 md:text-3xl md:leading-tight"
                     >
@@ -155,31 +159,32 @@
 
                 <div v-else>
                     <div
-                        class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                        class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4"
                     >
                         <div
                             v-for="product in paginatedProducts"
                             :key="product.id"
                             class="group flex h-full w-full flex-col rounded-xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:shadow-md"
                         >
-                            <div class="p-6 md:p-8">
-                                <h3
-                                    class="group-hover:text-primary text-xl font-semibold text-gray-800 transition-colors duration-300"
-                                >
-                                    {{ product.name }}
-                                </h3>
-                                <p class="mt-2 text-gray-500">
-                                    {{ product.unit }}
-                                </p>
-                                <div class="mt-6">
-                                    <button
-                                        @click="addToCart(product)"
-                                        class="bg-primary hover:bg-primary-dark inline-flex w-full items-center justify-center gap-x-2 rounded-lg border border-transparent px-4 py-3 text-sm font-semibold text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
+                            <div
+                                class="flex items-center justify-between gap-5 px-6 py-2 md:px-8 md:py-3"
+                            >
+                                <div>
+                                    <h3
+                                        class="group-hover:text-primary text-xl font-semibold text-gray-800 transition-colors duration-300"
                                     >
-                                        <ShoppingCartIcon class="h-4 w-4" />
-                                        Add to Cart
-                                    </button>
+                                        {{ product.name }}
+                                    </h3>
+                                    <p class="mt-2 text-gray-500">
+                                        {{ product.unit }}
+                                    </p>
                                 </div>
+                                <button
+                                    @click="addToCart(product)"
+                                    class="bg-primary hover:bg-primary-dark inline-flex items-center justify-center rounded-lg border border-transparent p-3 text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
+                                >
+                                    <ShoppingCartIcon class="h-5 w-5" />
+                                </button>
                             </div>
                         </div>
                     </div>
