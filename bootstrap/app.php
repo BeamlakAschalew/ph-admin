@@ -20,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'consumer.authenticated' => \App\Http\Middleware\ConsumerAuthenticated::class,
+            'consumer.guest' => \App\Http\Middleware\ConsumerGuest::class,
+            'admin.authenticated' => \App\Http\Middleware\AdminAuthenticated::class,
+            'admin.guest' => \App\Http\Middleware\AdminGuest::class
         ]);
 
         //

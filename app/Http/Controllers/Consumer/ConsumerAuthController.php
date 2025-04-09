@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Consumer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consumer;
+use App\Models\Subcity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ConsumerAuthController extends Controller {
     public function showSignup() {
-        return Inertia::render('Consumer/Auth/Signup');
+        $subcities = Subcity::all(['subcity_name', 'id']);
+        return Inertia::render('Consumer/Auth/Signup', [
+            'subcities' => $subcities
+        ]);
     }
 
     public function register(Request $request) {
@@ -45,8 +50,21 @@ class ConsumerAuthController extends Controller {
             return back()->withErrors(['primary_phone' => 'The secondary phone number has already been taken']);
         }
 
-        $consumer = Consumer::create($request->all());
+        $consumer = Consumer::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'special_place' => $request->special_place,
+            'subcity_id' => $request->subcity_id,
+            'primary_phone' => $primary_phone,
+            'secondary_phone' => $secondary_phone,
+            'institution_name' => $request->institution_name,
+            'password' => $request->password,
+            'woreda' => $request->woreda,
+            'license_number' => $request->license_number,
+        ]);
 
-        dd($consumer);
+        Auth::login($consumer, true);
+
+        return redirect()->route('home');
     }
 }

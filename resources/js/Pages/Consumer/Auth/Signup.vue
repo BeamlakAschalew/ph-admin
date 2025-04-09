@@ -2,7 +2,7 @@
 import { useForm } from '@inertiajs/vue3';
 import { defineProps, ref } from 'vue';
 
-defineProps(['subcities']); // Subcity data passed via props
+defineProps({ subcities: Array });
 
 let currentStep = ref(1);
 const totalSteps = 3;
@@ -176,7 +176,7 @@ let submit = () => {
                                             :key="subcity.id"
                                             :value="subcity.id"
                                         >
-                                            {{ subcity.name }}
+                                            {{ subcity.subcity_name }}
                                         </option>
                                     </select>
                                     <p

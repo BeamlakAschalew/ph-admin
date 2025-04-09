@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::prefix('admin')->group(function () {
-    Route::middleware('guest:admin')->group(function () {
-        Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::group(['middleware' => ['admin.guest']], function () {
+        Route::get('/login', [AuthController::class, 'showLogin'])->name('admin.login');
         Route::post('/login', [AuthController::class, 'login']);
 
         Route::get('/signup', [AuthController::class, 'showRegister'])->name('signup');
         Route::post('/signup', [AuthController::class, 'register']);
     });
 
-    Route::middleware('auth:admin')->group(function () {
+    Route::group(['middleware' => ['admin.authenticated']], function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/', [OrderController::class, 'index'])->name('dashboard');
 
@@ -37,7 +37,7 @@ Route::prefix('admin')->group(function () {
 
 
 
-    Route::group(['middleware' => ['auth', 'role:superadmin']], function () {
+    Route::group(['middleware' => ['admin.authenticated', 'role:superadmin']], function () {
         Route::get('/pending-consumers', [ConsumerController::class, 'pendingIndex'])->name('pending-consumers.index');
         Route::get('/pending-suppliers', [SupplierController::class, 'pendingIndex'])->name('pending-suppliers.index');
 
@@ -63,7 +63,7 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('/')->group(function () {
-    Route::middleware('guest:consumer')->group(function () {
+    Route::group(['middleware' => ['consumer.guest']], function () {
         Route::get('/login', [ConsumerAuthController::class, 'showLogin'])->name('consumer.login');
         Route::post('/login', [ConsumerAuthController::class, 'login']);
 
@@ -71,10 +71,9 @@ Route::prefix('/')->group(function () {
         Route::post('/signup', [ConsumerAuthController::class, 'register']);
     });
 
-    // Route::middleware('auth:consumer')->group(function () {
-    //     Route::post('/logout', [ConsumerAuthController::class, 'logout'])->name('consumer.logout');
-    // });
-});
-Route::get('/', function () {
-    return Inertia::render('Consumer/Home');
+    Route::group(['middleware' => ['consumer.authenticated']], function () {
+        Route::get('/', function () {
+            return Inertia::render('Consumer/Home');
+        })->name('home');
+    });
 });
