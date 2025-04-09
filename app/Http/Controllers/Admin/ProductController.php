@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductUnit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
-use function Illuminate\Log\log;
 
 class ProductController extends Controller {
     /**
