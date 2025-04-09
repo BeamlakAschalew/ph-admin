@@ -141,6 +141,36 @@ const addProduct = () => {
     );
     showAddModal.value = false;
 };
+
+const showImportModal = ref(false);
+const excelFile = ref(null);
+
+const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        excelFile.value = file;
+    } else {
+        excelFile.value = null;
+    }
+};
+
+const openImportModal = () => {
+    excelFile.value = null;
+    showImportModal.value = true;
+};
+
+const importFromExcel = () => {
+    if (excelFile.value) {
+        const formData = new FormData();
+        formData.append('file', excelFile.value);
+
+        router.post('/admin/products/import', formData, {
+            preserveState: true,
+            replace: true,
+        });
+    }
+    showImportModal.value = false;
+};
 </script>
 
 <template>
@@ -150,27 +180,50 @@ const addProduct = () => {
         <div class="mx-auto w-full max-w-4xl px-4 py-6">
             <div class="mb-6 flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-gray-800">Products List</h1>
-                <button
-                    @click="openAddModal"
-                    class="inline-flex items-center gap-x-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4"
+                <div class="flex items-center gap-3">
+                    <button
+                        @click="openImportModal"
+                        class="inline-flex items-center gap-x-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
                     >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5v14"></path>
-                    </svg>
-                    Add a product
-                </button>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="h-4 w-4"
+                        >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                        </svg>
+                        Import from Excel
+                    </button>
+                    <button
+                        @click="openAddModal"
+                        class="inline-flex items-center gap-x-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="h-4 w-4"
+                        >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                        </svg>
+                        Add a product
+                    </button>
+                </div>
             </div>
 
             <!-- Search Bar -->
@@ -616,6 +669,71 @@ const addProduct = () => {
                     <button
                         type="button"
                         @click="showAddModal = false"
+                        class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Excel Modal -->
+    <div
+        v-if="showImportModal"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        aria-labelledby="modal-title"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div
+            class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0"
+        >
+            <!-- Background overlay -->
+            <div
+                class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                @click="showImportModal = false"
+            ></div>
+
+            <!-- Modal panel -->
+            <div
+                class="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+            >
+                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left"
+                        >
+                            <h3
+                                class="text-lg font-medium leading-6 text-gray-900"
+                                id="modal-title"
+                            >
+                                Import Products from Excel
+                            </h3>
+                            <div class="mt-4">
+                                <input
+                                    type="file"
+                                    accept=".xlsx, .xls"
+                                    @change="handleFileChange"
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
+                >
+                    <button
+                        type="button"
+                        @click="importFromExcel"
+                        class="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                    >
+                        Import
+                    </button>
+                    <button
+                        type="button"
+                        @click="showImportModal = false"
                         class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm"
                     >
                         Cancel

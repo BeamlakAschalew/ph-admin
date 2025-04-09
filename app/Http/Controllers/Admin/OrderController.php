@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class OrderController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index(): Response
+    {
         // dd(Order::with('consumer')->with('items.product')->get()->toArray());
         return Inertia::render('Admin/Dashboard', [
             'orders' => Order::with([

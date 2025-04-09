@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductUnit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller {
     /**
@@ -89,6 +90,36 @@ class ProductController extends Controller {
                 ->withErrors($e->errors())
                 ->with('message', [
                     'name' => 'Product update failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        }
+    }
+
+    public function importFromExcel(Request $request) {
+        try {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,xls',
+            ]);
+
+            $data = Excel::toArray([], $request->file('file'))[0];
+
+            foreach (array_slice($data, 1) as $row) {
+                if (!empty($row[0])) {
+                    Product::create([
+                        'product_name' => $row[0],
+                        'product_unit_id' => $row[1],
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('message', ['name' => 'Products imported successfully.', 'type' => 'success']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->with('message', [
+                    'name' => 'Product import failed. ' . implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
                     'type' => 'error'

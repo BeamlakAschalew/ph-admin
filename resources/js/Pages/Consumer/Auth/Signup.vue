@@ -1,10 +1,19 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { defineProps } from 'vue';
+
+defineProps(['subcities']); // Subcity data passed via props
 
 let form = useForm({
     first_name: '',
     last_name: '',
-    phone_number: '',
+    institution_name: '',
+    woreda: '',
+    primary_phone: '',
+    secondary_phone: '',
+    license_number: '',
+    subcity_id: '',
+    special_place: '',
     password: '',
     password_confirmation: '',
     superadmin_secret: '',
@@ -170,6 +179,163 @@ let submit = () => {
                                     ></p>
                                 </div>
                                 <!-- End Form Group -->
+
+                                <!-- Institution Name -->
+                                <div>
+                                    <label
+                                        for="institution_name"
+                                        class="mb-2 block text-sm"
+                                        >Institution Name</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="institution_name"
+                                        v-model="form.institution_name"
+                                        required
+                                        class="block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:py-3 sm:text-sm"
+                                    />
+                                    <p
+                                        v-if="form.errors.institution_name"
+                                        v-text="form.errors.institution_name"
+                                        class="mt-2 text-xs text-red-600"
+                                    ></p>
+                                </div>
+
+                                <!-- Woreda -->
+                                <div>
+                                    <label
+                                        for="woreda"
+                                        class="mb-2 block text-sm"
+                                        >Woreda</label
+                                    >
+                                    <input
+                                        type="number"
+                                        id="woreda"
+                                        v-model="form.woreda"
+                                        min="1"
+                                        max="14"
+                                        required
+                                        class="block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:py-3 sm:text-sm"
+                                    />
+                                    <p
+                                        v-if="form.errors.woreda"
+                                        v-text="form.errors.woreda"
+                                        class="mt-2 text-xs text-red-600"
+                                    ></p>
+                                </div>
+
+                                <!-- Primary Phone -->
+                                <div>
+                                    <label
+                                        for="primary_phone"
+                                        class="mb-2 block text-sm"
+                                        >Primary Phone</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="primary_phone"
+                                        v-model="form.primary_phone"
+                                        required
+                                        class="block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:py-3 sm:text-sm"
+                                    />
+                                    <p
+                                        v-if="form.errors.primary_phone"
+                                        v-text="form.errors.primary_phone"
+                                        class="mt-2 text-xs text-red-600"
+                                    ></p>
+                                </div>
+
+                                <!-- Secondary Phone -->
+                                <div>
+                                    <label
+                                        for="secondary_phone"
+                                        class="mb-2 block text-sm"
+                                        >Secondary Phone</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="secondary_phone"
+                                        v-model="form.secondary_phone"
+                                        class="block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:py-3 sm:text-sm"
+                                    />
+                                    <p
+                                        v-if="form.errors.secondary_phone"
+                                        v-text="form.errors.secondary_phone"
+                                        class="mt-2 text-xs text-red-600"
+                                    ></p>
+                                </div>
+
+                                <!-- License Number -->
+                                <div>
+                                    <label
+                                        for="license_number"
+                                        class="mb-2 block text-sm"
+                                        >License Number</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="license_number"
+                                        v-model="form.license_number"
+                                        required
+                                        class="block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:py-3 sm:text-sm"
+                                    />
+                                    <p
+                                        v-if="form.errors.license_number"
+                                        v-text="form.errors.license_number"
+                                        class="mt-2 text-xs text-red-600"
+                                    ></p>
+                                </div>
+
+                                <!-- Subcity -->
+                                <div>
+                                    <label
+                                        for="subcity"
+                                        class="mb-2 block text-sm"
+                                        >Subcity</label
+                                    >
+                                    <select
+                                        id="subcity"
+                                        v-model="form.subcity_id"
+                                        required
+                                        class="block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:py-3 sm:text-sm"
+                                    >
+                                        <option value="" disabled>
+                                            Select Subcity
+                                        </option>
+                                        <option
+                                            v-for="subcity in subcities"
+                                            :key="subcity.id"
+                                            :value="subcity.id"
+                                        >
+                                            {{ subcity.name }}
+                                        </option>
+                                    </select>
+                                    <p
+                                        v-if="form.errors.subcity_id"
+                                        v-text="form.errors.subcity_id"
+                                        class="mt-2 text-xs text-red-600"
+                                    ></p>
+                                </div>
+
+                                <!-- Special Place -->
+                                <div>
+                                    <label
+                                        for="special_place"
+                                        class="mb-2 block text-sm"
+                                        >Special Place</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="special_place"
+                                        v-model="form.special_place"
+                                        class="block w-full rounded-lg border-gray-200 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:py-3 sm:text-sm"
+                                    />
+                                    <p
+                                        v-if="form.errors.special_place"
+                                        v-text="form.errors.special_place"
+                                        class="mt-2 text-xs text-red-600"
+                                    ></p>
+                                </div>
 
                                 <!-- Form Group -->
                                 <div>
