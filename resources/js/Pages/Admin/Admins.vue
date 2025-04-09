@@ -119,6 +119,17 @@ function addAdmin() {
 
     showAddAdminModal.value = false;
 }
+
+const showChangeSecretModal = ref(false);
+const superadminSecret = ref('');
+
+function changeSuperadminSecret() {
+    router.put('/admin/superadmin-secret', {
+        secret: superadminSecret.value,
+    });
+    superadminSecret.value = '';
+    showChangeSecretModal.value = false;
+}
 </script>
 <template>
     <Head title="Admins" />
@@ -127,27 +138,35 @@ function addAdmin() {
         <div class="mx-auto w-full max-w-6xl px-4 py-6">
             <div class="mb-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-gray-800">Current Admins</h2>
-                <button
-                    @click="showAddAdminModal = true"
-                    class="inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="h-4 w-4"
+                <div class="flex items-center justify-between gap-x-2">
+                    <button
+                        @click="showChangeSecretModal = true"
+                        class="inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
                     >
-                        <path d="M5 12h14"></path>
-                        <path d="M12 5v14"></path>
-                    </svg>
-                    Add Admin
-                </button>
+                        Change superadmin secret
+                    </button>
+                    <button
+                        @click="showAddAdminModal = true"
+                        class="inline-flex items-center gap-x-2 rounded-lg border border-transparent bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="h-4 w-4"
+                        >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                        </svg>
+                        Add Admin
+                    </button>
+                </div>
             </div>
 
             <div class="mb-6">
@@ -624,6 +643,78 @@ function addAdmin() {
             </div>
         </div>
     </div>
+
+    <!-- Change Superadmin Secret Modal -->
+    <div
+        v-if="showChangeSecretModal"
+        class="fixed inset-0 z-50 overflow-y-auto"
+        aria-labelledby="modal-title"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div
+            class="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0"
+        >
+            <!-- Background overlay -->
+            <div
+                class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                @click="showChangeSecretModal = false"
+            ></div>
+
+            <!-- Modal panel -->
+            <div
+                class="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
+            >
+                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left"
+                        >
+                            <h3
+                                class="text-lg font-medium leading-6 text-gray-900"
+                                id="modal-title"
+                            >
+                                Change Superadmin Secret
+                            </h3>
+                            <div class="mt-4">
+                                <label
+                                    for="superadmin-secret"
+                                    class="block text-sm font-medium text-gray-700"
+                                >
+                                    New Secret
+                                </label>
+                                <input
+                                    type="password"
+                                    id="superadmin-secret"
+                                    v-model="superadminSecret"
+                                    class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6"
+                >
+                    <button
+                        type="button"
+                        @click="changeSuperadminSecret"
+                        class="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                    >
+                        Save Secret
+                    </button>
+                    <button
+                        type="button"
+                        @click="showChangeSecretModal = false"
+                        class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Change Superadmin Secret Modal -->
 
     <!-- Confirmation Modal -->
     <div

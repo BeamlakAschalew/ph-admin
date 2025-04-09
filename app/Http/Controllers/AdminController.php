@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\AdminSecret;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -173,6 +174,28 @@ class AdminController extends Controller {
             return redirect()->back()->with('message', ['name' => 'Admin permanently deleted successfully.', 'type' => 'success']);
         } catch (Exception $e) {
             return redirect()->back()->with('message', ['name' => 'An error occurred while permanently deleting the admin.', 'type' => 'error']);
+        }
+    }
+
+    public function updateSuperAdminSecret(Request $request) {
+        try {
+            $request->validate([
+                'secret' => 'required|string|min:8',
+            ]);
+
+            $secret = $request->input('secret');
+
+            $existingSecret = AdminSecret::first();
+
+            if ($existingSecret) {
+                $existingSecret->update(['secret' => $secret]);
+            } else {
+                AdminSecret::create(['secret' => $secret]);
+            }
+
+            return redirect()->back()->with('message', ['name' => 'Super Admin secret updated successfully.', 'type' => 'success']);
+        } catch (Exception $e) {
+            return redirect()->back()->with('message', ['name' => 'An error occurred while updating the Super Admin secret.', 'type' => 'error']);
         }
     }
 }

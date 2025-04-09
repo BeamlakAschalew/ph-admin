@@ -55,6 +55,8 @@ Route::prefix('admin')->group(function () {
         Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
         Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
         Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+
+        Route::put('/superadmin-secret', [AdminController::class, 'updateSuperAdminSecret']);
     });
 });
 
