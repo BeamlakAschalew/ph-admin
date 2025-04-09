@@ -26,11 +26,25 @@ class HandleInertiaRequests extends Middleware {
      * @return array<string, mixed>
      */
     public function share(Request $request): array {
+        $user = $request->user();
+        $role = null;
+
+        if ($user) {
+            // Check roles based on the guard
+            if (auth()->guard('admin')->check()) {
+                $role = $user->getRoleNames()?->first();
+            } elseif (auth()->guard('consumer')->check()) {
+                $role = $user->getRoleNames()?->first();
+            } elseif (auth()->guard('supplier')->check()) {
+                $role = $user->getRoleNames()?->first();
+            }
+        }
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
                 'user_role' => $request->user() ? $request->user()->getRoleNames()?->first() : null,
+                'user_type' => $role
             ],
             'flash' => [
                 'message' => $request->session()->get('message'),
