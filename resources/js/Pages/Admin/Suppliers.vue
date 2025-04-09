@@ -23,12 +23,13 @@ watch(
     },
 );
 
+const selectedSubcity = ref(null);
 const searchQuery = ref(props.filters.search);
 
 const debouncedSearch = debounce((query) => {
     router.get(
         '/admin/suppliers',
-        { search: query },
+        { search: query, subcity_id: selectedSubcity.value },
         {
             preserveState: true,
             replace: true,
@@ -157,13 +158,36 @@ function addSupplier() {
             </div>
 
             <!-- Search Bar -->
-            <div class="mb-6">
+            <div class="mb-6 flex">
                 <input
                     type="text"
                     v-model="searchQuery"
                     class="block w-full rounded-lg border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Search users..."
+                    placeholder="Search suppliers..."
                 />
+                <select
+                    v-model="selectedSubcity"
+                    @change="
+                        router.get(
+                            '/admin/suppliers',
+                            {
+                                search: searchQuery,
+                                subcity_id: selectedSubcity,
+                            },
+                            { preserveState: true, replace: true },
+                        )
+                    "
+                    class="ml-2 block w-48 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-300"
+                >
+                    <option :value="null" selected>All</option>
+                    <option
+                        v-for="subcity in subcities"
+                        :key="subcity.id"
+                        :value="subcity.id"
+                    >
+                        {{ subcity.subcity_name }}
+                    </option>
+                </select>
             </div>
 
             <!-- Suppliers Table -->
@@ -286,6 +310,7 @@ function addSupplier() {
                                             Edit
                                         </button>
                                         <button
+                                            v-if="false"
                                             @click="
                                                 confirmRemoveSupplier(
                                                     supplier.id,

@@ -196,6 +196,10 @@ function addConsumer() {
                                     Status
                                 </th>
                                 <th
+                                    v-if="
+                                        $page.props.auth.user_role ===
+                                        'superadmin'
+                                    "
                                     scope="col"
                                     class="px-6 py-3 text-end text-xs font-medium uppercase text-gray-500"
                                 >
@@ -267,6 +271,10 @@ function addConsumer() {
                                     </span>
                                 </td>
                                 <td
+                                    v-if="
+                                        $page.props.auth.user_role ===
+                                        'superadmin'
+                                    "
                                     class="whitespace-nowrap px-6 py-4 text-end"
                                 >
                                     <div class="flex justify-end gap-2">
@@ -277,6 +285,7 @@ function addConsumer() {
                                             Edit
                                         </button>
                                         <button
+                                            v-if="false"
                                             @click="
                                                 confirmRemoveConsumer(
                                                     consumer.id,

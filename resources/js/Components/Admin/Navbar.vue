@@ -96,7 +96,10 @@ const dynamicNavClass = (page) =>
                         >Admins</Link
                     >
 
-                    <div class="hs-dropdown relative inline-flex">
+                    <div
+                        v-if="$page.props.auth.user_role === 'superadmin'"
+                        class="hs-dropdown relative inline-flex"
+                    >
                         <button
                             id="hs-dropdown-default"
                             type="button"

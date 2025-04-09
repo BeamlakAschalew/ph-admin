@@ -17,9 +17,13 @@ class SupplierController extends Controller {
             'suppliers' => Supplier::withTrashed()->with('subcity')
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
-                        $query->where('first_name', 'like', "%{$search}%")
-                            ->orWhere('last_name', 'like', "%{$search}%");
+                        $query->where('institution_name', 'like', "%{$search}%");
                     });
+                })
+                ->when($request->input('subcity_id'), function ($query, $subcityId) {
+                    if ($subcityId !== null) {
+                        $query->where('subcity_id', $subcityId);
+                    }
                 })
                 ->orderBy('updated_at', 'desc')
                 ->paginate(10)
