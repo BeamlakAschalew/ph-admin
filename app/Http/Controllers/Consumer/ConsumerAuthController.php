@@ -17,6 +17,29 @@ class ConsumerAuthController extends Controller {
         ]);
     }
 
+    public function showLogin() {
+        return Inertia::render('Consumer/Auth/Login');
+    }
+
+    public function login(Request $request) {
+        $request->validate([
+            'phone' => 'required',
+            'password' => 'required'
+        ]);
+
+        $phone = Consumer::normalizePhoneNumber($request->phone);
+
+        if (!$phone) {
+            return back()->withErrors(['phone' => 'Invalid phone number format']);
+        }
+
+        if (Auth::guard('consumer')->attempt(['primary_phone' => $phone, 'password' => $request->password], true) || Auth::guard('consumer')->attempt(['secondary_phone' => $phone, 'password' => $request->password], true)) {
+            return redirect()->route('home');
+        }
+
+        return back()->withErrors(['phone' => 'Invalid password or phone number']);
+    }
+
     public function register(Request $request) {
         $request->validate([
             'first_name' => 'required|string|max:255',
@@ -63,8 +86,13 @@ class ConsumerAuthController extends Controller {
             'license_number' => $request->license_number,
         ]);
 
-        Auth::login($consumer, true);
+        Auth::guard('consumer')->login($consumer, true);
 
         return redirect()->route('home');
+    }
+
+    public function logout() {
+        Auth::guard('consumer')->logout();
+        return redirect()->route('consumer.login');
     }
 }

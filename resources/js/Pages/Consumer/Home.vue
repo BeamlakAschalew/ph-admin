@@ -1,3 +1,79 @@
+<script setup>
+import { router, useForm, usePage } from '@inertiajs/vue3';
+import { debounce } from 'lodash';
+import {
+    MenuIcon,
+    PackageXIcon,
+    PillIcon,
+    SearchIcon,
+    ShoppingCartIcon,
+    XIcon,
+} from 'lucide-vue-next';
+import { ref, watch } from 'vue';
+
+// State
+const cartCount = ref(0);
+const isMenuOpen = ref(false);
+const user = usePage().props.auth.user;
+
+const props = defineProps({
+    products: Object,
+    filters: Object,
+    units: Array,
+});
+
+const localProducts = ref(props.products?.data || []);
+
+watch(
+    () => props.products,
+    (newProducts) => {
+        localProducts.value = newProducts?.data || [];
+    },
+);
+
+const searchQuery = ref(props.filters?.search || '');
+
+const debouncedSearch = debounce((query) => {
+    router.get(
+        '/',
+        { search: query },
+        {
+            preserveState: true,
+            replace: true,
+            except: ['units'],
+        },
+    );
+}, 300);
+
+watch(searchQuery, (newQuery) => {
+    debouncedSearch(newQuery);
+});
+
+// Methods
+const toggleMenu = () => {
+    isMenuOpen.value = !isMenuOpen.value;
+};
+
+const addToCart = (product) => {
+    cartCount.value++;
+    // Show a toast notification
+    alert(`Added ${product.name} (${product.unit}) to cart!`);
+};
+
+const goToCheckout = () => {
+    if (cartCount.value > 0) {
+        alert('Proceeding to checkout...');
+    } else {
+        alert('Your cart is empty!');
+    }
+};
+
+const logout = () => {
+    let logout = useForm();
+    logout.post('/logout');
+};
+</script>
+
 <template>
     <div class="flex min-h-screen flex-col bg-gray-50">
         <!-- Header -->
@@ -10,7 +86,7 @@
             >
                 <div class="mr-5 flex items-center justify-between">
                     <a
-                        class="text-primary flex-none py-4 text-xl font-semibold"
+                        class="flex-none py-4 text-xl font-semibold text-blue-600"
                         href="#"
                         aria-label="PH"
                     >
@@ -20,7 +96,7 @@
                     <div class="sm:hidden">
                         <button
                             type="button"
-                            class="focus:ring-primary inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 p-2 text-sm text-gray-600 transition-all hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                            class="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 p-2 text-sm text-gray-600 transition-all hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
                             @click="toggleMenu"
                             aria-controls="navbar-collapse"
                             :aria-expanded="isMenuOpen"
@@ -48,18 +124,74 @@
                             <input
                                 v-model="searchQuery"
                                 type="search"
-                                class="focus:ring-primary focus:border-primary block w-full rounded-full border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 transition-all duration-300"
+                                class="block w-full rounded-full border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-blue-600"
                                 placeholder="Search medications..."
                             />
                         </div>
 
                         <button
-                            class="bg-primary hover:bg-primary-dark mb-6 inline-flex items-center gap-x-2 rounded-full border border-transparent px-4 py-2 text-sm font-semibold text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 sm:mb-0"
+                            class="mb-6 inline-flex items-center gap-x-2 rounded-full border border-transparent bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-700 disabled:pointer-events-none disabled:opacity-50 sm:mb-0"
                             @click="goToCheckout"
                         >
                             <ShoppingCartIcon class="h-4 w-4" />
                             Checkout ({{ cartCount }})
                         </button>
+
+                        <div
+                            class="hs-dropdown relative inline-flex [--placement:bottom-right]"
+                        >
+                            <button
+                                id="hs-dropdown-account"
+                                type="button"
+                                class="focus:outline-hidden inline-flex h-10 w-10 items-center justify-center gap-x-2 rounded-full border border-transparent text-sm font-semibold text-gray-800 disabled:pointer-events-none disabled:opacity-50 dark:text-white"
+                                aria-haspopup="menu"
+                                aria-expanded="false"
+                                aria-label="Dropdown"
+                            >
+                                <span
+                                    class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500 font-semibold text-white"
+                                >
+                                    {{ user.first_name[0]
+                                    }}{{ user.last_name[0] }}
+                                </span>
+                            </button>
+
+                            <div
+                                class="hs-dropdown-menu duration mt-2 hidden min-w-60 rounded-lg bg-white opacity-0 shadow-md transition-[opacity,margin] before:absolute before:-top-4 before:start-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:start-0 after:h-4 after:w-full hs-dropdown-open:opacity-100"
+                                role="menu"
+                                aria-orientation="vertical"
+                                aria-labelledby="hs-dropdown-account"
+                            >
+                                <div class="rounded-t-lg bg-gray-100 px-5 py-3">
+                                    <p class="text-sm text-gray-500">
+                                        Signed in as
+                                    </p>
+                                    <p
+                                        class="text-sm font-medium text-gray-800"
+                                    >
+                                        {{ user.first_name }} +251{{
+                                            user.primary_phone
+                                        }}
+                                    </p>
+                                </div>
+                                <div class="space-y-0.5 p-1.5">
+                                    <a
+                                        class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                    >
+                                        Edit profile
+                                    </a>
+                                    <form @submit.prevent="logout">
+                                        <button
+                                            href="#"
+                                            class="focus:outline-hidden</form> flex w-full items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
+                                        >
+                                            Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Profile Dropdown -->
                     </div>
                 </div>
             </nav>
@@ -67,7 +199,7 @@
 
         <!-- Hero Section -->
         <div
-            class="relative overflow-hidden before:absolute before:start-1/2 before:top-0 before:-z-[1] before:size-full before:-translate-x-1/2 before:transform before:bg-[url('https://preline.co/assets/svg/component/polygon-bg-element.svg')] before:bg-top before:bg-no-repeat"
+            class="relative overflow-hidden before:absolute before:start-1/2 before:top-0 before:-z-[1] before:h-full before:w-full before:-translate-x-1/2 before:transform before:bg-[url('https://preline.co/assets/svg/component/polygon-bg-element.svg')] before:bg-top before:bg-no-repeat"
         >
             <div
                 class="mx-auto max-w-[85rem] px-4 pb-2 pt-1 sm:px-6 lg:px-8 lg:pb-10 lg:pt-16"
@@ -101,12 +233,12 @@
                                 v-model="searchQuery"
                                 type="text"
                                 id="hero-search"
-                                class="focus:border-primary focus:ring-primary block w-full rounded-full border-gray-200 px-4 py-3 text-sm shadow-sm transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
+                                class="block w-full rounded-full border-gray-200 px-4 py-3 text-sm shadow-sm transition-all duration-300 focus:border-blue-600 focus:ring-blue-600 disabled:pointer-events-none disabled:opacity-50"
                                 placeholder="Search for medications..."
                             />
                         </div>
                         <button
-                            class="bg-primary hover:bg-primary-dark hidden w-full items-center justify-center gap-x-2 rounded-full border border-transparent px-4 py-3 text-sm font-semibold text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50 sm:w-auto lg:inline-flex"
+                            class="hidden w-full items-center justify-center gap-x-2 rounded-full border border-transparent bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-700 disabled:pointer-events-none disabled:opacity-50 sm:w-auto lg:inline-flex"
                         >
                             <SearchIcon class="h-4 w-4" />
                             Search
@@ -134,16 +266,7 @@
                 </div>
 
                 <div
-                    v-if="loading"
-                    class="flex items-center justify-center py-12"
-                >
-                    <div
-                        class="border-primary h-12 w-12 animate-spin rounded-full border-4 border-r-transparent"
-                    ></div>
-                </div>
-
-                <div
-                    v-else-if="paginatedProducts.length === 0"
+                    v-if="localProducts.length === 0"
                     class="mx-auto max-w-sm py-12 text-center"
                 >
                     <PackageXIcon
@@ -162,7 +285,7 @@
                         class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4"
                     >
                         <div
-                            v-for="product in paginatedProducts"
+                            v-for="product in localProducts"
                             :key="product.id"
                             class="group flex h-full w-full flex-col rounded-xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:shadow-md"
                         >
@@ -173,15 +296,15 @@
                                     <h3
                                         class="group-hover:text-primary text-xl font-semibold text-gray-800 transition-colors duration-300"
                                     >
-                                        {{ product.name }}
+                                        {{ product.product_name }}
                                     </h3>
                                     <p class="mt-2 text-gray-500">
-                                        {{ product.unit }}
+                                        {{ product.unit.unit_name }}
                                     </p>
                                 </div>
                                 <button
                                     @click="addToCart(product)"
-                                    class="bg-primary hover:bg-primary-dark inline-flex items-center justify-center rounded-lg border border-transparent p-3 text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
+                                    class="hover:bg-primary-dark inline-flex items-center justify-center rounded-lg border border-transparent bg-blue-700 p-3 text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
                                 >
                                     <ShoppingCartIcon class="h-5 w-5" />
                                 </button>
@@ -190,50 +313,42 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="mt-12 flex justify-center">
-                        <nav class="flex items-center gap-x-1">
-                            <button
-                                @click="
-                                    currentPage = Math.max(1, currentPage - 1)
-                                "
-                                :disabled="currentPage === 1"
-                                class="flex size-8 items-center justify-center rounded-full text-gray-800 transition-all duration-300 hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50"
-                                aria-label="Previous"
+                    <nav
+                        class="mt-5 flex items-center justify-center space-x-2"
+                        aria-label="Pagination"
+                    >
+                        <template
+                            v-if="products.links && products.links.length"
+                        >
+                            <template
+                                v-for="(link, index) in products.links"
+                                :key="index"
                             >
-                                <ChevronLeftIcon class="h-4 w-4" />
-                            </button>
-
-                            <div class="flex items-center gap-x-1">
-                                <button
-                                    v-for="page in totalPages"
-                                    :key="page"
-                                    @click="currentPage = page"
+                                <Link
+                                    v-if="link.url"
+                                    :href="link.url"
+                                    preserve-state
+                                    preserve-scroll
                                     :class="[
-                                        'flex size-8 items-center justify-center rounded-full transition-all duration-300',
-                                        currentPage === page
-                                            ? 'bg-primary hover:bg-primary-dark text-white'
-                                            : 'text-gray-800 hover:bg-gray-100',
+                                        'flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-all',
+                                        link.active
+                                            ? 'bg-blue-600 text-white shadow-md'
+                                            : 'bg-gray-100 text-gray-800 hover:bg-blue-100 hover:text-blue-600',
                                     ]"
                                 >
-                                    {{ page }}
-                                </button>
-                            </div>
-
-                            <button
-                                @click="
-                                    currentPage = Math.min(
-                                        totalPages,
-                                        currentPage + 1,
-                                    )
-                                "
-                                :disabled="currentPage === totalPages"
-                                class="flex size-8 items-center justify-center rounded-full text-gray-800 transition-all duration-300 hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50"
-                                aria-label="Next"
-                            >
-                                <ChevronRightIcon class="h-4 w-4" />
-                            </button>
-                        </nav>
-                    </div>
+                                    <span v-html="link.label"></span>
+                                </Link>
+                                <span
+                                    v-else
+                                    v-html="link.label"
+                                    :class="[
+                                        'flex items-center justify-center rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-500',
+                                    ]"
+                                ></span>
+                            </template>
+                        </template>
+                    </nav>
+                    <!-- End Pagination -->
                 </div>
             </div>
 
@@ -377,161 +492,3 @@
         </footer>
     </div>
 </template>
-
-<script setup>
-import {
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    MenuIcon,
-    PackageXIcon,
-    PillIcon,
-    SearchIcon,
-    ShoppingCartIcon,
-    XIcon,
-} from 'lucide-vue-next';
-import { computed, onMounted, ref, watch } from 'vue';
-
-// State
-const searchQuery = ref('');
-const currentPage = ref(1);
-const itemsPerPage = 8;
-const loading = ref(false);
-const cartCount = ref(0);
-const isMenuOpen = ref(false);
-
-// Methods
-const toggleMenu = () => {
-    isMenuOpen.value = !isMenuOpen.value;
-};
-
-const addToCart = (product) => {
-    cartCount.value++;
-    // Show a toast notification
-    alert(`Added ${product.name} (${product.unit}) to cart!`);
-};
-
-const goToCheckout = () => {
-    if (cartCount.value > 0) {
-        alert('Proceeding to checkout...');
-    } else {
-        alert('Your cart is empty!');
-    }
-};
-
-// Mock data for products - simplified to just the measurement unit without form description
-const allProducts = ref([
-    { id: 1, name: 'Paracetamol', unit: '500mg' },
-    { id: 2, name: 'Amoxicillin', unit: '250mg' },
-    { id: 3, name: 'Vitamin D3', unit: '1000IU' },
-    { id: 4, name: 'Omeprazole', unit: '20mg' },
-    { id: 5, name: 'Cetirizine', unit: '10mg' },
-    { id: 6, name: 'Metformin', unit: '500mg' },
-    { id: 7, name: 'Ibuprofen', unit: '200mg' },
-    { id: 8, name: 'Omega-3', unit: '1000mg' },
-    { id: 9, name: 'Loratadine', unit: '10mg' },
-    { id: 10, name: 'Probiotic Complex', unit: '50B CFU' },
-    { id: 11, name: 'Atorvastatin', unit: '10mg' },
-    { id: 12, name: 'Melatonin', unit: '5mg' },
-    { id: 13, name: 'Multivitamin', unit: 'Daily' },
-    { id: 14, name: 'Aspirin', unit: '81mg' },
-    { id: 15, name: 'Calcium', unit: '600mg' },
-    { id: 16, name: 'Lisinopril', unit: '10mg' },
-    { id: 17, name: 'Zinc', unit: '50mg' },
-    { id: 18, name: 'Magnesium', unit: '400mg' },
-    { id: 19, name: 'Folic Acid', unit: '400mcg' },
-    { id: 20, name: 'Vitamin C', unit: '1000mg' },
-]);
-
-// Computed properties
-const filteredProducts = computed(() => {
-    if (!searchQuery.value.trim()) return [];
-
-    const query = searchQuery.value.toLowerCase();
-    return allProducts.value.filter(
-        (product) =>
-            product.name.toLowerCase().includes(query) ||
-            product.unit.toLowerCase().includes(query),
-    );
-});
-
-const totalPages = computed(() => {
-    return Math.ceil(filteredProducts.value.length / itemsPerPage);
-});
-
-const paginatedProducts = computed(() => {
-    const startIndex = (currentPage.value - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return filteredProducts.value.slice(startIndex, endIndex);
-});
-
-// Watchers
-watch(searchQuery, () => {
-    currentPage.value = 1;
-    loading.value = true;
-    setTimeout(() => {
-        loading.value = false;
-    }, 500);
-});
-
-watch(filteredProducts, () => {
-    if (currentPage.value > totalPages.value && totalPages.value > 0) {
-        currentPage.value = totalPages.value;
-    }
-});
-
-// Lifecycle hooks
-onMounted(() => {
-    // Simulate initial loading
-    loading.value = true;
-    setTimeout(() => {
-        loading.value = false;
-    }, 1000);
-});
-</script>
-
-<style>
-:root {
-    --color-primary: #2563eb;
-    --color-primary-dark: #1d4ed8;
-}
-
-.text-primary {
-    color: var(--color-primary);
-}
-
-.bg-primary {
-    background-color: var(--color-primary);
-}
-
-.bg-primary-dark {
-    background-color: var(--color-primary-dark);
-}
-
-.hover\:bg-primary-dark:hover {
-    background-color: var(--color-primary-dark);
-}
-
-.focus\:ring-primary:focus {
-    --tw-ring-color: var(--color-primary);
-}
-
-.size-8 {
-    width: 2rem;
-    height: 2rem;
-}
-
-.size-10 {
-    width: 2.5rem;
-    height: 2.5rem;
-}
-
-.size-12 {
-    width: 3rem;
-    height: 3rem;
-}
-
-.size-4 {
-    width: 1rem;
-    height: 1rem;
-}
-</style>

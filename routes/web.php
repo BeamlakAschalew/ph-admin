@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Consumer\ConsumerAuthController;
+use App\Http\Controllers\Consumer\HomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -63,6 +64,7 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('/')->group(function () {
+
     Route::group(['middleware' => ['consumer.guest']], function () {
         Route::get('/login', [ConsumerAuthController::class, 'showLogin'])->name('consumer.login');
         Route::post('/login', [ConsumerAuthController::class, 'login']);
@@ -72,8 +74,8 @@ Route::prefix('/')->group(function () {
     });
 
     Route::group(['middleware' => ['consumer.authenticated']], function () {
-        Route::get('/', function () {
-            return Inertia::render('Consumer/Home');
-        })->name('home');
+        Route::get('/', [HomeController::class, 'index'])->name('home');
+
+        Route::post('/logout', [ConsumerAuthController::class, 'logout'])->name('consumer.logout');
     });
 });

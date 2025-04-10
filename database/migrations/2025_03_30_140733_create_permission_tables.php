@@ -122,13 +122,12 @@ return new class extends Migration {
             $table->primary([$pivotPermission, $pivotRole], 'role_has_permissions_permission_id_role_id_primary');
         });
 
-        $admin = Role::create(['name' => 'admin']);
-        $superadmin = Role::create(['name' => 'superadmin']);
+        $admin = Role::create(['name' => 'admin', 'guard_name' => 'admin']);
+        $superadmin = Role::create(['name' => 'superadmin', 'guard_name' => 'admin']);
 
-        $modifyAdmins = Permission::create(['name' => 'modifyAdmins']);
-        $modifyConsumers = Permission::create(['name' => 'modifyConsumers']);
-        $modifySuppliers = Permission::create(['name' => 'modifySuppliers']);
-
+        $modifyAdmins = Permission::create(['name' => 'modifyAdmins', 'guard_name' => 'admin']);
+        $modifyConsumers = Permission::create(['name' => 'modifyConsumers', 'guard_name' => 'admin']);
+        $modifySuppliers = Permission::create(['name' => 'modifySuppliers', 'guard_name' => 'admin']);
 
         $modifyAdmins->assignRole($superadmin);
         $modifyConsumers->assignRole($superadmin);

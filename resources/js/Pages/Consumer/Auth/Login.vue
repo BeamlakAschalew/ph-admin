@@ -6,7 +6,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post('/admin/login');
+    form.post('/login');
 };
 </script>
 
@@ -26,7 +26,7 @@ const submit = () => {
                             Don't have an account yet?
                             <Link
                                 class="focus:outline-hidden font-medium text-blue-600 decoration-2 hover:underline focus:underline"
-                                href="/admin/signup"
+                                href="/signup"
                             >
                                 Sign up here
                             </Link>

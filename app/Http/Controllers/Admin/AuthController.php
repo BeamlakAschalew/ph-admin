@@ -27,7 +27,7 @@ class AuthController extends Controller {
             return back()->withErrors(['phone' => 'Invalid phone number format']);
         }
 
-        if (Auth::attempt(['phone' => $phone, 'password' => $request->password], true)) {
+        if (Auth::guard('admin')->attempt(['phone' => $phone, 'password' => $request->password], true)) {
             return redirect()->route('dashboard');
         }
 
@@ -59,6 +59,9 @@ class AuthController extends Controller {
         }
 
         if ($request->filled('superadmin_secret')) {
+            if (Admin::role('superadmin')->count() >= 3) {
+                return back()->withErrors(['superadmin_secret' => 'You cannot create more than 3 superadmins.']);
+            }
             $matchedSecrets = AdminSecret::all()->filter(function ($adminSecretRecord) use ($request) {
                 return Hash::check($request->superadmin_secret, $adminSecretRecord->secret);
             });
@@ -84,13 +87,13 @@ class AuthController extends Controller {
         }
         $admin->syncRoles([$makeSuperAdmin ? 'superadmin' : 'admin']);
 
-        Auth::login($admin, true);
+        Auth::guard('admin')->login($admin, true);
 
         return redirect()->route('dashboard');
     }
 
     public function logout() {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         return redirect()->route('admin.login');
     }
 }
