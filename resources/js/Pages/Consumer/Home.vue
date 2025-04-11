@@ -299,7 +299,7 @@ const logout = () => {
                                         {{ product.product_name }}
                                     </h3>
                                     <p class="mt-2 text-gray-500">
-                                        {{ product.unit.unit_name }}
+                                        {{ product.unit?.unit_name ?? 'None' }}
                                     </p>
                                 </div>
                                 <button
