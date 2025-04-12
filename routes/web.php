@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Consumer\ConsumerAuthController;
 use App\Http\Controllers\Consumer\HomeController;
+use App\Http\Controllers\Consumer\OrderController as ConsumerOrderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -75,6 +76,8 @@ Route::prefix('/')->group(function () {
 
     Route::group(['middleware' => ['consumer.authenticated']], function () {
         Route::get('/', [HomeController::class, 'index'])->name('home');
+
+        Route::post('/checkout', [ConsumerOrderController::class, 'checkout']);
 
         Route::post('/logout', [ConsumerAuthController::class, 'logout'])->name('consumer.logout');
     });

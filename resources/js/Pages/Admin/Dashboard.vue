@@ -416,7 +416,7 @@ const getStatusBadgeClass = (status) => {
                                                 class="bg-gray-50"
                                             >
                                                 <td
-                                                    colspan="5"
+                                                    colspan="6"
                                                     class="px-6 py-4"
                                                 >
                                                     <div
@@ -453,44 +453,134 @@ const getStatusBadgeClass = (status) => {
                                                             <tbody
                                                                 class="divide-y divide-gray-200"
                                                             >
-                                                                <tr
-                                                                    v-for="product in order.items"
-                                                                    :key="
-                                                                        product.product_id
+                                                                <template
+                                                                    v-if="
+                                                                        order
+                                                                            .items
+                                                                            .length ===
+                                                                        0
                                                                     "
-                                                                    class="hover:bg-gray-100"
                                                                 >
-                                                                    <td
-                                                                        class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                    <tr>
+                                                                        <td
+                                                                            colspan="3"
+                                                                            class="px-6 py-2 text-center text-sm text-gray-500"
+                                                                        >
+                                                                            No
+                                                                            products
+                                                                            found.
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
+                                                                <template
+                                                                    v-else
+                                                                >
+                                                                    <tr
+                                                                        v-for="product in order.items"
+                                                                        :key="
+                                                                            product.product_id
+                                                                        "
+                                                                        class="hover:bg-gray-100"
                                                                     >
-                                                                        {{
-                                                                            product
-                                                                                .product
-                                                                                .product_name
-                                                                        }}
-                                                                    </td>
-                                                                    <td
-                                                                        class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                        <td
+                                                                            class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                        >
+                                                                            {{
+                                                                                product
+                                                                                    .product
+                                                                                    .product_name
+                                                                            }}
+                                                                        </td>
+                                                                        <td
+                                                                            class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                        >
+                                                                            {{
+                                                                                product
+                                                                                    .product
+                                                                                    .unit
+                                                                                    ? product
+                                                                                          .product
+                                                                                          .unit
+                                                                                          .unit_name
+                                                                                    : 'None'
+                                                                            }}
+                                                                        </td>
+                                                                        <td
+                                                                            class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                        >
+                                                                            {{
+                                                                                product.quantity
+                                                                            }}
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
+                                                            </tbody>
+
+                                                            <!-- Divider -->
+                                                            <tr>
+                                                                <td
+                                                                    colspan="3"
+                                                                    class="bg-gray-200 px-6 py-2 text-sm font-semibold text-gray-700"
+                                                                >
+                                                                    Custom
+                                                                    Products
+                                                                </td>
+                                                            </tr>
+
+                                                            <tbody
+                                                                class="divide-y divide-gray-200"
+                                                            >
+                                                                <template
+                                                                    v-if="
+                                                                        order
+                                                                            .custom_items
+                                                                            .length ===
+                                                                        0
+                                                                    "
+                                                                >
+                                                                    <tr>
+                                                                        <td
+                                                                            colspan="3"
+                                                                            class="px-6 py-2 text-center text-sm text-gray-500"
+                                                                        >
+                                                                            No
+                                                                            custom
+                                                                            products
+                                                                            found.
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
+                                                                <template
+                                                                    v-else
+                                                                >
+                                                                    <tr
+                                                                        v-for="product in order.custom_items"
+                                                                        :key="
+                                                                            product.id
+                                                                        "
+                                                                        class="hover:bg-gray-100"
                                                                     >
-                                                                        {{
-                                                                            product
-                                                                                .product
-                                                                                .unit
-                                                                                ? product
-                                                                                      .product
-                                                                                      .unit
-                                                                                      .unit_name
-                                                                                : 'None'
-                                                                        }}
-                                                                    </td>
-                                                                    <td
-                                                                        class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
-                                                                    >
-                                                                        {{
-                                                                            product.quantity
-                                                                        }}
-                                                                    </td>
-                                                                </tr>
+                                                                        <td
+                                                                            class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                        >
+                                                                            {{
+                                                                                product.product_name
+                                                                            }}
+                                                                        </td>
+                                                                        <td
+                                                                            class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                        >
+                                                                            None
+                                                                        </td>
+                                                                        <td
+                                                                            class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
+                                                                        >
+                                                                            {{
+                                                                                product.quantity
+                                                                            }}
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
                                                             </tbody>
                                                         </table>
                                                     </div>

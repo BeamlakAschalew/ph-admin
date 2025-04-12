@@ -15,6 +15,10 @@ class Order extends Model {
         return $this->hasMany(OrderItem::class);
     }
 
+    public function customItems() {
+        return $this->hasMany(CustomOrderItem::class);
+    }
+
     public function consumer() {
         return $this->belongsTo(Consumer::class);
     }

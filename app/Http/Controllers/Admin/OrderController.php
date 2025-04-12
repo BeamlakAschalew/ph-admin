@@ -12,15 +12,15 @@ class OrderController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
-    {
+    public function index(): Response {
         // dd(Order::with('consumer')->with('items.product')->get()->toArray());
         return Inertia::render('Admin/Dashboard', [
             'orders' => Order::with([
                 'consumer' => function ($query) {
                     $query->withTrashed()->with('subcity');
                 },
-                'items.product.unit'
+                'items.product.unit',
+                'customItems',
             ])
                 ->orderBy('created_at', 'desc')
                 ->paginate(15),

@@ -103,9 +103,21 @@ const placeOrder = () => {
         cartItems.value.customProducts.length > 0 ||
         cartItems.value.products.length > 0
     ) {
-        router.post('/checkout');
-        cartItems.value = [];
-        cartCount.value = 0;
+        router.post(
+            '/checkout',
+            {
+                products: cartItems.value.products,
+                customProducts: cartItems.value.customProducts,
+            },
+            {
+                onSuccess: () => {
+                    cartItems.value.products = [];
+                    cartItems.value.customProducts = [];
+                    isCheckoutModalOpen.value = false;
+                    cartCount.value = 0;
+                },
+            },
+        );
         isCheckoutModalOpen.value = false;
     } else {
         alert('Your cart is empty!');
