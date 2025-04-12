@@ -59,15 +59,56 @@ const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value;
 };
 
+const isCheckoutModalOpen = ref(false);
+
+const cartItems = ref({
+    products: [],
+    customProducts: [],
+});
+
+const toggleCheckoutModal = () => {
+    isCheckoutModalOpen.value = !isCheckoutModalOpen.value;
+};
+
 const addToCart = (product) => {
     cartCount.value++;
-    // Show a toast notification
-    alert(`Added ${product.name} (${product.unit}) to cart!`);
+    cartItems.value.products.push(product);
+};
+
+const addToCustomCart = (product) => {
+    cartCount.value++;
+    cartItems.value.customProducts.push(product);
+};
+
+const placeOrder = () => {
+    console.log(cartItems.value);
+    // if (cartItems.value.length > 0) {
+    //     cartItems.value = [];
+    //     cartCount.value = 0;
+    //     isCheckoutModalOpen.value = false;
+    // } else {
+    //     alert('Your cart is empty!');
+    // }
+};
+
+const newProduct = ref({ name: '', unit: '', quantity: 1 });
+
+const addCustomProductToCart = () => {
+    if (newProduct.value.name && newProduct.value.quantity > 0) {
+        addToCustomCart({
+            name: newProduct.value.name,
+            unit: newProduct.value.unit,
+            quantity: newProduct.value.quantity,
+        });
+        newProduct.value = { name: '', unit: '', quantity: 1 };
+    } else {
+        alert('Please fill in name.');
+    }
 };
 
 const goToCheckout = () => {
     if (cartCount.value > 0) {
-        alert('Proceeding to checkout...');
+        toggleCheckoutModal();
     } else {
         alert('Your cart is empty!');
     }
@@ -280,9 +321,35 @@ const logout = () => {
                     <h3 class="text-xl font-medium text-gray-800">
                         No products found
                     </h3>
-                    <p class="mt-2 text-gray-500">
-                        Try a different search term
-                    </p>
+                    <p class="mt-2 text-gray-500">Custom order it instead</p>
+                    <!-- Add Product Form -->
+                    <div class="mt-6">
+                        <input
+                            v-model="newProduct.name"
+                            type="text"
+                            placeholder="Product Name"
+                            class="mb-2 w-full rounded-md border-gray-300 p-2 text-sm"
+                        />
+                        <input
+                            v-model="newProduct.unit"
+                            type="text"
+                            placeholder="Unit"
+                            class="mb-2 w-full rounded-md border-gray-300 p-2 text-sm"
+                        />
+                        <input
+                            v-model="newProduct.quantity"
+                            type="number"
+                            min="1"
+                            placeholder="Quantity"
+                            class="mb-2 w-full rounded-md border-gray-300 p-2 text-sm"
+                        />
+                        <button
+                            class="w-full rounded-md bg-blue-600 px-4 py-2 text-sm text-white"
+                            @click="addCustomProductToCart"
+                        >
+                            Add to Cart
+                        </button>
+                    </div>
                 </div>
 
                 <div v-else>
@@ -308,7 +375,9 @@ const logout = () => {
                                     </p>
                                 </div>
                                 <button
-                                    @click="addToCart(product)"
+                                    @click="
+                                        addToCart({ ...product, quantity: 1 })
+                                    "
                                     class="hover:bg-primary-dark inline-flex items-center justify-center rounded-lg border border-transparent bg-blue-700 p-3 text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
                                 >
                                     <ShoppingCartIcon class="h-5 w-5" />
@@ -370,6 +439,98 @@ const logout = () => {
                 <p class="mt-2 text-gray-500">
                     Search for medications to see results
                 </p>
+            </div>
+        </div>
+
+        <!-- Checkout Modal -->
+        <div
+            v-if="isCheckoutModalOpen"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        >
+            <div class="w-full max-w-md rounded-lg bg-white p-6">
+                <h2 class="text-lg font-bold text-gray-800">Checkout</h2>
+                <ul class="mt-4 space-y-2">
+                    <li
+                        v-for="(item, index) in cartItems.products"
+                        :key="index"
+                        class="flex justify-between border-b pb-2"
+                    >
+                        <div>
+                            <span
+                                >{{ item.product_name }} ({{
+                                    item.unit?.unit_name || 'No unit'
+                                }})</span
+                            >
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button
+                                class="rounded-md bg-gray-200 px-2 py-1 text-sm text-gray-800"
+                                @click="
+                                    item.quantity = Math.max(
+                                        1,
+                                        item.quantity - 1,
+                                    )
+                                "
+                            >
+                                -
+                            </button>
+                            <span>x{{ item.quantity || 1 }}</span>
+                            <button
+                                class="rounded-md bg-gray-200 px-2 py-1 text-sm text-gray-800"
+                                @click="item.quantity++"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </li>
+                    <li
+                        v-for="(item, index) in cartItems.customProducts"
+                        :key="index"
+                        class="flex justify-between border-b pb-2"
+                    >
+                        <div>
+                            <span
+                                >{{ item.name }} ({{
+                                    item.unit || 'No unit'
+                                }})</span
+                            >
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button
+                                class="rounded-md bg-gray-200 px-2 py-1 text-sm text-gray-800"
+                                @click="
+                                    item.quantity = Math.max(
+                                        1,
+                                        item.quantity - 1,
+                                    )
+                                "
+                            >
+                                -
+                            </button>
+                            <span>x{{ item.quantity || 1 }}</span>
+                            <button
+                                class="rounded-md bg-gray-200 px-2 py-1 text-sm text-gray-800"
+                                @click="item.quantity++"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+                <div class="mt-6 flex justify-end gap-2">
+                    <button
+                        class="rounded-md bg-gray-200 px-4 py-2 text-sm text-gray-800"
+                        @click="toggleCheckoutModal"
+                    >
+                        Close
+                    </button>
+                    <button
+                        class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white"
+                        @click="placeOrder"
+                    >
+                        Place Order
+                    </button>
+                </div>
             </div>
         </div>
 
