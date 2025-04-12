@@ -20,7 +20,7 @@ class OrderController extends Controller {
                     $query->withTrashed()->with('subcity');
                 },
                 'items.product.unit',
-                'customItems',
+                'customItems.unit',
             ])
                 ->orderBy('created_at', 'desc')
                 ->paginate(15),

@@ -18,6 +18,7 @@ class OrderController extends Controller {
                 'customProducts' => 'array',
                 'customProducts.*.name' => 'required|string',
                 'customProducts.*.quantity' => 'integer|min:1',
+                'customProducts.*.unit' => 'nullable|integer|exists:product_units,id'
             ]);
 
             if (empty($cart['products']) && empty($cart['customProducts'])) {
@@ -45,6 +46,7 @@ class OrderController extends Controller {
                     'order_id' => $order->id,
                     'product_name' => $customProduct['name'],
                     'quantity' => $customProduct['quantity'],
+                    'product_unit_id' => $customProduct['unit'],
                 ]);
             }
 

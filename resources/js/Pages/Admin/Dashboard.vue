@@ -523,7 +523,7 @@ const getStatusBadgeClass = (status) => {
                                                                     class="bg-gray-200 px-6 py-2 text-sm font-semibold text-gray-700"
                                                                 >
                                                                     Custom
-                                                                    Products
+                                                                    orders
                                                                 </td>
                                                             </tr>
 
@@ -545,7 +545,7 @@ const getStatusBadgeClass = (status) => {
                                                                         >
                                                                             No
                                                                             custom
-                                                                            products
+                                                                            orders
                                                                             found.
                                                                         </td>
                                                                     </tr>
@@ -570,7 +570,12 @@ const getStatusBadgeClass = (status) => {
                                                                         <td
                                                                             class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"
                                                                         >
-                                                                            None
+                                                                            {{
+                                                                                product
+                                                                                    .unit
+                                                                                    ?.unit_name ??
+                                                                                'None'
+                                                                            }}
                                                                         </td>
                                                                         <td
                                                                             class="whitespace-nowrap px-6 py-2 text-sm text-gray-900"

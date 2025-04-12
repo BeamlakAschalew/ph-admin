@@ -75,14 +75,6 @@ const addToCart = (product) => {
     cartItems.value.products.push(product);
 };
 
-const addToCustomCart = (product) => {
-    cartCount.value++;
-    cartItems.value.customProducts.push({
-        ...product,
-        id: Date.now(), // Assign a unique ID to each custom product
-    });
-};
-
 const deleteCustomProduct = (id) => {
     cartItems.value.customProducts = cartItems.value.customProducts.filter(
         (item) => item.id !== id,
@@ -107,7 +99,10 @@ const placeOrder = () => {
             '/checkout',
             {
                 products: cartItems.value.products,
-                customProducts: cartItems.value.customProducts,
+                customProducts: cartItems.value.customProducts.map((item) => ({
+                    ...item,
+                    unit: item.unit?.id || null,
+                })),
             },
             {
                 onSuccess: () => {
@@ -128,14 +123,20 @@ const newProduct = ref({ name: '', unit: '', quantity: 1 });
 
 const addCustomProductToCart = () => {
     if (newProduct.value.name && newProduct.value.quantity > 0) {
-        addToCustomCart({
-            name: newProduct.value.name,
-            unit: newProduct.value.unit,
-            quantity: newProduct.value.quantity,
+        cartCount.value++;
+        cartItems.value.customProducts.push({
+            ...newProduct.value,
+            id: Date.now(),
+            unit:
+                newProduct.value.unit !== ''
+                    ? props.units.find(
+                          (unit) => unit.id === newProduct.value.unit,
+                      )
+                    : null,
         });
         newProduct.value = { name: '', unit: '', quantity: 1 };
     } else {
-        alert('Please fill in name.');
+        alert('Please fill in all fields.');
     }
 };
 
@@ -363,12 +364,19 @@ const logout = () => {
                             placeholder="Product Name"
                             class="mb-2 w-full rounded-md border-gray-300 p-2 text-sm"
                         />
-                        <input
+                        <select
                             v-model="newProduct.unit"
-                            type="text"
-                            placeholder="Unit"
                             class="mb-2 w-full rounded-md border-gray-300 p-2 text-sm"
-                        />
+                        >
+                            <option value="" disabled>Select Unit</option>
+                            <option
+                                v-for="unit in units"
+                                :key="unit.id"
+                                :value="unit.id"
+                            >
+                                {{ unit.unit_name }}
+                            </option>
+                        </select>
                         <input
                             v-model="newProduct.quantity"
                             type="number"
@@ -530,7 +538,7 @@ const logout = () => {
                         <div>
                             <span
                                 >{{ item.name }} ({{
-                                    item.unit || 'No unit'
+                                    item.unit?.unit_name || 'No unit'
                                 }})</span
                             >
                         </div>
