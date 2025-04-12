@@ -10,6 +10,11 @@ import {
     XIcon,
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import MainLayout from './MainLayout.vue';
+
+defineOptions({
+    layout: MainLayout,
+});
 
 // State
 const cartCount = ref(0);
