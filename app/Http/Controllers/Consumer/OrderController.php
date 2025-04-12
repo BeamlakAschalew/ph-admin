@@ -14,10 +14,10 @@ class OrderController extends Controller {
             $cart = $request->validate([
                 'products' => 'array',
                 'products.*.id' => 'exists:products,id',
-                'products.*.quantity' => 'integer|min:1',
+                'products.*.quantity' => 'required|string',
                 'customProducts' => 'array',
                 'customProducts.*.name' => 'required|string',
-                'customProducts.*.quantity' => 'integer|min:1',
+                'customProducts.*.quantity' => 'required|string',
                 'customProducts.*.unit' => 'nullable|integer|exists:product_units,id'
             ]);
 

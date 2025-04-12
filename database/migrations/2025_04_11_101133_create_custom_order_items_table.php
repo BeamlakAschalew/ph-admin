@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignIdFor(Order::class)->constrained()->onDelete('cascade');
             $table->string('product_name');
             $table->foreignIdFor(ProductUnit::class)->nullable()->constrained()->onDelete('set null');
-            $table->integer('quantity')->default(1);
+            $table->string('quantity');
             $table->timestamps();
         });
     }

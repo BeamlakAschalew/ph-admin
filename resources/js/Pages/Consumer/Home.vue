@@ -119,10 +119,10 @@ const placeOrder = () => {
     }
 };
 
-const newProduct = ref({ name: '', unit: '', quantity: 1 });
+const newProduct = ref({ name: '', unit: '', quantity: '' });
 
 const addCustomProductToCart = () => {
-    if (newProduct.value.name && newProduct.value.quantity > 0) {
+    if (newProduct.value.name && newProduct.value.quantity !== '') {
         cartCount.value++;
         cartItems.value.customProducts.push({
             ...newProduct.value,
@@ -134,7 +134,7 @@ const addCustomProductToCart = () => {
                       )
                     : null,
         });
-        newProduct.value = { name: '', unit: '', quantity: 1 };
+        newProduct.value = { name: '', unit: '', quantity: '' };
     } else {
         alert('Please fill in all fields.');
     }
@@ -381,7 +381,7 @@ const logout = () => {
                                 </div>
                                 <button
                                     @click="
-                                        addToCart({ ...product, quantity: 1 })
+                                        addToCart({ ...product, quantity: '' })
                                     "
                                     class="hover:bg-primary-dark inline-flex items-center justify-center rounded-lg border border-transparent bg-blue-700 p-3 text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
                                 >
@@ -472,8 +472,7 @@ const logout = () => {
                 </select>
                 <input
                     v-model="newProduct.quantity"
-                    type="number"
-                    min="1"
+                    type="text"
                     placeholder="Quantity"
                     class="mb-2 w-full rounded-md border-gray-300 p-2 text-sm"
                 />
@@ -508,10 +507,9 @@ const logout = () => {
                         </div>
                         <div class="flex items-center gap-2">
                             <input
-                                type="number"
+                                type="text"
                                 class="w-16 rounded-md border-gray-300 px-2 py-1 text-sm text-gray-800"
-                                v-model.number="item.quantity"
-                                :min="1"
+                                v-model="item.quantity"
                             />
                             <button
                                 class="rounded-md bg-red-500 px-2 py-1 text-sm text-white"
@@ -535,10 +533,9 @@ const logout = () => {
                         </div>
                         <div class="flex items-center gap-2">
                             <input
-                                type="number"
+                                type="text"
                                 class="w-16 rounded-md border-gray-300 px-2 py-1 text-sm text-gray-800"
-                                v-model.number="item.quantity"
-                                :min="1"
+                                v-model="item.quantity"
                             />
                             <button
                                 class="rounded-md bg-red-500 px-2 py-1 text-sm text-white"
