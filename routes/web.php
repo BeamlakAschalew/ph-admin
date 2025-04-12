@@ -74,11 +74,17 @@ Route::prefix('/')->group(function () {
         Route::post('/signup', [ConsumerAuthController::class, 'register']);
     });
 
-    Route::group(['middleware' => ['consumer.authenticated']], function () {
+    Route::group(['middleware' => ['consumer.authenticated', 'consumer.approved']], function () {
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
         Route::post('/checkout', [ConsumerOrderController::class, 'checkout']);
+    });
 
-        Route::post('/logout', [ConsumerAuthController::class, 'logout'])->name('consumer.logout');
+    Route::post('/logout', [ConsumerAuthController::class, 'logout'])->name('consumer.logout')->middleware('consumer.authenticated');
+
+    Route::group(['middleware' => ['consumer.authenticated', 'consumer.not-approved']], function () {
+        Route::get('/not-approved', function () {
+            return Inertia::render('Consumer/NotApproved');
+        });
     });
 });

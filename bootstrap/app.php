@@ -23,7 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'consumer.authenticated' => \App\Http\Middleware\ConsumerAuthenticated::class,
             'consumer.guest' => \App\Http\Middleware\ConsumerGuest::class,
             'admin.authenticated' => \App\Http\Middleware\AdminAuthenticated::class,
-            'admin.guest' => \App\Http\Middleware\AdminGuest::class
+            'admin.guest' => \App\Http\Middleware\AdminGuest::class,
+            'consumer.approved' => \App\Http\Middleware\ConsumerApproved::class,
+            'consumer.not-approved' => \App\Http\Middleware\ConsumerNotApproved::class,
         ]);
 
         //
