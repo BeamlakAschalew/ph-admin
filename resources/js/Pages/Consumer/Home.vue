@@ -77,18 +77,39 @@ const addToCart = (product) => {
 
 const addToCustomCart = (product) => {
     cartCount.value++;
-    cartItems.value.customProducts.push(product);
+    cartItems.value.customProducts.push({
+        ...product,
+        id: Date.now(), // Assign a unique ID to each custom product
+    });
+};
+
+const deleteCustomProduct = (id) => {
+    cartItems.value.customProducts = cartItems.value.customProducts.filter(
+        (item) => item.id !== id,
+    );
+    cartCount.value = Math.max(0, cartCount.value - 1);
+};
+
+const deleteProduct = (id) => {
+    cartItems.value.products = cartItems.value.products.filter(
+        (item) => item.id !== id,
+    );
+    cartCount.value = Math.max(0, cartCount.value - 1);
 };
 
 const placeOrder = () => {
     console.log(cartItems.value);
-    // if (cartItems.value.length > 0) {
-    //     cartItems.value = [];
-    //     cartCount.value = 0;
-    //     isCheckoutModalOpen.value = false;
-    // } else {
-    //     alert('Your cart is empty!');
-    // }
+    if (
+        cartItems.value.customProducts.length > 0 ||
+        cartItems.value.products.length > 0
+    ) {
+        router.post('/checkout');
+        cartItems.value = [];
+        cartCount.value = 0;
+        isCheckoutModalOpen.value = false;
+    } else {
+        alert('Your cart is empty!');
+    }
 };
 
 const newProduct = ref({ name: '', unit: '', quantity: 1 });
@@ -481,11 +502,17 @@ const logout = () => {
                             >
                                 +
                             </button>
+                            <button
+                                class="rounded-md bg-red-500 px-2 py-1 text-sm text-white"
+                                @click="deleteProduct(item.id)"
+                            >
+                                Delete
+                            </button>
                         </div>
                     </li>
                     <li
-                        v-for="(item, index) in cartItems.customProducts"
-                        :key="index"
+                        v-for="item in cartItems.customProducts"
+                        :key="item.id"
                         class="flex justify-between border-b pb-2"
                     >
                         <div>
@@ -513,6 +540,12 @@ const logout = () => {
                                 @click="item.quantity++"
                             >
                                 +
+                            </button>
+                            <button
+                                class="rounded-md bg-red-500 px-2 py-1 text-sm text-white"
+                                @click="deleteCustomProduct(item.id)"
+                            >
+                                Delete
                             </button>
                         </div>
                     </li>
