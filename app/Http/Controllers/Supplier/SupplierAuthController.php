@@ -34,7 +34,7 @@ class SupplierAuthController extends Controller {
         }
 
         if (Auth::guard('supplier')->attempt(['primary_phone' => $phone, 'password' => $request->password], true) || Auth::guard('supplier')->attempt(['secondary_phone' => $phone, 'password' => $request->password], true)) {
-            return redirect()->route('home');
+            return redirect()->route('supplier.home');
         }
 
         return back()->withErrors(['phone' => 'Invalid password or phone number']);
@@ -69,7 +69,7 @@ class SupplierAuthController extends Controller {
             return back()->withErrors(['primary_phone' => 'The primary phone number has already been taken']);
         }
 
-        if (Supplier::where('primary_phone', $secondary_phone)->exists()) {
+        if (Supplier::where('secondary_phone', $secondary_phone)->exists()) {
             return back()->withErrors(['primary_phone' => 'The secondary phone number has already been taken']);
         }
 
@@ -94,5 +94,64 @@ class SupplierAuthController extends Controller {
     public function logout() {
         Auth::guard('supplier')->logout();
         return redirect()->route('supplier.login');
+    }
+
+    public function updateProfile(Request $request) {
+        try {
+            $supplier = Auth::guard('supplier')->user();
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'special_place' => 'required|string|max:255',
+                'subcity_id' => 'required|exists:subcities,id',
+                'primary_phone' => 'required|string|max:255|unique:suppliers,primary_phone,' . $supplier->id,
+                'secondary_phone' => 'required|string|max:255|unique:suppliers,secondary_phone,' . $supplier->id,
+                'institution_name' => 'required|string|max:255',
+                'password' => 'nullable|string|min:6|confirmed',
+                'woreda' => 'required'
+            ]);
+
+            $primaryPhone = Supplier::normalizePhoneNumber($request->input('primary_phone'));
+            $secondaryPhone = Supplier::normalizePhoneNumber($request->input('secondary_phone'));
+            if (!$primaryPhone || !$secondaryPhone) {
+                return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
+            }
+            $request->merge([
+                'primary_phone' => $primaryPhone,
+                'secondary_phone' => $secondaryPhone,
+            ]);
+
+            if ($primaryPhone === $secondaryPhone) {
+                return redirect()->back()->with('message', ['name' => 'Primary and secondary phone numbers cannot be the same', 'type' => 'error']);
+            }
+
+            $data = $request->only(
+                'first_name',
+                'last_name',
+                'special_place',
+                'subcity_id',
+                'primary_phone',
+                'secondary_phone',
+                'woreda',
+                'institution_name'
+            );
+
+            if ($request->filled('password')) {
+                $data['password'] = bcrypt($request->input('password'));
+            }
+
+            $supplier->update($data);
+
+            return redirect()->back()->with('message', ['name' => 'Supplier profile updated.', 'type' => 'success']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->with('message', [
+                    'name' => 'Supplier profile update failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        }
     }
 }

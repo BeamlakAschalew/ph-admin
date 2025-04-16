@@ -62,15 +62,15 @@ class ConsumerAuthController extends Controller {
         }
 
         if (!$secondary_phone) {
-            return back()->withErrors(['primary_phone' => 'Invalid secondary phone number format']);
+            return back()->withErrors(['secondary_phone' => 'Invalid secondary phone number format']);
         }
 
         if (Consumer::where('primary_phone', $primary_phone)->exists()) {
             return back()->withErrors(['primary_phone' => 'The primary phone number has already been taken']);
         }
 
-        if (Consumer::where('primary_phone', $secondary_phone)->exists()) {
-            return back()->withErrors(['primary_phone' => 'The secondary phone number has already been taken']);
+        if (Consumer::where('secondary_phone', $secondary_phone)->exists()) {
+            return back()->withErrors(['secondary_phone' => 'The secondary phone number has already been taken']);
         }
 
         $consumer = Consumer::create([

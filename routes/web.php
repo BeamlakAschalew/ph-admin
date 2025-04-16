@@ -103,6 +103,7 @@ Route::prefix('/supplier')->group(function () {
 
     Route::group(['middleware' => ['supplier.authenticated', 'supplier.approved']], function () {
         Route::get('/', [SupplierHomeController::class, 'index'])->name('supplier.home');
+        Route::put('/profile', [SupplierAuthController::class, 'updateProfile'])->name('supplier.profile.update');
     });
 
     Route::post('/logout', [SupplierAuthController::class, 'logout'])->name('supplier.logout')->middleware('supplier.authenticated');

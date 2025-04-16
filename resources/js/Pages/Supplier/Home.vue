@@ -2,6 +2,8 @@
 import Navbar from '@/Components/Supplier/Navbar.vue';
 import MainLayout from './MainLayout.vue';
 
+defineProps({ subcities: Array });
+
 defineOptions({
     layout: MainLayout,
 });
@@ -9,7 +11,7 @@ defineOptions({
 
 <template>
     <div class="flex min-h-screen flex-col bg-gray-50">
-        <Navbar @goToCheckout="goToCheckout" />
+        <Navbar :subcities="subcities" />
         <!-- Hero Section -->
         <div class="flex flex-1 flex-col items-center justify-center gap-5">
             <div class="text-4xl">
