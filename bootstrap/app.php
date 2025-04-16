@@ -26,6 +26,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.guest' => \App\Http\Middleware\AdminGuest::class,
             'consumer.approved' => \App\Http\Middleware\ConsumerApproved::class,
             'consumer.not-approved' => \App\Http\Middleware\ConsumerNotApproved::class,
+            'supplier.authenticated' => \App\Http\Middleware\SupplierAuthenticated::class,
+            'supplier.guest' => \App\Http\Middleware\SupplierGuest::class,
+            'supplier.approved' => \App\Http\Middleware\SupplierApproved::class,
+            'supplier.not-approved' => \App\Http\Middleware\SupplierNotApproved::class,
         ]);
 
         //

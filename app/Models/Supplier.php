@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Spatie\Permission\Traits\HasRoles;
 
-class Supplier extends Model {
+class Supplier extends Authenticatable {
     /** @use HasFactory<\Database\Factories\SupplierFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     protected $fillable = [
         'approved',
@@ -30,6 +33,12 @@ class Supplier extends Model {
         'password',
         'remember_token',
     ];
+
+    protected function casts(): array {
+        return [
+            'password' => 'hashed',
+        ];
+    }
 
     public function subcity() {
         return $this->belongsTo(Subcity::class);

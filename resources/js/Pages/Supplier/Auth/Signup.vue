@@ -30,7 +30,7 @@ let prevStep = () => {
 };
 
 let submit = () => {
-    form.post('/signup');
+    form.post('/supplier/signup');
 };
 </script>
 
@@ -50,7 +50,7 @@ let submit = () => {
                             Already have an account?
                             <Link
                                 class="focus:outline-hidden font-medium text-blue-600 decoration-2 hover:underline focus:underline"
-                                href="/login"
+                                href="/supplier/login"
                             >
                                 Sign in here
                             </Link>

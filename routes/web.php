@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Consumer\ConsumerAuthController;
 use App\Http\Controllers\Consumer\HomeController;
 use App\Http\Controllers\Consumer\OrderController as ConsumerOrderController;
+use App\Http\Controllers\Supplier\SupplierAuthController;
+use App\Http\Controllers\Supplier\SupplierHomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -89,6 +91,36 @@ Route::prefix('/')->group(function () {
     });
 });
 
+Route::prefix('/supplier')->group(function () {
+
+    Route::group(['middleware' => ['supplier.guest']], function () {
+        Route::get('/login', [SupplierAuthController::class, 'showLogin'])->name('supplier.login');
+        Route::post('/login', [SupplierAuthController::class, 'login']);
+
+        Route::get('/signup', [SupplierAuthController::class, 'showSignup'])->name('supplier.signup');
+        Route::post('/signup', [SupplierAuthController::class, 'register']);
+    });
+
+    Route::group(['middleware' => ['supplier.authenticated', 'supplier.approved']], function () {
+        Route::get('/', [SupplierHomeController::class, 'index'])->name('supplier.home');
+    });
+
+    Route::post('/logout', [SupplierAuthController::class, 'logout'])->name('supplier.logout')->middleware('supplier.authenticated');
+
+    Route::group(['middleware' => ['supplier.authenticated', 'supplier.not-approved']], function () {
+        Route::get('/not-approved', function () {
+            return Inertia::render('Supplier/NotApproved');
+        });
+    });
+});
 Route::get('/choose-role', function () {
+    if (auth('consumer')->check() && auth('supplier')->check()) {
+        return redirect()->route('home');
+    } elseif (auth('consumer')->check()) {
+        return redirect()->route('home');
+    } elseif (auth('supplier')->check()) {
+        return redirect()->route('supplier.home');
+    }
+
     return Inertia::render('ChooseRole');
 })->name('choose-role');

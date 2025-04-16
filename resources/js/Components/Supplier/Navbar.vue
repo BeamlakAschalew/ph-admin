@@ -37,54 +37,12 @@
                 <div
                     class="mt-5 flex flex-col gap-5 sm:mt-0 sm:flex-row sm:items-center sm:justify-end sm:pl-5"
                 >
-                    <div class="relative max-w-xl flex-1">
-                        <div
-                            class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3"
-                        >
-                            <SearchIcon class="h-4 w-4 text-gray-400" />
-                        </div>
-                        <input
-                            v-model="consumerStore.searchQuery"
-                            type="search"
-                            class="block w-full rounded-full border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-blue-600"
-                            placeholder="Search medications..."
-                        />
-                    </div>
-
-                    <button
-                        class="mb-6 inline-flex items-center gap-x-2 rounded-full border border-transparent bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-700 disabled:pointer-events-none disabled:opacity-50 sm:mb-0"
-                        @click="emitGoToCheckout"
-                    >
-                        <ShoppingCartIcon class="h-4 w-4" />
-                        Checkout ({{ consumerStore.cartCount }})
-                    </button>
-
                     <Link
-                        href="/past-orders"
+                        href="/"
                         class="mb-6 inline-flex items-center gap-x-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-50 hover:text-blue-800 sm:mb-0"
                     >
-                        <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-                            <rect x="3" y="4" width="18" height="16" rx="2" />
-                            <path d="M16 2v4M8 2v4M3 10h18" />
-                        </svg>
-                        Past orders
+                        Go to consumer
                     </Link>
-
-                    <Link
-                        href="/supplier"
-                        class="mb-6 inline-flex items-center gap-x-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-50 hover:text-blue-800 sm:mb-0"
-                    >
-                        Go to supplier
-                    </Link>
-
                     <div
                         class="hs-dropdown relative inline-flex [--placement:bottom-right]"
                     >
@@ -144,23 +102,12 @@
 </template>
 
 <script setup>
-import { useConsumerStore } from '@/stores/consumerStore';
 import { useForm, usePage } from '@inertiajs/vue3';
-import {
-    MenuIcon,
-    PillIcon,
-    SearchIcon,
-    ShoppingCartIcon,
-    XIcon,
-} from 'lucide-vue-next';
+import { MenuIcon, PillIcon, XIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-const consumerStore = useConsumerStore();
 const isMenuOpen = ref(false);
 const user = usePage().props.auth.user;
-
-const emit = defineEmits(['goToCheckout']);
-const emitGoToCheckout = () => emit('goToCheckout');
 
 const logout = () => {
     let logout = useForm();
