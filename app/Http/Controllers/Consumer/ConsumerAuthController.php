@@ -111,6 +111,15 @@ class ConsumerAuthController extends Controller {
             if (!$primaryPhone || !$secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
+
+            if (Consumer::where('primary_phone', $primaryPhone)->where('id', '!=', $consumer->id)->exists()) {
+                return redirect()->back()->with('message', ['name' => 'The primary phone number has already been taken', 'type' => 'error']);
+            }
+
+            if (Consumer::where('secondary_phone', $secondaryPhone)->where('id', '!=', $consumer->id)->exists()) {
+                return redirect()->back()->with('message', ['name' => 'The secondary phone number has already been taken', 'type' => 'error']);
+            }
+
             $request->merge([
                 'primary_phone' => $primaryPhone,
                 'secondary_phone' => $secondaryPhone,

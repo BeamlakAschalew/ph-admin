@@ -37,6 +37,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/consumers', [ConsumerController::class, 'index'])->name('consumers.index');
 
         Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+
+        Route::put('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
     });
 
 

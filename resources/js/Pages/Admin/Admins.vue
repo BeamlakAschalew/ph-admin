@@ -5,7 +5,7 @@ import { ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
 
 const props = defineProps({
-    admins: Array,
+    admins: Object,
     filters: Object,
 });
 

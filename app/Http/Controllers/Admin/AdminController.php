@@ -199,4 +199,31 @@ class AdminController extends Controller {
             return redirect()->back()->with('message', ['name' => 'An error occurred while updating the Super Admin secret.', 'type' => 'error']);
         }
     }
+
+    /**
+     * Update the authenticated admin's own profile.
+     */
+    public function updateProfile(Request $request) {
+        $admin = auth('admin')->user();
+        $request->validate([
+            'first_name'   => 'required|string|min:3|max:255',
+            'last_name'    => 'required|string|min:3|max:255',
+            'phone_number' => 'required|unique:admins,phone,' . $admin->id,
+            'password'     => 'nullable|string|min:6|confirmed',
+        ]);
+        $phone = Admin::normalizePhoneNumber($request->phone_number);
+        if (!$phone) {
+            return redirect()->back()->with('message', ['name' => 'Invalid phone number', 'type' => 'error']);
+        }
+        if ($phone !== $admin->phone && Admin::where('phone', $phone)->where('id', '!=', $admin->id)->exists()) {
+            return redirect()->back()->with('message', ['name' => 'Phone number already taken', 'type' => 'error']);
+        }
+        $fields = $request->only(['first_name', 'last_name']);
+        $fields['phone'] = $phone;
+        if (!empty($request->password)) {
+            $fields['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
+        }
+        $admin->update($fields);
+        return redirect()->back()->with('message', ['name' => 'Admin profile updated', 'type' => 'success']);
+    }
 }

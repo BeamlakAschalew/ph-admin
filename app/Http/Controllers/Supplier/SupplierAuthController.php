@@ -116,6 +116,16 @@ class SupplierAuthController extends Controller {
             if (!$primaryPhone || !$secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
+
+            if (Supplier::where('primary_phone', $primaryPhone)->where('id', '!=', $supplier->id)->exists()) {
+                return redirect()->back()->with('message', ['name' => 'Primary phone number already taken', 'type' => 'error']);
+            }
+
+            if (Supplier::where('secondary_phone', $secondaryPhone)->where('id', '!=', $supplier->id)->exists()) {
+                return redirect()->back()->with('message', ['name' => 'Secondary phone number already taken', 'type' => 'error']);
+            }
+
+
             $request->merge([
                 'primary_phone' => $primaryPhone,
                 'secondary_phone' => $secondaryPhone,
