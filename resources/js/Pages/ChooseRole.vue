@@ -10,19 +10,53 @@
                 Please select whether you are a Supplier or a Consumer to
                 proceed.
             </p>
-            <div class="space-x-4">
-                <router-link
-                    to="/supplier"
-                    class="rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-md transition duration-300 hover:bg-blue-700"
-                >
-                    Supplier
-                </router-link>
-                <router-link
-                    to="/consumer"
-                    class="rounded-lg bg-green-600 px-8 py-4 font-semibold text-white shadow-md transition duration-300 hover:bg-green-700"
-                >
-                    Consumer
-                </router-link>
+            <div
+                class="flex flex-col items-center justify-center space-y-6 md:flex-row md:space-x-6 md:space-y-0"
+            >
+                <div class="text-center">
+                    <Link
+                        href="/supplier"
+                        class="block rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-md transition duration-300 hover:bg-blue-700"
+                    >
+                        Supplier (Imorter/Wholesaler)
+                    </Link>
+                    <div class="mt-4 space-y-2">
+                        <Link
+                            href="/supplier/login"
+                            class="block rounded-lg bg-gray-200 px-6 py-2 font-medium text-gray-800 transition duration-300 hover:bg-gray-300"
+                        >
+                            Login as Supplier
+                        </Link>
+                        <Link
+                            href="/supplier/signup"
+                            class="block rounded-lg bg-gray-200 px-6 py-2 font-medium text-gray-800 transition duration-300 hover:bg-gray-300"
+                        >
+                            Signup as Supplier
+                        </Link>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <Link
+                        href="/"
+                        class="block rounded-lg bg-green-600 px-8 py-4 font-semibold text-white shadow-md transition duration-300 hover:bg-green-700"
+                    >
+                        Consumer (Wholesaler/Pharmacy/Hospital)
+                    </Link>
+                    <div class="mt-4 space-y-2">
+                        <Link
+                            href="/login"
+                            class="block rounded-lg bg-gray-200 px-6 py-2 font-medium text-gray-800 transition duration-300 hover:bg-gray-300"
+                        >
+                            Login as Consumer
+                        </Link>
+                        <Link
+                            href="/signup"
+                            class="block rounded-lg bg-gray-200 px-6 py-2 font-medium text-gray-800 transition duration-300 hover:bg-gray-300"
+                        >
+                            Signup as Consumer
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
