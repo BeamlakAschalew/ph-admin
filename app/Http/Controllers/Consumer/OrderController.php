@@ -51,7 +51,7 @@ class OrderController extends Controller {
                 ]);
             }
 
-            return redirect()->back()->with('message', ['name' => 'Product created successfully.', 'type' => 'success']);
+            return redirect()->back()->with('message', ['name' => 'Product ordered created successfully.', 'type' => 'success']);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                 ->withErrors($e->errors())
