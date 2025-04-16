@@ -76,7 +76,7 @@ Route::prefix('/')->group(function () {
 
     Route::group(['middleware' => ['consumer.authenticated', 'consumer.approved']], function () {
         Route::get('/', [HomeController::class, 'index'])->name('home');
-
+        Route::get('/past-orders', [ConsumerOrderController::class, 'pastOrders'])->name('consumer.past-orders');
         Route::post('/checkout', [ConsumerOrderController::class, 'checkout']);
     });
 
@@ -87,8 +87,4 @@ Route::prefix('/')->group(function () {
             return Inertia::render('Consumer/NotApproved');
         });
     });
-});
-
-Route::middleware(['auth:consumer'])->prefix('consumer')->group(function () {
-    Route::get('/past-orders', [ConsumerOrderController::class, 'pastOrders'])->name('consumer.past-orders');
 });

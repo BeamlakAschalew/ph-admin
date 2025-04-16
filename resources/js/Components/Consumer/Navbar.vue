@@ -7,14 +7,14 @@
             aria-label="Global"
         >
             <div class="mr-5 flex items-center justify-between">
-                <a
+                <Link
                     class="flex-none py-4 text-xl font-semibold text-blue-600"
-                    href="#"
+                    href="/"
                     aria-label="PH"
                 >
                     <PillIcon class="mr-2 inline-block h-8 w-8" />
                     PH
-                </a>
+                </Link>
                 <div class="sm:hidden">
                     <button
                         type="button"
@@ -58,6 +58,25 @@
                         <ShoppingCartIcon class="h-4 w-4" />
                         Checkout ({{ consumerStore.cartCount }})
                     </button>
+
+                    <Link
+                        href="/past-orders"
+                        class="mb-6 inline-flex items-center gap-x-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-50 hover:text-blue-800 sm:mb-0"
+                    >
+                        <svg
+                            class="h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <rect x="3" y="4" width="18" height="16" rx="2" />
+                            <path d="M16 2v4M8 2v4M3 10h18" />
+                        </svg>
+                        Past orders
+                    </Link>
 
                     <div
                         class="hs-dropdown relative inline-flex [--placement:bottom-right]"
