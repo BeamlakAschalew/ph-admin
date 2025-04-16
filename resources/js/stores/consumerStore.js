@@ -22,11 +22,15 @@ export const useConsumerStore = defineStore('consumer', () => {
         cartItems.value.customProducts.push(product);
     }
     function deleteProduct(id) {
-        cartItems.value.products = cartItems.value.products.filter(item => item.id !== id);
+        cartItems.value.products = cartItems.value.products.filter(
+            (item) => item.id !== id,
+        );
         cartCount.value = Math.max(0, cartCount.value - 1);
     }
     function deleteCustomProduct(id) {
-        cartItems.value.customProducts = cartItems.value.customProducts.filter(item => item.id !== id);
+        cartItems.value.customProducts = cartItems.value.customProducts.filter(
+            (item) => item.id !== id,
+        );
         cartCount.value = Math.max(0, cartCount.value - 1);
     }
     function clearCart() {

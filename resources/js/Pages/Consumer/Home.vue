@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from '@/Components/Consumer/Navbar.vue';
 import { useConsumerStore } from '@/stores/consumerStore';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
 import { PackageXIcon, SearchIcon, ShoppingCartIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
@@ -13,8 +13,6 @@ defineOptions({
 
 // State
 const consumerStore = useConsumerStore();
-
-const user = usePage().props.auth.user;
 
 const props = defineProps({
     products: Object,
@@ -53,9 +51,6 @@ watch(
 );
 
 // Methods
-const toggleMenu = () => {
-    isMenuOpen.value = !isMenuOpen.value;
-};
 
 const isCheckoutModalOpen = ref(false);
 
@@ -130,11 +125,6 @@ const goToCheckout = () => {
     } else {
         alert('Your cart is empty!');
     }
-};
-
-const logout = () => {
-    let logout = useForm();
-    logout.post('/logout');
 };
 </script>
 
@@ -365,8 +355,9 @@ const logout = () => {
                     >
                         <div>
                             <span
-                                >{{ item.product_name }} ({ {
-                                item.unit?.unit_name || 'No unit' } })</span
+                                >{{ item.product_name }} ({{
+                                    item.unit?.unit_name || 'No unit'
+                                }})</span
                             >
                         </div>
                         <div class="flex items-center gap-2">
@@ -390,8 +381,9 @@ const logout = () => {
                     >
                         <div>
                             <span
-                                >{{ item.name }} ({ { item.unit?.unit_name ||
-                                'No unit' } })</span
+                                >{{ item.name }} ({{
+                                    item.unit?.unit_name || 'No unit'
+                                }})</span
                             >
                         </div>
                         <div class="flex items-center gap-2">

@@ -87,9 +87,7 @@
                                 <p class="text-sm text-gray-500">
                                     Signed in as
                                 </p>
-                                <p
-                                    class="text-sm font-medium text-gray-800"
-                                >
+                                <p class="text-sm font-medium text-gray-800">
                                     {{ user.first_name }} +251{{
                                         user.primary_phone
                                     }}
@@ -120,16 +118,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { useConsumerStore } from '@/stores/consumerStore';
-import { usePage, useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import {
     MenuIcon,
-    XIcon,
     PillIcon,
     SearchIcon,
     ShoppingCartIcon,
+    XIcon,
 } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 const consumerStore = useConsumerStore();
 const isMenuOpen = ref(false);
