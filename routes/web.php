@@ -88,3 +88,7 @@ Route::prefix('/')->group(function () {
         });
     });
 });
+
+Route::middleware(['auth:consumer'])->prefix('consumer')->group(function () {
+    Route::get('/past-orders', [ConsumerOrderController::class, 'pastOrders'])->name('consumer.past-orders');
+});

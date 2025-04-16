@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CustomOrderItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller {
     public function checkout(Request $request) {
@@ -61,5 +62,16 @@ class OrderController extends Controller {
                     'type' => 'error'
                 ]);
         }
+    }
+
+    public function pastOrders(Request $request) {
+        $consumer = Auth::guard('consumer')->user();
+        $orders = \App\Models\Order::with(['items.product.unit', 'customItems.unit'])
+            ->where('consumer_id', $consumer->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return \Inertia\Inertia::render('Consumer/PastOrders', [
+            'orders' => $orders,
+        ]);
     }
 }
