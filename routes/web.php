@@ -88,3 +88,7 @@ Route::prefix('/')->group(function () {
         });
     });
 });
+
+Route::get('/choose-role', function () {
+    return Inertia::render('ChooseRole');
+})->name('choose-role');
