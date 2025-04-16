@@ -91,6 +91,65 @@ class ConsumerAuthController extends Controller {
         return redirect()->route('home');
     }
 
+    public function updateProfile(Request $request) {
+        try {
+            $consumer = Auth::guard('consumer')->user();
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'special_place' => 'required|string|max:255',
+                'subcity_id' => 'required|exists:subcities,id',
+                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consumer->id,
+                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consumer->id,
+                'institution_name' => 'required|string|max:255',
+                'password' => 'nullable|string|min:6|confirmed',
+                'woreda' => 'required'
+            ]);
+
+            $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
+            $secondaryPhone = Consumer::normalizePhoneNumber($request->input('secondary_phone'));
+            if (!$primaryPhone || !$secondaryPhone) {
+                return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
+            }
+            $request->merge([
+                'primary_phone' => $primaryPhone,
+                'secondary_phone' => $secondaryPhone,
+            ]);
+
+            if ($primaryPhone === $secondaryPhone) {
+                return redirect()->back()->with('message', ['name' => 'Primary and secondary phone numbers cannot be the same', 'type' => 'error']);
+            }
+
+            $data = $request->only(
+                'first_name',
+                'last_name',
+                'special_place',
+                'subcity_id',
+                'primary_phone',
+                'secondary_phone',
+                'woreda',
+                'institution_name'
+            );
+
+            if ($request->filled('password')) {
+                $data['password'] = bcrypt($request->input('password'));
+            }
+
+            $consumer->update($data);
+
+            return redirect()->back()->with('message', ['name' => 'Consumer profile updated.', 'type' => 'success']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->with('message', [
+                    'name' => 'Consumer profile update failed. ' . implode(' ', array_map(function ($messages) {
+                        return implode(' ', $messages);
+                    }, $e->errors())),
+                    'type' => 'error'
+                ]);
+        }
+    }
+
     public function logout() {
         Auth::guard('consumer')->logout();
         return redirect()->route('consumer.login');

@@ -18,6 +18,7 @@ class HomeController extends Controller {
                 ->withQueryString() : null,
             'filters' => fn() => $request->only('search'),
             'units' => fn() => ProductUnit::distinct()->select('id', 'unit_name')->get(),
+            'subcities' => fn() => \App\Models\Subcity::all(['id', 'subcity_name']),
         ]);
     }
 }

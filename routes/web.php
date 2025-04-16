@@ -80,6 +80,7 @@ Route::prefix('/')->group(function () {
         Route::get('/', [HomeController::class, 'index'])->name('home');
         Route::get('/past-orders', [ConsumerOrderController::class, 'pastOrders'])->name('consumer.past-orders');
         Route::post('/checkout', [ConsumerOrderController::class, 'checkout']);
+        Route::put('/profile', [ConsumerAuthController::class, 'updateProfile'])->name('consumer.profile.update');
     });
 
     Route::post('/logout', [ConsumerAuthController::class, 'logout'])->name('consumer.logout')->middleware('consumer.authenticated');

@@ -3,7 +3,7 @@ import { useForm, usePage } from '@inertiajs/vue3';
 import { MenuIcon, PillIcon, XIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
-const props = defineProps({ subcities: Array });
+defineProps({ subcities: Array });
 
 const isMenuOpen = ref(false);
 const user = usePage().props.auth.user;
@@ -38,8 +38,6 @@ const editForm = useForm({
     password: '',
     password_confirmation: '',
 });
-
-console.log(props.subcities);
 
 const openEditModal = () => {
     showEditModal.value = true;

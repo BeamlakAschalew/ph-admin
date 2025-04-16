@@ -18,6 +18,7 @@ const props = defineProps({
     products: Object,
     filters: Object,
     units: Array,
+    subcities: Array,
 });
 
 const localProducts = ref(props.products?.data || []);
@@ -130,7 +131,7 @@ const goToCheckout = () => {
 
 <template>
     <div class="flex min-h-screen flex-col bg-gray-50">
-        <Navbar @goToCheckout="goToCheckout" />
+        <Navbar :subcities="subcities" @goToCheckout="goToCheckout" />
         <!-- Hero Section -->
         <div
             class="relative overflow-hidden before:absolute before:start-1/2 before:top-0 before:-z-[1] before:h-full before:w-full before:-translate-x-1/2 before:transform before:bg-[url('https://preline.co/assets/svg/component/polygon-bg-element.svg')] before:bg-top before:bg-no-repeat"
