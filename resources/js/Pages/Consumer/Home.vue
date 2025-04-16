@@ -1,14 +1,9 @@
 <script setup>
+import Navbar from '@/Components/Consumer/Navbar.vue';
+import { useConsumerStore } from '@/stores/consumerStore';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
-import {
-    MenuIcon,
-    PackageXIcon,
-    PillIcon,
-    SearchIcon,
-    ShoppingCartIcon,
-    XIcon,
-} from 'lucide-vue-next';
+import { PackageXIcon, SearchIcon, ShoppingCartIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
 
@@ -17,8 +12,8 @@ defineOptions({
 });
 
 // State
-const cartCount = ref(0);
-const isMenuOpen = ref(false);
+const consumerStore = useConsumerStore();
+
 const user = usePage().props.auth.user;
 
 const props = defineProps({
@@ -36,7 +31,7 @@ watch(
     },
 );
 
-const searchQuery = ref(props.filters?.search || '');
+consumerStore.searchQuery = props.filters?.search || '';
 
 const debouncedSearch = debounce((query) => {
     router.get(
@@ -50,9 +45,12 @@ const debouncedSearch = debounce((query) => {
     );
 }, 300);
 
-watch(searchQuery, (newQuery) => {
-    debouncedSearch(newQuery);
-});
+watch(
+    () => consumerStore.searchQuery,
+    (newQuery) => {
+        debouncedSearch(newQuery);
+    },
+);
 
 // Methods
 const toggleMenu = () => {
@@ -61,55 +59,42 @@ const toggleMenu = () => {
 
 const isCheckoutModalOpen = ref(false);
 
-const cartItems = ref({
-    products: [],
-    customProducts: [],
-});
-
 const toggleCheckoutModal = () => {
     isCheckoutModalOpen.value = !isCheckoutModalOpen.value;
 };
 
 const addToCart = (product) => {
-    cartCount.value++;
-    cartItems.value.products.push(product);
+    consumerStore.addToCart(product);
 };
 
 const deleteCustomProduct = (id) => {
-    cartItems.value.customProducts = cartItems.value.customProducts.filter(
-        (item) => item.id !== id,
-    );
-    cartCount.value = Math.max(0, cartCount.value - 1);
+    consumerStore.deleteCustomProduct(id);
 };
 
 const deleteProduct = (id) => {
-    cartItems.value.products = cartItems.value.products.filter(
-        (item) => item.id !== id,
-    );
-    cartCount.value = Math.max(0, cartCount.value - 1);
+    consumerStore.deleteProduct(id);
 };
 
 const placeOrder = () => {
-    console.log(cartItems.value);
     if (
-        cartItems.value.customProducts.length > 0 ||
-        cartItems.value.products.length > 0
+        consumerStore.cartItems.customProducts.length > 0 ||
+        consumerStore.cartItems.products.length > 0
     ) {
         router.post(
             '/checkout',
             {
-                products: cartItems.value.products,
-                customProducts: cartItems.value.customProducts.map((item) => ({
-                    ...item,
-                    unit: item.unit?.id || null,
-                })),
+                products: consumerStore.cartItems.products,
+                customProducts: consumerStore.cartItems.customProducts.map(
+                    (item) => ({
+                        ...item,
+                        unit: item.unit?.id || null,
+                    }),
+                ),
             },
             {
                 onSuccess: () => {
-                    cartItems.value.products = [];
-                    cartItems.value.customProducts = [];
+                    consumerStore.clearCart();
                     isCheckoutModalOpen.value = false;
-                    cartCount.value = 0;
                 },
             },
         );
@@ -123,8 +108,7 @@ const newProduct = ref({ name: '', unit: '', quantity: '' });
 
 const addCustomProductToCart = () => {
     if (newProduct.value.name && newProduct.value.quantity !== '') {
-        cartCount.value++;
-        cartItems.value.customProducts.push({
+        consumerStore.addCustomProductToCart({
             ...newProduct.value,
             id: Date.now(),
             unit:
@@ -141,7 +125,7 @@ const addCustomProductToCart = () => {
 };
 
 const goToCheckout = () => {
-    if (cartCount.value > 0) {
+    if (consumerStore.cartCount > 0) {
         toggleCheckoutModal();
     } else {
         alert('Your cart is empty!');
@@ -156,127 +140,7 @@ const logout = () => {
 
 <template>
     <div class="flex min-h-screen flex-col bg-gray-50">
-        <!-- Header -->
-        <header
-            class="sticky top-0 z-50 flex w-full flex-wrap border-b border-gray-200 bg-white text-sm sm:flex-nowrap sm:justify-start"
-        >
-            <nav
-                class="relative mx-auto w-full max-w-[85rem] px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8"
-                aria-label="Global"
-            >
-                <div class="mr-5 flex items-center justify-between">
-                    <a
-                        class="flex-none py-4 text-xl font-semibold text-blue-600"
-                        href="#"
-                        aria-label="PH"
-                    >
-                        <PillIcon class="mr-2 inline-block h-8 w-8" />
-                        PH
-                    </a>
-                    <div class="sm:hidden">
-                        <button
-                            type="button"
-                            class="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 p-2 text-sm text-gray-600 transition-all hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                            @click="toggleMenu"
-                            aria-controls="navbar-collapse"
-                            :aria-expanded="isMenuOpen"
-                        >
-                            <span class="sr-only">Toggle navigation</span>
-                            <MenuIcon v-if="!isMenuOpen" class="h-5 w-5" />
-                            <XIcon v-else class="h-5 w-5" />
-                        </button>
-                    </div>
-                </div>
-                <div
-                    id="navbar-collapse"
-                    class="grow basis-full overflow-hidden transition-all duration-300 sm:block"
-                    :class="isMenuOpen ? 'block h-auto' : 'hidden'"
-                >
-                    <div
-                        class="mt-5 flex flex-col gap-5 sm:mt-0 sm:flex-row sm:items-center sm:justify-end sm:pl-5"
-                    >
-                        <div class="relative max-w-xl flex-1">
-                            <div
-                                class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3"
-                            >
-                                <SearchIcon class="h-4 w-4 text-gray-400" />
-                            </div>
-                            <input
-                                v-model="searchQuery"
-                                type="search"
-                                class="block w-full rounded-full border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-blue-600"
-                                placeholder="Search medications..."
-                            />
-                        </div>
-
-                        <button
-                            class="mb-6 inline-flex items-center gap-x-2 rounded-full border border-transparent bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-700 disabled:pointer-events-none disabled:opacity-50 sm:mb-0"
-                            @click="goToCheckout"
-                        >
-                            <ShoppingCartIcon class="h-4 w-4" />
-                            Checkout ({{ cartCount }})
-                        </button>
-
-                        <div
-                            class="hs-dropdown relative inline-flex [--placement:bottom-right]"
-                        >
-                            <button
-                                id="hs-dropdown-account"
-                                type="button"
-                                class="focus:outline-hidden inline-flex h-10 w-10 items-center justify-center gap-x-2 rounded-full border border-transparent text-sm font-semibold text-gray-800 disabled:pointer-events-none disabled:opacity-50 dark:text-white"
-                                aria-haspopup="menu"
-                                aria-expanded="false"
-                                aria-label="Dropdown"
-                            >
-                                <span
-                                    class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500 font-semibold text-white"
-                                >
-                                    {{ user.first_name[0]
-                                    }}{{ user.last_name[0] }}
-                                </span>
-                            </button>
-
-                            <div
-                                class="hs-dropdown-menu duration mt-2 hidden min-w-60 rounded-lg bg-white opacity-0 shadow-md transition-[opacity,margin] before:absolute before:-top-4 before:start-0 before:h-4 before:w-full after:absolute after:-bottom-4 after:start-0 after:h-4 after:w-full hs-dropdown-open:opacity-100"
-                                role="menu"
-                                aria-orientation="vertical"
-                                aria-labelledby="hs-dropdown-account"
-                            >
-                                <div class="rounded-t-lg bg-gray-100 px-5 py-3">
-                                    <p class="text-sm text-gray-500">
-                                        Signed in as
-                                    </p>
-                                    <p
-                                        class="text-sm font-medium text-gray-800"
-                                    >
-                                        {{ user.first_name }} +251{{
-                                            user.primary_phone
-                                        }}
-                                    </p>
-                                </div>
-                                <div class="space-y-0.5 p-1.5">
-                                    <a
-                                        class="focus:outline-hidden flex items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                    >
-                                        Edit profile
-                                    </a>
-                                    <form @submit.prevent="logout">
-                                        <button
-                                            href="#"
-                                            class="focus:outline-hidden</form> flex w-full items-center gap-x-3.5 rounded-lg px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 focus:bg-gray-100"
-                                        >
-                                            Logout
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End Profile Dropdown -->
-                    </div>
-                </div>
-            </nav>
-        </header>
-
+        <Navbar @goToCheckout="goToCheckout" />
         <!-- Hero Section -->
         <div
             class="relative overflow-hidden before:absolute before:start-1/2 before:top-0 before:-z-[1] before:h-full before:w-full before:-translate-x-1/2 before:transform before:bg-[url('https://preline.co/assets/svg/component/polygon-bg-element.svg')] before:bg-top before:bg-no-repeat"
@@ -310,7 +174,7 @@ const logout = () => {
                                 >Search</label
                             >
                             <input
-                                v-model="searchQuery"
+                                v-model="consumerStore.searchQuery"
                                 type="text"
                                 id="hero-search"
                                 class="block w-full rounded-full border-gray-200 px-4 py-3 text-sm shadow-sm transition-all duration-300 focus:border-blue-600 focus:ring-blue-600 disabled:pointer-events-none disabled:opacity-50"
@@ -334,14 +198,14 @@ const logout = () => {
             class="mx-auto w-full flex-grow px-4 py-1 sm:w-auto sm:px-6 lg:px-8 lg:py-14"
         >
             <!-- Search Results -->
-            <div v-if="searchQuery.trim()">
+            <div v-if="consumerStore.searchQuery.trim()">
                 <div
                     class="mx-auto mb-10 hidden max-w-2xl text-center lg:block"
                 >
                     <h2
                         class="text-2xl font-bold text-gray-800 md:text-3xl md:leading-tight"
                     >
-                        Search Results for "{{ searchQuery }}"
+                        Search Results for "{{ consumerStore.searchQuery }}"
                     </h2>
                 </div>
 
@@ -494,15 +358,15 @@ const logout = () => {
                 <h2 class="text-lg font-bold text-gray-800">Checkout</h2>
                 <ul class="mt-4 space-y-2">
                     <li
-                        v-for="(item, index) in cartItems.products"
+                        v-for="(item, index) in consumerStore.cartItems
+                            .products"
                         :key="index"
                         class="flex justify-between border-b pb-2"
                     >
                         <div>
                             <span
-                                >{{ item.product_name }} ({{
-                                    item.unit?.unit_name || 'No unit'
-                                }})</span
+                                >{{ item.product_name }} ({ {
+                                item.unit?.unit_name || 'No unit' } })</span
                             >
                         </div>
                         <div class="flex items-center gap-2">
@@ -520,15 +384,14 @@ const logout = () => {
                         </div>
                     </li>
                     <li
-                        v-for="item in cartItems.customProducts"
+                        v-for="item in consumerStore.cartItems.customProducts"
                         :key="item.id"
                         class="flex justify-between border-b pb-2"
                     >
                         <div>
                             <span
-                                >{{ item.name }} ({{
-                                    item.unit?.unit_name || 'No unit'
-                                }})</span
+                                >{{ item.name }} ({ { item.unit?.unit_name ||
+                                'No unit' } })</span
                             >
                         </div>
                         <div class="flex items-center gap-2">

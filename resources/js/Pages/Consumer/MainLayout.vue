@@ -1,5 +1,6 @@
 <script setup>
 import { usePage } from '@inertiajs/vue3';
+import { PillIcon } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
 const page = usePage();
