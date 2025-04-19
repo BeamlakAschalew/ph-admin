@@ -59,8 +59,16 @@ const toggleCheckoutModal = () => {
     isCheckoutModalOpen.value = !isCheckoutModalOpen.value;
 };
 
+// Add feedback state
+const addToCartFeedback = ref(false);
+const addCustomFeedback = ref(false);
+
 const addToCart = (product) => {
     consumerStore.addToCart(product);
+    addToCartFeedback.value = true;
+    setTimeout(() => {
+        addToCartFeedback.value = false;
+    }, 2500);
 };
 
 const deleteCustomProduct = (id) => {
@@ -115,6 +123,10 @@ const addCustomProductToCart = () => {
                     : null,
         });
         newProduct.value = { name: '', unit: '', quantity: '' };
+        addCustomFeedback.value = true;
+        setTimeout(() => {
+            addCustomFeedback.value = false;
+        }, 2500);
     } else {
         alert('Please fill in all fields.');
     }
@@ -132,6 +144,25 @@ const goToCheckout = () => {
 <template>
     <div class="flex min-h-screen flex-col bg-gray-50">
         <Navbar :subcities="subcities" @goToCheckout="goToCheckout" />
+        <!-- Feedback Toasts -->
+        <transition name="fade">
+            <div
+                v-if="addToCartFeedback"
+                class="fixed left-1/2 top-6 z-[9999] -translate-x-1/2 rounded bg-green-600 px-4 py-2 text-white shadow-lg"
+                style="pointer-events: none"
+            >
+                Added to cart!
+            </div>
+        </transition>
+        <transition name="fade">
+            <div
+                v-if="addCustomFeedback"
+                class="fixed left-1/2 top-6 z-[9999] -translate-x-1/2 rounded bg-green-600 px-4 py-2 text-white shadow-lg"
+                style="pointer-events: none"
+            >
+                Custom product added!
+            </div>
+        </transition>
         <!-- Hero Section -->
         <div
             class="relative overflow-hidden before:absolute before:start-1/2 before:top-0 before:-z-[1] before:h-full before:w-full before:-translate-x-1/2 before:transform before:bg-[url('https://preline.co/assets/svg/component/polygon-bg-element.svg')] before:bg-top before:bg-no-repeat"
@@ -248,7 +279,7 @@ const goToCheckout = () => {
 
                     <!-- Pagination -->
                     <nav
-                        class="mt-5 flex items-center justify-center space-x-2"
+                        class="responsive-pagination mt-5"
                         aria-label="Pagination"
                     >
                         <template
@@ -345,7 +376,9 @@ const goToCheckout = () => {
             v-if="isCheckoutModalOpen"
             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
         >
-            <div class="w-full max-w-md rounded-lg bg-white p-6">
+            <div
+                class="checkout-modal max-h-[90vh] min-w-[80%] overflow-y-auto rounded-lg bg-white p-3 px-2 sm:p-8 md:max-w-md lg:min-w-fit"
+            >
                 <h2 class="text-lg font-bold text-gray-800">Checkout</h2>
                 <ul class="mt-4 space-y-2">
                     <li
@@ -402,7 +435,9 @@ const goToCheckout = () => {
                         </div>
                     </li>
                 </ul>
-                <div class="mt-6 flex justify-end gap-2">
+                <div
+                    class="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end"
+                >
                     <button
                         class="rounded-md bg-gray-200 px-4 py-2 text-sm text-gray-800"
                         @click="toggleCheckoutModal"
@@ -420,3 +455,39 @@ const goToCheckout = () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+/* Responsive pagination: wrap and prevent overflow */
+.responsive-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+}
+
+/* Responsive modal: full width on mobile, no horizontal scroll */
+@media (max-width: 640px) {
+    .checkout-modal {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        border-radius: 0.75rem;
+        padding: 1rem !important;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+    }
+}
+</style>
