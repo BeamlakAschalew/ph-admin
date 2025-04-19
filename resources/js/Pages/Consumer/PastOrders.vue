@@ -25,7 +25,7 @@ function statusClass(status) {
 }
 
 function goToPage(page) {
-    router.get('/consumer/past-orders', { page });
+    router.get('/past-orders', { page });
 }
 
 const isMenuOpen = ref(false);
