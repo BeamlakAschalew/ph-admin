@@ -99,6 +99,17 @@ function dismissToast() {
                     </div>
                     <!-- End Col -->
 
+                    <div class="flex items-center">
+                        <a
+                            href="https://beamlak.dev"
+                            target="_blank"
+                            class="text-sm text-gray-600 hover:underline"
+                        >
+                            Website developed by Beamlak Aschalew - Contact me:
+                            0936648802
+                        </a>
+                    </div>
+
                     <!-- Social Brands -->
                     <div>
                         <a
