@@ -192,9 +192,6 @@ const toggleMenu = () => {
                     class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
                 >
                     <div>
-                        <span class="text-lg font-semibold text-blue-700"
-                            >Order #{{ order.id }}</span
-                        >
                         <span class="ml-2 text-xs text-gray-500">{{
                             formatDate(order.created_at)
                         }}</span>
