@@ -267,7 +267,7 @@ const goToCheckout = () => {
                                 </div>
                                 <button
                                     @click="
-                                        addToCart({ ...product, quantity: '' })
+                                        addToCart({ ...product, quantity: '1' })
                                     "
                                     class="hover:bg-primary-dark inline-flex items-center justify-center rounded-lg border border-transparent bg-blue-700 p-3 text-white transition-all duration-300 disabled:pointer-events-none disabled:opacity-50"
                                 >
