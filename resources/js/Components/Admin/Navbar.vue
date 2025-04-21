@@ -65,8 +65,14 @@ const submitEdit = () => {
             aria-label="Global"
         >
             <div class="flex items-center justify-between">
-                <Link class="flex-none text-xl font-bold text-white" href="/"
-                    >PH Admin</Link
+                <Link
+                    class="flex-none text-xl font-bold text-white"
+                    href="/admin"
+                >
+                    <img
+                        src="/logo.png"
+                        class="mr-2 inline-block h-10 w-10"
+                    />PH Admin</Link
                 >
                 <div class="sm:hidden">
                     <button

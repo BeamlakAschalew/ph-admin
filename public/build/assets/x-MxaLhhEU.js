@@ -1,4 +1,4 @@
-import{c as e}from"./pill-Bgi2J7Ro.js";/**
+import{c as e}from"./pill-CfUMWNor.js";/**
  * @license lucide-vue-next v0.487.0 - ISC
  *
  * This source code is licensed under the ISC license.

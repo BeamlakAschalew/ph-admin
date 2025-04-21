@@ -1,13 +1,7 @@
 <script setup>
 import { useConsumerStore } from '@/stores/consumerStore';
 import { useForm, usePage } from '@inertiajs/vue3';
-import {
-    MenuIcon,
-    PillIcon,
-    SearchIcon,
-    ShoppingCartIcon,
-    XIcon,
-} from 'lucide-vue-next';
+import { MenuIcon, SearchIcon, ShoppingCartIcon, XIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 defineProps({ subcities: Array });
@@ -86,7 +80,7 @@ const submitEdit = () => {
                     href="/"
                     aria-label="PH"
                 >
-                    <PillIcon class="mr-2 inline-block h-8 w-8" />
+                    <img src="/logo.png" class="mr-2 inline-block h-10 w-10" />
                     PH
                 </Link>
                 <div class="sm:hidden">
