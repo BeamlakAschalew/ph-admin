@@ -70,8 +70,8 @@ function dismissToast() {
                             PH
                         </a>
                         <p class="mt-3 text-xs text-gray-600 sm:text-sm">
-                            Your trusted source for quality medications and
-                            health products.
+                            Your trusted source for quality medications,
+                            cosmetics and health products.
                         </p>
                     </div>
 
@@ -84,8 +84,8 @@ function dismissToast() {
                         </div>
                         <h4 class="font-semibold text-gray-900">Phone</h4>
                         <div class="mt-3">
-                            <p class="text-sm text-gray-600">+251950096667</p>
-                            <p class="text-sm text-gray-600">+251950116667</p>
+                            <p class="text-sm text-gray-600">0950096667</p>
+                            <p class="text-sm text-gray-600">0950116667</p>
                         </div>
                     </div>
                 </div>
