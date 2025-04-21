@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class SupplierController extends Controller {
+class SupplierController extends Controller
+{
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         return Inertia::render('Admin/Suppliers', [
             'suppliers' => Supplier::withTrashed()->with('subcity')
                 ->when($request->input('search'), function ($query, $search) {
@@ -31,16 +33,18 @@ class SupplierController extends Controller {
                 ->withQueryString()
                 ->through(function ($consumer) {
                     $consumer->status = $consumer->deleted_at ? 'Inactive' : 'Active';
+
                     return $consumer;
                 }),
-            'filters' => fn() => $request->only('search'),
-            'subcities' => fn() => Subcity::all(),
+            'filters' => fn () => $request->only('search'),
+            'subcities' => fn () => Subcity::all(),
         ]);
     }
 
-    public function pendingIndex(Request $request) {
+    public function pendingIndex(Request $request)
+    {
         return Inertia::render('Admin/PendingSuppliers', [
-            'suppliers' => fn() => Supplier::with('subcity')->where('approved', false)->when($request->input('search'), function ($query, $search) {
+            'suppliers' => fn () => Supplier::with('subcity')->where('approved', false)->when($request->input('search'), function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', "%{$search}%")
                         ->orWhere('last_name', 'like', "%{$search}%")
@@ -54,13 +58,15 @@ class SupplierController extends Controller {
         ]);
     }
 
-    function approveOrReject(Request $request) {
-        $consumer = Supplier::find($request->input('id'));
-        $consumer->update(['approved' => true]);
+    public function approveOrReject(Request $request)
+    {
+        $supplier = Supplier::find($request->input('id'));
+        $supplier->update(['approved' => true]);
         if ($request->input('action') == 'approve') {
             return redirect()->back()->with('message', ['name' => 'Supplier approved.', 'type' => 'success']);
         } else {
-            $consumer->delete();
+            $supplier->delete();
+
             return redirect()->back()->with('message', ['name' => 'Supplier rejected.', 'type' => 'success']);
         }
     }
@@ -68,14 +74,16 @@ class SupplierController extends Controller {
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
             $request->validate([
                 'first_name' => 'required|string|max:255',
@@ -92,7 +100,7 @@ class SupplierController extends Controller {
 
             $primaryPhone = Supplier::normalizePhoneNumber($request->input('primary_phone'));
             $secondaryPhone = Supplier::normalizePhoneNumber($request->input('secondary_phone'));
-            if (!$primaryPhone || !$secondaryPhone) {
+            if (! $primaryPhone || ! $secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
             $request->merge([
@@ -126,10 +134,10 @@ class SupplierController extends Controller {
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->with('message', [
-                    'name' => 'Supplier creation failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Supplier creation failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
@@ -137,21 +145,24 @@ class SupplierController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Supplier $supplier) {
+    public function show(Supplier $supplier)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Supplier $supplier) {
+    public function edit(Supplier $supplier)
+    {
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $supplier = Supplier::withTrashed()->findOrFail($id);
         try {
             $request->validate([
@@ -159,8 +170,8 @@ class SupplierController extends Controller {
                 'last_name' => 'required|string|max:255',
                 'special_place' => 'required|string|max:255',
                 'subcity_id' => 'required|exists:subcities,id',
-                'primary_phone' => 'required|string|max:255|unique:suppliers,primary_phone,' . $supplier->id,
-                'secondary_phone' => 'required|string|max:255|unique:suppliers,secondary_phone,' . $supplier->id,
+                'primary_phone' => 'required|string|max:255|unique:suppliers,primary_phone,'.$supplier->id,
+                'secondary_phone' => 'required|string|max:255|unique:suppliers,secondary_phone,'.$supplier->id,
                 'institution_name' => 'required|string|max:255',
                 'password' => 'nullable|string|min:6',
                 'woreda' => 'required',
@@ -169,7 +180,7 @@ class SupplierController extends Controller {
 
             $primaryPhone = Supplier::normalizePhoneNumber($request->input('primary_phone'));
             $secondaryPhone = Supplier::normalizePhoneNumber($request->input('secondary_phone'));
-            if (!$primaryPhone || !$secondaryPhone) {
+            if (! $primaryPhone || ! $secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
             $request->merge([
@@ -206,10 +217,10 @@ class SupplierController extends Controller {
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->with('message', [
-                    'name' => 'Supplier update failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Supplier update failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
@@ -217,8 +228,10 @@ class SupplierController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Supplier $supplier) {
+    public function destroy(Supplier $supplier)
+    {
         $supplier->forceDelete();
+
         return redirect()->back()->with('message', ['name' => 'Supplier deleted.', 'type' => 'success']);
     }
 }

@@ -7,29 +7,35 @@ use App\Models\Consumer;
 use App\Models\Subcity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
-class ConsumerAuthController extends Controller {
-    public function showSignup() {
+class ConsumerAuthController extends Controller
+{
+    public function showSignup()
+    {
         $subcities = Subcity::all(['subcity_name', 'id']);
+
         return Inertia::render('Consumer/Auth/Signup', [
-            'subcities' => $subcities
+            'subcities' => $subcities,
         ]);
     }
 
-    public function showLogin() {
+    public function showLogin()
+    {
         return Inertia::render('Consumer/Auth/Login');
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'phone' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $phone = Consumer::normalizePhoneNumber($request->phone);
 
-        if (!$phone) {
+        if (! $phone) {
             return back()->withErrors(['phone' => 'Invalid phone number format']);
         }
 
@@ -40,7 +46,8 @@ class ConsumerAuthController extends Controller {
         return back()->withErrors(['phone' => 'Invalid password or phone number']);
     }
 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -57,21 +64,23 @@ class ConsumerAuthController extends Controller {
         $primary_phone = Consumer::normalizePhoneNumber($request->primary_phone);
         $secondary_phone = Consumer::normalizePhoneNumber($request->secondary_phone);
 
-        if (!$primary_phone) {
+        if (! $primary_phone) {
             return back()->withErrors(['primary_phone' => 'Invalid primary phone number format']);
         }
 
-        if (!$secondary_phone) {
+        if (! $secondary_phone) {
             return back()->withErrors(['secondary_phone' => 'Invalid secondary phone number format']);
         }
 
-        if (Consumer::where('primary_phone', $primary_phone)->exists()) {
+        if (Consumer::withTrashed()->where('primary_phone', $primary_phone)->exists()) {
             return back()->withErrors(['primary_phone' => 'The primary phone number has already been taken']);
         }
 
-        if (Consumer::where('secondary_phone', $secondary_phone)->exists()) {
+        if (Consumer::withTrashed()->where('secondary_phone', $secondary_phone)->exists()) {
             return back()->withErrors(['secondary_phone' => 'The secondary phone number has already been taken']);
         }
+
+        Log::info('here');
 
         $consumer = Consumer::create([
             'first_name' => $request->first_name,
@@ -91,7 +100,8 @@ class ConsumerAuthController extends Controller {
         return redirect()->route('home');
     }
 
-    public function updateProfile(Request $request) {
+    public function updateProfile(Request $request)
+    {
         try {
             $consumer = Auth::guard('consumer')->user();
             $request->validate([
@@ -99,16 +109,16 @@ class ConsumerAuthController extends Controller {
                 'last_name' => 'required|string|max:255',
                 'special_place' => 'required|string|max:255',
                 'subcity_id' => 'required|exists:subcities,id',
-                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consumer->id,
-                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consumer->id,
+                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,'.$consumer->id,
+                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,'.$consumer->id,
                 'institution_name' => 'required|string|max:255',
                 'password' => 'nullable|string|min:6|confirmed',
-                'woreda' => 'required'
+                'woreda' => 'required',
             ]);
 
             $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
             $secondaryPhone = Consumer::normalizePhoneNumber($request->input('secondary_phone'));
-            if (!$primaryPhone || !$secondaryPhone) {
+            if (! $primaryPhone || ! $secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
 
@@ -151,16 +161,18 @@ class ConsumerAuthController extends Controller {
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->with('message', [
-                    'name' => 'Consumer profile update failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Consumer profile update failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
 
-    public function logout() {
+    public function logout()
+    {
         Auth::guard('consumer')->logout();
+
         return redirect()->route('consumer.login');
     }
 }

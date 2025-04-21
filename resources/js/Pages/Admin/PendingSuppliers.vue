@@ -65,7 +65,7 @@ const approveUser = (id) => {
 
 const rejectUser = (id) => {
     router.post(
-        'pending-supplierspending-suppliers/pending-suppliers',
+        '/admin/pending-suppliers',
         {
             id: id,
             action: 'reject',

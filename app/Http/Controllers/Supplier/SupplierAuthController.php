@@ -3,33 +3,38 @@
 namespace App\Http\Controllers\Supplier;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supplier;
 use App\Models\Subcity;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class SupplierAuthController extends Controller {
-    public function showSignup() {
+class SupplierAuthController extends Controller
+{
+    public function showSignup()
+    {
         $subcities = Subcity::all(['subcity_name', 'id']);
+
         return Inertia::render('Supplier/Auth/Signup', [
-            'subcities' => $subcities
+            'subcities' => $subcities,
         ]);
     }
 
-    public function showLogin() {
+    public function showLogin()
+    {
         return Inertia::render('Supplier/Auth/Login');
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'phone' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $phone = Supplier::normalizePhoneNumber($request->phone);
 
-        if (!$phone) {
+        if (! $phone) {
             return back()->withErrors(['phone' => 'Invalid phone number format']);
         }
 
@@ -40,7 +45,8 @@ class SupplierAuthController extends Controller {
         return back()->withErrors(['phone' => 'Invalid password or phone number']);
     }
 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -57,20 +63,20 @@ class SupplierAuthController extends Controller {
         $primary_phone = Supplier::normalizePhoneNumber($request->primary_phone);
         $secondary_phone = Supplier::normalizePhoneNumber($request->secondary_phone);
 
-        if (!$primary_phone) {
+        if (! $primary_phone) {
             return back()->withErrors(['primary_phone' => 'Invalid primary phone number format']);
         }
 
-        if (!$secondary_phone) {
+        if (! $secondary_phone) {
             return back()->withErrors(['primary_phone' => 'Invalid secondary phone number format']);
         }
 
-        if (Supplier::where('primary_phone', $primary_phone)->exists()) {
+        if (Supplier::withTrashed()->where('primary_phone', $primary_phone)->exists()) {
             return back()->withErrors(['primary_phone' => 'The primary phone number has already been taken']);
         }
 
-        if (Supplier::where('secondary_phone', $secondary_phone)->exists()) {
-            return back()->withErrors(['primary_phone' => 'The secondary phone number has already been taken']);
+        if (Supplier::withTrashed()->where('secondary_phone', $secondary_phone)->exists()) {
+            return back()->withErrors(['secondary_phone' => 'The secondary phone number has already been taken']);
         }
 
         $supplier = Supplier::create([
@@ -91,12 +97,15 @@ class SupplierAuthController extends Controller {
         return redirect()->route('supplier.home');
     }
 
-    public function logout() {
+    public function logout()
+    {
         Auth::guard('supplier')->logout();
+
         return redirect()->route('supplier.login');
     }
 
-    public function updateProfile(Request $request) {
+    public function updateProfile(Request $request)
+    {
         try {
             $supplier = Auth::guard('supplier')->user();
             $request->validate([
@@ -104,16 +113,16 @@ class SupplierAuthController extends Controller {
                 'last_name' => 'required|string|max:255',
                 'special_place' => 'required|string|max:255',
                 'subcity_id' => 'required|exists:subcities,id',
-                'primary_phone' => 'required|string|max:255|unique:suppliers,primary_phone,' . $supplier->id,
-                'secondary_phone' => 'required|string|max:255|unique:suppliers,secondary_phone,' . $supplier->id,
+                'primary_phone' => 'required|string|max:255|unique:suppliers,primary_phone,'.$supplier->id,
+                'secondary_phone' => 'required|string|max:255|unique:suppliers,secondary_phone,'.$supplier->id,
                 'institution_name' => 'required|string|max:255',
                 'password' => 'nullable|string|min:6|confirmed',
-                'woreda' => 'required'
+                'woreda' => 'required',
             ]);
 
             $primaryPhone = Supplier::normalizePhoneNumber($request->input('primary_phone'));
             $secondaryPhone = Supplier::normalizePhoneNumber($request->input('secondary_phone'));
-            if (!$primaryPhone || !$secondaryPhone) {
+            if (! $primaryPhone || ! $secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
 
@@ -124,7 +133,6 @@ class SupplierAuthController extends Controller {
             if (Supplier::where('secondary_phone', $secondaryPhone)->where('id', '!=', $supplier->id)->exists()) {
                 return redirect()->back()->with('message', ['name' => 'Secondary phone number already taken', 'type' => 'error']);
             }
-
 
             $request->merge([
                 'primary_phone' => $primaryPhone,
@@ -157,10 +165,10 @@ class SupplierAuthController extends Controller {
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->with('message', [
-                    'name' => 'Supplier profile update failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Supplier profile update failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
