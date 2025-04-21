@@ -38,7 +38,7 @@ const submitContactForm = () => {
             </div>
             <div class="text-3xl">Contact +2519111111 for more</div>
 
-            <div class="mx-2 my-10">
+            <div class="mx-2 my-10 w-full">
                 <h2 class="mb-4 text-center text-2xl font-medium text-gray-800">
                     Contact Us
                 </h2>
