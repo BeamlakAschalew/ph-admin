@@ -31,7 +31,7 @@ class ContactController extends Controller
 
             // Update the email body to use a formatted HTML template
             Mail::send([], [], function ($message) use ($data) {
-                $message->to('appform@ph.beamlak.dev')
+                $message->to('ph1holders@gmail.com')
                     ->from('appform@ph.beamlak.dev', 'App Feedback Form')
                     ->subject('User Feedback')
                     ->setBody(new TextPart(
