@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class ConsumerController extends Controller {
+class ConsumerController extends Controller
+{
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         return Inertia::render('Admin/Consumers', [
             'consumers' => Consumer::withTrashed()->with('subcity')
                 ->where('approved', true)
@@ -28,16 +30,18 @@ class ConsumerController extends Controller {
                 ->withQueryString()
                 ->through(function ($consumer) {
                     $consumer->status = $consumer->deleted_at ? 'Inactive' : 'Active';
+
                     return $consumer;
                 }),
-            'filters' => fn() => $request->only('search'),
-            'subcities' => fn() => Subcity::all(),
+            'filters' => fn () => $request->only('search'),
+            'subcities' => fn () => Subcity::all(),
         ]);
     }
 
-    public function pendingIndex(Request $request) {
+    public function pendingIndex(Request $request)
+    {
         return Inertia::render('Admin/PendingConsumers', [
-            'consumers' => fn() => Consumer::with('subcity')
+            'consumers' => fn () => Consumer::with('subcity')
                 ->where('approved', false)
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($q) use ($search) {
@@ -52,13 +56,15 @@ class ConsumerController extends Controller {
         ]);
     }
 
-    function approveOrReject(Request $request) {
+    public function approveOrReject(Request $request)
+    {
         $consumer = Consumer::find($request->input('id'));
         $consumer->update(['approved' => true]);
         if ($request->input('action') == 'approve') {
             return redirect()->back()->with('message', ['name' => 'Consumer accepted.', 'type' => 'success']);
         } else {
             $consumer->delete();
+
             return redirect()->back()->with('message', ['name' => 'Consumer rejected.', 'type' => 'success']);
         }
     }
@@ -66,14 +72,16 @@ class ConsumerController extends Controller {
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
             $request->validate([
                 'first_name' => 'required|string|max:255',
@@ -90,7 +98,7 @@ class ConsumerController extends Controller {
 
             $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
             $secondaryPhone = Consumer::normalizePhoneNumber($request->input('secondary_phone'));
-            if (!$primaryPhone || !$secondaryPhone) {
+            if (! $primaryPhone || ! $secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
             $request->merge([
@@ -124,10 +132,10 @@ class ConsumerController extends Controller {
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->with('message', [
-                    'name' => 'Consumer creation failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Consumer creation failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
@@ -135,21 +143,24 @@ class ConsumerController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Consumer $consumer) {
+    public function show(Consumer $consumer)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Consumer $consumer) {
+    public function edit(Consumer $consumer)
+    {
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $consmuer = Consumer::withTrashed()->findOrFail($id);
         try {
             $request->validate([
@@ -157,8 +168,8 @@ class ConsumerController extends Controller {
                 'last_name' => 'required|string|max:255',
                 'special_place' => 'required|string|max:255',
                 'subcity_id' => 'required|exists:subcities,id',
-                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,' . $consmuer->id,
-                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,' . $consmuer->id,
+                'primary_phone' => 'required|string|max:255|unique:consumers,primary_phone,'.$consmuer->id,
+                'secondary_phone' => 'required|string|max:255|unique:consumers,secondary_phone,'.$consmuer->id,
                 'institution_name' => 'required|string|max:255',
                 'password' => 'nullable|string|min:6',
                 'woreda' => 'required',
@@ -167,7 +178,7 @@ class ConsumerController extends Controller {
 
             $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
             $secondaryPhone = Consumer::normalizePhoneNumber($request->input('secondary_phone'));
-            if (!$primaryPhone || !$secondaryPhone) {
+            if (! $primaryPhone || ! $secondaryPhone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
             $request->merge([
@@ -204,10 +215,10 @@ class ConsumerController extends Controller {
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->with('message', [
-                    'name' => 'Consumer update failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Consumer update failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
@@ -215,8 +226,10 @@ class ConsumerController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Consumer $consumer) {
+    public function destroy(Consumer $consumer)
+    {
         $consumer->forceDelete();
+
         return redirect()->back()->with('message', ['name' => 'Consumer deleted.', 'type' => 'success']);
     }
 }

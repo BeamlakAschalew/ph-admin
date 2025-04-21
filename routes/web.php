@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Consumer\ConsumerAuthController;
 use App\Http\Controllers\Consumer\HomeController;
 use App\Http\Controllers\Consumer\OrderController as ConsumerOrderController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Supplier\SupplierAuthController;
 use App\Http\Controllers\Supplier\SupplierHomeController;
 use Illuminate\Support\Facades\Route;
@@ -40,8 +41,6 @@ Route::prefix('admin')->group(function () {
 
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
     });
-
-
 
     Route::group(['middleware' => ['admin.authenticated', 'role:superadmin']], function () {
         Route::get('/pending-consumers', [ConsumerController::class, 'pendingIndex'])->name('pending-consumers.index');
@@ -128,3 +127,5 @@ Route::get('/choose-role', function () {
 
     return Inertia::render('ChooseRole');
 })->name('choose-role');
+
+Route::post('/contact', ContactController::class)->name('contact');
