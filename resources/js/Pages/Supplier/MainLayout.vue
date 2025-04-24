@@ -87,6 +87,13 @@ function dismissToast() {
                             <p class="text-sm text-gray-600">0950096667</p>
                             <p class="text-sm text-gray-600">0950116667</p>
                         </div>
+                        <div class="mt-3">
+                            <Link
+                                href="/about-us"
+                                class="cursor-pointer font-semibold text-gray-900 hover:text-gray-600"
+                                >About us</Link
+                            >
+                        </div>
                     </div>
                 </div>
                 <!-- End Grid -->
