@@ -129,3 +129,6 @@ Route::get('/choose-role', function () {
 })->name('choose-role');
 
 Route::post('/contact', ContactController::class)->name('contact');
+Route::get('/about-us', function () {
+    return Inertia::render('About');
+})->name('about-us');

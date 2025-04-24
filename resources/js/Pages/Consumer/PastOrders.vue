@@ -1,6 +1,6 @@
 <script setup>
 import { router, useForm, usePage } from '@inertiajs/vue3';
-import { MenuIcon, PillIcon, XIcon } from 'lucide-vue-next';
+import { MenuIcon, XIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 defineProps({
     orders: Object,
@@ -55,7 +55,7 @@ const toggleMenu = () => {
                     href="/"
                     aria-label="PH"
                 >
-                    <PillIcon class="mr-2 inline-block h-8 w-8" />
+                    <img src="logo.png" class="mr-2 inline-block h-12 w-12" />
                     PH
                 </Link>
                 <div class="sm:hidden">
