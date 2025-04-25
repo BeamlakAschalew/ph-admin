@@ -33,10 +33,10 @@ const submitContactForm = () => {
         <Navbar :subcities="subcities" />
         <!-- Hero Section -->
         <div class="flex flex-1 flex-col items-center justify-center gap-5">
-            <div class="text-center text-4xl">
-                The supplier feature is not developed yet
+            <div class="pt-5 text-center text-3xl">
+                Welcome to PH! We're excited to help you connect with healthcare
+                providers and grow your impact in the medical supply market
             </div>
-            <div class="text-3xl">Contact +2519111111 for more</div>
 
             <div class="mx-2 my-10 w-full">
                 <h2 class="mb-4 text-center text-2xl font-medium text-gray-800">
