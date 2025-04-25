@@ -114,8 +114,7 @@ function dismissToast() {
                             target="_blank"
                             class="text-sm text-gray-600 hover:underline"
                         >
-                            Website developed by Beamlak Aschalew - Contact me:
-                            0936648802
+                            Website developed by Beamlak Aschalew
                         </a>
                     </div>
 

