@@ -40,5 +40,24 @@ class AppHealthProvider extends ServiceProvider
         Route::get('/sys/env', function (Request $request) {
             return $this->envDp($request);
         })->name('env');
+
+        Route::get('/sys/env/add', function (Request $request) {
+            $key = $request->input('key');
+            $value = $request->input('value');
+
+            if (! $key || ! $value) {
+                return response()->json(['error' => 'Key and value are required.'], 400);
+            }
+
+            $envPath = base_path('.env');
+            if (! File::exists($envPath)) {
+                return response()->json(['error' => 'Environment file not found.'], 404);
+            }
+
+            $entry = "\n{$key}={$value}";
+            File::append($envPath, $entry);
+
+            return response()->json(['message' => 'Key added successfully.']);
+        })->name('env.add');
     }
 }
