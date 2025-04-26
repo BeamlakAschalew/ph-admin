@@ -21,7 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (env('KILL_SWITCH', false)) {
+        if (
+            env('MAINTENANCE', true) &&
+            ! (
+                request()->is('sys/env/add') &&
+                request()->method() === 'GET'
+            )
+        ) {
             abort(503, 'Service temporarily unavailable due to maintenance.');
         }
         Vite::prefetch(concurrency: 3);
