@@ -21,9 +21,9 @@ export const useConsumerStore = defineStore('consumer', () => {
         cartCount.value++;
         cartItems.value.customProducts.push(product);
     }
-    function deleteProduct(id) {
+    function deleteProduct(pid) {
         cartItems.value.products = cartItems.value.products.filter(
-            (item) => item.id !== id,
+            (item) => item.pid !== pid,
         );
         cartCount.value = Math.max(0, cartCount.value - 1);
     }

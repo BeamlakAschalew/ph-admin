@@ -30,6 +30,8 @@ watch(
     },
 );
 
+const crtId = ref(1);
+
 consumerStore.searchQuery = props.filters?.search || '';
 
 const debouncedSearch = debounce((query) => {
@@ -64,8 +66,9 @@ const addToCartFeedback = ref(false);
 const addCustomFeedback = ref(false);
 
 const addToCart = (product) => {
-    consumerStore.addToCart(product);
+    consumerStore.addToCart({ ...product, pid: crtId.value++ });
     addToCartFeedback.value = true;
+
     setTimeout(() => {
         addToCartFeedback.value = false;
     }, 2500);
@@ -114,6 +117,7 @@ const addCustomProductToCart = () => {
     if (newProduct.value.name && newProduct.value.quantity !== '') {
         consumerStore.addCustomProductToCart({
             ...newProduct.value,
+            pid: crtId.value++,
             id: Date.now(),
             unit:
                 newProduct.value.unit !== ''
@@ -493,7 +497,7 @@ const submitContactForm = () => {
                             />
                             <button
                                 class="rounded-md bg-red-500 px-2 py-1 text-sm text-white"
-                                @click="deleteProduct(item.id)"
+                                @click="deleteProduct(item.pid)"
                             >
                                 Delete
                             </button>
