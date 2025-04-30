@@ -14,12 +14,11 @@
                 class="flex flex-col items-center justify-center space-y-6 md:flex-row md:space-x-6 md:space-y-0"
             >
                 <div class="text-center">
-                    <Link
-                        href="/supplier"
-                        class="block rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-md transition duration-300 hover:bg-blue-700"
+                    <div
+                        class="block rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white shadow-md"
                     >
                         Supplier (Imorter/Wholesaler)
-                    </Link>
+                    </div>
                     <div class="mt-4 space-y-2">
                         <Link
                             href="/supplier/login"
@@ -36,12 +35,11 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <Link
-                        href="/"
-                        class="block rounded-lg bg-green-600 px-8 py-4 font-semibold text-white shadow-md transition duration-300 hover:bg-green-700"
+                    <div
+                        class="block rounded-lg bg-green-600 px-8 py-4 font-semibold text-white shadow-md"
                     >
                         Consumer (Wholesaler/Pharmacy/Hospital)
-                    </Link>
+                    </div>
                     <div class="mt-4 space-y-2">
                         <Link
                             href="/login"
