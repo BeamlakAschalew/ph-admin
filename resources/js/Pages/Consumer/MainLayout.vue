@@ -79,7 +79,7 @@ function dismissToast() {
                         <h4 class="font-semibold text-gray-900">Email</h4>
                         <div class="my-3">
                             <p class="text-sm text-gray-600">
-                                ph1holders@gmail.com
+                                contact@phfarmacia.com
                             </p>
                         </div>
                         <h4 class="font-semibold text-gray-900">Phone</h4>

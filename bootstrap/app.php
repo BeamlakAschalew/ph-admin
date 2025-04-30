@@ -6,8 +6,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'supplier.guest' => \App\Http\Middleware\SupplierGuest::class,
             'supplier.approved' => \App\Http\Middleware\SupplierApproved::class,
             'supplier.not-approved' => \App\Http\Middleware\SupplierNotApproved::class,
+            'no-auth-choose' => \App\Http\Middleware\NoAuthChoose::class,
         ]);
 
         //
@@ -39,7 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $key = get_class($e);
             \Illuminate\Support\Facades\Log::error($key, [
                 'message' => $e->getMessage(),
-                'code'    => $e->getCode(),
+                'code' => $e->getCode(),
             ]);
         });
     })->create();

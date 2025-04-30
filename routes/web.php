@@ -77,7 +77,7 @@ Route::prefix('/')->group(function () {
         Route::post('/signup', [ConsumerAuthController::class, 'register']);
     });
 
-    Route::group(['middleware' => ['consumer.authenticated', 'consumer.approved']], function () {
+    Route::group(['middleware' => ['no-auth-choose', 'consumer.authenticated', 'consumer.approved']], function () {
         Route::get('/', [HomeController::class, 'index'])->name('home');
         Route::get('/past-orders', [ConsumerOrderController::class, 'pastOrders'])->name('consumer.past-orders');
         Route::post('/checkout', [ConsumerOrderController::class, 'checkout']);
@@ -103,7 +103,7 @@ Route::prefix('/supplier')->group(function () {
         Route::post('/signup', [SupplierAuthController::class, 'register']);
     });
 
-    Route::group(['middleware' => ['supplier.authenticated', 'supplier.approved']], function () {
+    Route::group(['middleware' => ['no-auth-choose', 'supplier.authenticated', 'supplier.approved']], function () {
         Route::get('/', [SupplierHomeController::class, 'index'])->name('supplier.home');
         Route::put('/profile', [SupplierAuthController::class, 'updateProfile'])->name('supplier.profile.update');
     });
