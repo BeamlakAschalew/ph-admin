@@ -1,6 +1,6 @@
 <script setup>
 import Navbar from '@/Components/Supplier/Navbar.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import MainLayout from './MainLayout.vue';
 
 defineProps({ subcities: Array });
@@ -9,9 +9,11 @@ defineOptions({
     layout: MainLayout,
 });
 
+const user = usePage().props.auth.user;
+
 const contactForm = useForm({
-    name: '',
-    phone: '',
+    name: `${user.first_name} ${user.last_name}`,
+    phone: `+251${user.primary_phone}`,
     message: '',
     user: 'Supplier',
 });
@@ -46,36 +48,6 @@ const submitContactForm = () => {
                     @submit.prevent="submitContactForm"
                     class="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow-md"
                 >
-                    <div class="mb-4">
-                        <label
-                            for="name"
-                            class="block text-sm font-medium text-gray-700"
-                            >Name</label
-                        >
-                        <input
-                            v-model="contactForm.name"
-                            type="text"
-                            id="name"
-                            required
-                            placeholder="Your name"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600"
-                        />
-                    </div>
-                    <div class="mb-4">
-                        <label
-                            for="phone"
-                            class="block text-sm font-medium text-gray-700"
-                            >Phone</label
-                        >
-                        <input
-                            v-model="contactForm.phone"
-                            type="text"
-                            id="phone"
-                            required
-                            placeholder="Your Phone Number"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600"
-                        />
-                    </div>
                     <div class="mb-4">
                         <label
                             for="message"

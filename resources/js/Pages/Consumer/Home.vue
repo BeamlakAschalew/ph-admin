@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from '@/Components/Consumer/Navbar.vue';
 import { useConsumerStore } from '@/stores/consumerStore';
-import { router, useForm } from '@inertiajs/vue3';
+import { router, useForm, usePage } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
 import { PackageXIcon, SearchIcon, ShoppingCartIcon } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
@@ -144,9 +144,11 @@ const goToCheckout = () => {
     }
 };
 
+const user = usePage().props.auth.user;
+
 const contactForm = useForm({
-    name: '',
-    phone: '',
+    name: `${user.first_name} ${user.last_name}`,
+    phone: `+251${user.primary_phone}`,
     message: '',
     user: 'Consumer',
 });
@@ -411,36 +413,6 @@ const submitContactForm = () => {
                 @submit.prevent="submitContactForm"
                 class="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow-md"
             >
-                <div class="mb-4">
-                    <label
-                        for="name"
-                        class="block text-sm font-medium text-gray-700"
-                        >Name</label
-                    >
-                    <input
-                        v-model="contactForm.name"
-                        type="text"
-                        id="name"
-                        placeholder="Your name"
-                        required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600"
-                    />
-                </div>
-                <div class="mb-4">
-                    <label
-                        for="phone"
-                        class="block text-sm font-medium text-gray-700"
-                        >Phone</label
-                    >
-                    <input
-                        v-model="contactForm.phone"
-                        required
-                        type="text"
-                        id="phone"
-                        placeholder="Your Phone Number"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600"
-                    />
-                </div>
                 <div class="mb-4">
                     <label
                         for="message"
