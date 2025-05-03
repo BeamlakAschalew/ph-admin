@@ -3,6 +3,11 @@
         class="flex h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-green-500"
     >
         <div class="rounded-lg bg-white p-10 text-center shadow-lg">
+            <img
+                src="/logo.png"
+                alt="Logo"
+                class="mx-auto mb-2 h-16 w-16 rounded-xl"
+            />
             <h1 class="mb-6 text-3xl font-extrabold text-gray-800">
                 Choose Your Role
             </h1>
