@@ -1,4 +1,4 @@
-import{D as a}from"./app-rINgeERI.js";/**
+import{D as a}from"./app-CvV_jo76.js";/**
  * @license lucide-vue-next v0.487.0 - ISC
  *
  * This source code is licensed under the ISC license.

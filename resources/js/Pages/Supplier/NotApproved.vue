@@ -7,6 +7,7 @@ defineOptions({
 </script>
 
 <template>
+    <Head title="Not approved" />
     <div class="flex h-full flex-1 items-center justify-center">
         <div class="text-center">
             <h1 class="text-4xl font-bold text-gray-800">Not Approved</h1>

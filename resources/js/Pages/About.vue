@@ -1,4 +1,5 @@
 <template>
+    <Head title="About" />
     <div class="mx-auto max-w-3xl px-4 py-16 text-gray-700">
         <img
             src="/logo.png"

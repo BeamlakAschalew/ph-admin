@@ -42,6 +42,7 @@ const toggleMenu = () => {
 </script>
 
 <template>
+    <Head title="Past orders" />
     <header
         class="sticky top-0 z-50 flex w-full flex-wrap border-b border-gray-200 bg-white text-sm sm:flex-nowrap sm:justify-start"
     >

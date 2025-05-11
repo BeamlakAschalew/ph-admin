@@ -31,6 +31,7 @@ const submitContactForm = () => {
 </script>
 
 <template>
+    <Head title="Home" />
     <div class="flex min-h-screen flex-col bg-gray-50">
         <Navbar :subcities="subcities" />
         <!-- Hero Section -->

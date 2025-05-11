@@ -1,4 +1,5 @@
 <template>
+    <Head title="Choose role" />
     <div
         class="flex h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-green-500"
     >
