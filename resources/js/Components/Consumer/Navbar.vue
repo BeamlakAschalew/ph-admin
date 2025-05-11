@@ -84,6 +84,14 @@ const submitEdit = () => {
                     PH
                 </Link>
                 <div class="sm:hidden">
+                    <button @click="emitGoToCheckout" class="relative mr-9">
+                        <ShoppingCartIcon class="h-6 w-6" />
+                        <span
+                            class="absolute -right-2 -top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white"
+                        >
+                            {{ consumerStore.cartCount }}
+                        </span>
+                    </button>
                     <button
                         type="button"
                         class="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 p-2 text-sm text-gray-600 transition-all hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
