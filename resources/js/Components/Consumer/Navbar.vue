@@ -23,6 +23,7 @@ const emitGoToCheckout = () => emit('goToCheckout');
 
 const logout = () => {
     let logout = useForm();
+    consumerStore.clearCart();
     logout.post('/logout');
 };
 
