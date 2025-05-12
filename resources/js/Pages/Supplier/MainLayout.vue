@@ -122,7 +122,7 @@ function dismissToast() {
                     <div>
                         <a
                             class="inline-flex size-36 items-center justify-center gap-x-2 rounded-lg border border-transparent text-sm font-semibold text-gray-500 hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50"
-                            href="https://t.me/ph10101"
+                            href="https://t.me/phfarmaciasupplier"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
