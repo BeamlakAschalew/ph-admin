@@ -17,7 +17,7 @@ class SupplierController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Admin/Suppliers', [
-            'suppliers' => Supplier::withTrashed()->with('subcity')
+            'suppliers' => Supplier::withTrashed()->with('subcity')->where('approved', true)
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
                         $query->where('institution_name', 'like', "%{$search}%");
@@ -178,6 +178,8 @@ class SupplierController extends Controller
                 'password' => 'nullable|string|min:6',
                 'woreda' => 'required',
                 'status' => 'required|in:Rejected,Approved',
+                'license_number' => 'required|string|max:255',
+                'tin_number' => 'required|string|max:255',
             ]);
 
             $primaryPhone = Supplier::normalizePhoneNumber($request->input('primary_phone'));
@@ -203,7 +205,9 @@ class SupplierController extends Controller
                 'secondary_phone',
                 'woreda',
                 'password',
-                'institution_name'
+                'institution_name',
+                'license_number',
+                'tin_number'
             );
 
             if ($request->input('status') === 'Rejected') {

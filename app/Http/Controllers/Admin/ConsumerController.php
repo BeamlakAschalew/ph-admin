@@ -176,6 +176,8 @@ class ConsumerController extends Controller
                 'password' => 'nullable|string|min:6',
                 'woreda' => 'required',
                 'status' => 'required|in:Rejected,Approved',
+                'license_number' => 'required|string|max:255',
+                'tin_number' => 'required|string|max:255',
             ]);
 
             $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
@@ -201,7 +203,9 @@ class ConsumerController extends Controller
                 'secondary_phone',
                 'woreda',
                 'password',
-                'institution_name'
+                'institution_name',
+                'license_number',
+                'tin_number'
             );
 
             if ($request->input('status') === 'Rejected') {

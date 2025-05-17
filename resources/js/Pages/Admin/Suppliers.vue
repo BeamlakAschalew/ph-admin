@@ -55,6 +55,8 @@ const editingSupplier = ref({
     subcity_id: null,
     password: '',
     status: 'Approved',
+    license_number: '',
+    tin_number: '',
 });
 
 function editSupplier(supplier) {
@@ -421,7 +423,7 @@ function addSupplier() {
                             </label>
                             <input
                                 type="text"
-                                id="edit-institution"
+                                id="edit-lastname"
                                 required
                                 v-model="editingSupplier.last_name"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
@@ -505,7 +507,7 @@ function addSupplier() {
                         </div>
                         <div>
                             <label
-                                for="edit-phone"
+                                for="edit-primary_phone"
                                 class="block text-sm font-medium text-gray-700"
                             >
                                 Primary Phone
@@ -513,14 +515,14 @@ function addSupplier() {
                             <input
                                 type="text"
                                 required
-                                id="edit-phone"
+                                id="edit-primary_phone"
                                 v-model="editingSupplier.primary_phone"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
                         <div>
                             <label
-                                for="edit-phone"
+                                for="edit-secondary_phone"
                                 class="block text-sm font-medium text-gray-700"
                             >
                                 Secondary Phone
@@ -528,8 +530,38 @@ function addSupplier() {
                             <input
                                 type="text"
                                 required
-                                id="edit-phone"
+                                id="edit-secondary_phone"
                                 v-model="editingSupplier.secondary_phone"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="edit-license_number"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                License Number
+                            </label>
+                            <input
+                                type="text"
+                                id="edit-license_number"
+                                required
+                                v-model="editingSupplier.license_number"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="edit-tin_number"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                TIN Number
+                            </label>
+                            <input
+                                type="text"
+                                id="edit-tin_number"
+                                required
+                                v-model="editingSupplier.tin_number"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>
