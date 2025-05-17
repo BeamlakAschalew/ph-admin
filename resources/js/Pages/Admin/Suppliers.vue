@@ -105,6 +105,7 @@ const newSupplier = ref({
     woreda: null,
     password: '',
     license_number: '',
+    tin_number: '',
 });
 
 function addSupplier() {
@@ -123,6 +124,7 @@ function addSupplier() {
         woreda: null,
         password: '',
         license_number: '',
+        tin_number: '',
     };
 }
 </script>
@@ -760,6 +762,20 @@ function addSupplier() {
                                 type="text"
                                 id="add-license_number"
                                 v-model="newSupplier.license_number"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="add-tin_number"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                TIN
+                            </label>
+                            <input
+                                type="text"
+                                id="add-tin_number"
+                                v-model="newSupplier.tin_number"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>

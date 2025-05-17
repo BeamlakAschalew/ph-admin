@@ -104,6 +104,7 @@ const newConsumer = ref({
     woreda: null,
     password: '',
     license_number: '',
+    tin_number: '',
 });
 
 function addConsumer() {
@@ -122,6 +123,7 @@ function addConsumer() {
         woreda: null,
         password: '',
         license_number: '',
+        tin_number: '',
     };
 }
 </script>
@@ -735,6 +737,20 @@ function addConsumer() {
                                 type="text"
                                 id="add-license_number"
                                 v-model="newConsumer.license_number"
+                                class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="add-tin_number"
+                                class="block text-sm font-medium text-gray-700"
+                            >
+                                TIN
+                            </label>
+                            <input
+                                type="text"
+                                id="add-tin_number"
+                                v-model="newConsumer.tin_number"
                                 class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                             />
                         </div>

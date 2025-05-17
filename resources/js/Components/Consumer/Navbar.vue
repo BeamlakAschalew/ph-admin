@@ -40,6 +40,7 @@ const editForm = useForm({
     subcity_id: user.subcity_id || '',
     special_place: user.special_place || '',
     license_number: user.license_number || '',
+    tin_number: user.tin_number || '',
     primary_phone: user.primary_phone || '',
     secondary_phone: user.secondary_phone || '',
     password: '',
@@ -374,6 +375,23 @@ const submitEdit = () => {
                                     class="mt-1 text-xs text-red-600"
                                 >
                                     {{ editForm.errors.license_number }}
+                                </p>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label
+                                    class="block text-sm font-medium text-gray-700"
+                                    >TIN Number</label
+                                >
+                                <input
+                                    type="text"
+                                    v-model="editForm.tin_number"
+                                    class="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                                />
+                                <p
+                                    v-if="editForm.errors.tin_number"
+                                    class="mt-1 text-xs text-red-600"
+                                >
+                                    {{ editForm.errors.tin_number }}
                                 </p>
                             </div>
                             <div>

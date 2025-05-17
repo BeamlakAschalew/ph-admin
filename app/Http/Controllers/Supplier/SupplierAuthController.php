@@ -58,6 +58,7 @@ class SupplierAuthController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'woreda' => 'required',
             'license_number' => 'required|string|max:255',
+            'tin_number' => 'required|string|max:255',
         ]);
 
         $primary_phone = Supplier::normalizePhoneNumber($request->primary_phone);
@@ -90,6 +91,7 @@ class SupplierAuthController extends Controller
             'password' => $request->password,
             'woreda' => $request->woreda,
             'license_number' => $request->license_number,
+            'tin_number' => $request->tin_number,
         ]);
 
         Auth::guard('supplier')->login($supplier, true);

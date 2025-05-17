@@ -9,15 +9,17 @@ use Illuminate\Support\Str;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Supplier>
  */
-class SupplierFactory extends Factory {
-
+class SupplierFactory extends Factory
+{
     protected static ?string $password;
+
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-    public function definition(): array {
+    public function definition(): array
+    {
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
@@ -26,6 +28,7 @@ class SupplierFactory extends Factory {
             'primary_phone' => $this->generatePhoneNumber(),
             'secondary_phone' => $this->generatePhoneNumber(),
             'license_number' => fake()->unique()->randomNumber(8),
+            'tin_number' => fake()->unique()->randomNumber(9),
             'subcity_id' => fake()->numberBetween(1, 11),
             'special_place' => fake()->address(),
             'woreda' => fake()->numberBetween(1, 12),
@@ -37,9 +40,11 @@ class SupplierFactory extends Factory {
         ];
     }
 
-    private function generatePhoneNumber(): string {
+    private function generatePhoneNumber(): string
+    {
         $prefix = fake()->randomElement(['9', '7']);
-        $number = $prefix . fake()->numerify('########');
+        $number = $prefix.fake()->numerify('########');
+
         return $number;
     }
 }

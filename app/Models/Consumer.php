@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Str;
+use Spatie\Permission\Traits\HasRoles;
 
-class Consumer extends Authenticatable {
-    use HasFactory, Notifiable, HasRoles, SoftDeletes;
-
+class Consumer extends Authenticatable
+{
+    use HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'approved',
@@ -23,42 +23,45 @@ class Consumer extends Authenticatable {
         'subcity_id',
         'password',
         'license_number',
+        'tin_number',
         'special_place',
         'woreda',
-        'deleted_at'
+        'deleted_at',
     ];
-
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected function casts(): array {
+    protected function casts(): array
+    {
         return [
             'password' => 'hashed',
         ];
     }
 
-    public static function normalizePhoneNumber($phone) {
+    public static function normalizePhoneNumber($phone)
+    {
         $phone = preg_replace('/\D/', '', $phone);
 
         if (Str::startsWith($phone, '251')) {
             $phone = substr($phone, 3);
-        } else if (Str::startsWith($phone, '+251')) {
+        } elseif (Str::startsWith($phone, '+251')) {
             $phone = substr($phone, 4);
-        } else if (Str::startsWith($phone, '0')) {
+        } elseif (Str::startsWith($phone, '0')) {
             $phone = substr($phone, 1);
         }
 
-        if (!preg_match('/^[79]\d{8}$/', $phone)) {
+        if (! preg_match('/^[79]\d{8}$/', $phone)) {
             return null;
         }
 
         return $phone;
     }
 
-    public function subcity() {
+    public function subcity()
+    {
         return $this->belongsTo(Subcity::class);
     }
 }

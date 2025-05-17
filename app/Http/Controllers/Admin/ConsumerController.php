@@ -94,6 +94,7 @@ class ConsumerController extends Controller
                 'password' => 'required|string|min:6',
                 'woreda' => 'required',
                 'license_number' => 'required|string|max:255',
+                'tin_number' => 'required|string|max:255',
             ]);
 
             $primaryPhone = Consumer::normalizePhoneNumber($request->input('primary_phone'));
@@ -121,6 +122,7 @@ class ConsumerController extends Controller
                 'password' => Hash::make($request->input('password')),
                 'institution_name' => $request->input('institution_name'),
                 'license_number' => $request->input('license_number'),
+                'tin_number' => $request->input('tin_number'),
             ]);
 
             if ($consumer) {
