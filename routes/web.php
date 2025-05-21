@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ConsumerController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Consumer\ConsumerAuthController;
 use App\Http\Controllers\Consumer\HomeController;
@@ -62,6 +63,8 @@ Route::prefix('admin')->group(function () {
         Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
         Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
         Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+
+        Route::get('/sales-report', [SalesReportController::class, 'index']);
 
         Route::put('/superadmin-secret', [AdminController::class, 'updateSuperAdminSecret']);
     });
