@@ -14,7 +14,6 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Supplier\SupplierAuthController;
 use App\Http\Controllers\Supplier\SupplierHomeController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::prefix('admin')->group(function () {
     Route::group(['middleware' => ['admin.guest']], function () {
@@ -91,7 +90,7 @@ Route::prefix('/')->group(function () {
 
     Route::group(['middleware' => ['consumer.authenticated', 'consumer.not-approved']], function () {
         Route::get('/not-approved', function () {
-            return Inertia::render('Consumer/NotApproved');
+            return inertia('Consumer/NotApproved');
         });
     });
 });
@@ -115,7 +114,7 @@ Route::prefix('/supplier')->group(function () {
 
     Route::group(['middleware' => ['supplier.authenticated', 'supplier.not-approved']], function () {
         Route::get('/not-approved', function () {
-            return Inertia::render('Supplier/NotApproved');
+            return inertia('Supplier/NotApproved');
         });
     });
 });
@@ -128,10 +127,10 @@ Route::get('/choose-role', function () {
         return redirect()->route('supplier.home');
     }
 
-    return Inertia::render('ChooseRole');
+    return inertia('ChooseRole');
 })->name('choose-role');
 
 Route::post('/contact', ContactController::class)->name('contact');
 Route::get('/about-us', function () {
-    return Inertia::render('About');
+    return inertia('About');
 })->name('about-us');

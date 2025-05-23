@@ -7,7 +7,6 @@ use App\Models\Subcity;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 class SupplierAuthController extends Controller
 {
@@ -15,14 +14,14 @@ class SupplierAuthController extends Controller
     {
         $subcities = Subcity::all(['subcity_name', 'id']);
 
-        return Inertia::render('Supplier/Auth/Signup', [
+        return inertia('Supplier/Auth/Signup', [
             'subcities' => $subcities,
         ]);
     }
 
     public function showLogin()
     {
-        return Inertia::render('Supplier/Auth/Login');
+        return inertia('Supplier/Auth/Login');
     }
 
     public function login(Request $request)

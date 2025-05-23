@@ -10,15 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 
-class AdminController extends Controller {
+class AdminController extends Controller
+{
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
-        return Inertia::render('Admin/Admins', [
+        return inertia('Admin/Admins', [
             'admins' => Admin::withTrashed()
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
@@ -32,39 +33,38 @@ class AdminController extends Controller {
                 ->through(function ($admin) {
                     $admin->status = $admin->deleted_at ? 'Inactive' : 'Active';
                     $admin->role = $admin->hasRole('superadmin') ? 'Super Admin' : 'Regular Admin';
+
                     return $admin;
                 }),
-            'filters' => fn() => $request->only('search'),
+            'filters' => fn () => $request->only('search'),
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         try {
             $request->validate([
                 'first_name' => 'required|string|min:3|max:255',
                 'last_name' => 'required|string|min:3|max:255',
                 'phone_number' => 'required|unique:admins,phone',
-                'password' => 'required|min:6'
+                'password' => 'required|min:6',
             ]);
-
-
 
             $phone = Admin::normalizePhoneNumber($request->phone_number);
 
-
-
-            if (!$phone) {
+            if (! $phone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
 
@@ -80,17 +80,19 @@ class AdminController extends Controller {
             ]);
             $admin->assignRole('admin');
             $admin->syncRoles(['admin']);
+
             return redirect()->back()->with('message', ['name' => 'Admin created successfully', 'type' => 'success']);
         } catch (ValidationException $e) {
             return redirect()->back()
                 ->with('message', [
-                    'name' => 'Admin creation failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Admin creation failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         } catch (Exception $e) {
             Log::error($e);
+
             return redirect()->back()->with('message', ['name' => 'An error occurred while creating the admin.', 'type' => 'error']);
         }
     }
@@ -98,35 +100,38 @@ class AdminController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Admin $admin) {
+    public function show(Admin $admin)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Admin $admin) {
+    public function edit(Admin $admin)
+    {
         //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $admin = Admin::withTrashed()->findOrFail($id);
         try {
 
             $request->validate([
-                'first_name'   => 'required|string|min:3|max:255',
-                'last_name'    => 'required|string|min:3|max:255',
+                'first_name' => 'required|string|min:3|max:255',
+                'last_name' => 'required|string|min:3|max:255',
                 'phone_number' => 'required',
-                'password'     => 'nullable|string|min:6',
-                'status'       => 'required|boolean'
+                'password' => 'nullable|string|min:6',
+                'status' => 'required|boolean',
             ]);
 
             $phone = Admin::normalizePhoneNumber($request->phone_number);
 
-            if (!$phone) {
+            if (! $phone) {
                 return redirect()->back()->with('message', ['name' => 'Invalid phone number format', 'type' => 'error']);
             }
 
@@ -137,7 +142,7 @@ class AdminController extends Controller {
             $fields = $request->only(['first_name', 'last_name', 'password', 'status']);
             $fields['phone'] = $phone;
 
-            if (!empty($fields['password'])) {
+            if (! empty($fields['password'])) {
                 $fields['password'] = Hash::make($fields['password']);
             } else {
                 unset($fields['password']);
@@ -157,10 +162,10 @@ class AdminController extends Controller {
         } catch (ValidationException $e) {
             return redirect()->back()
                 ->with('message', [
-                    'name' => 'Admin update failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Admin update failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
@@ -168,17 +173,20 @@ class AdminController extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $admin = Admin::withTrashed()->findOrFail($id);
         try {
             $admin->forceDelete();
+
             return redirect()->back()->with('message', ['name' => 'Admin permanently deleted successfully.', 'type' => 'success']);
         } catch (Exception $e) {
             return redirect()->back()->with('message', ['name' => 'An error occurred while permanently deleting the admin.', 'type' => 'error']);
         }
     }
 
-    public function updateSuperAdminSecret(Request $request) {
+    public function updateSuperAdminSecret(Request $request)
+    {
         try {
             $request->validate([
                 'secret' => 'required|string|min:8',
@@ -203,16 +211,17 @@ class AdminController extends Controller {
     /**
      * Update the authenticated admin's own profile.
      */
-    public function updateProfile(Request $request) {
+    public function updateProfile(Request $request)
+    {
         $admin = auth('admin')->user();
         $request->validate([
-            'first_name'   => 'required|string|min:3|max:255',
-            'last_name'    => 'required|string|min:3|max:255',
-            'phone_number' => 'required|unique:admins,phone,' . $admin->id,
-            'password'     => 'nullable|string|min:6|confirmed',
+            'first_name' => 'required|string|min:3|max:255',
+            'last_name' => 'required|string|min:3|max:255',
+            'phone_number' => 'required|unique:admins,phone,'.$admin->id,
+            'password' => 'nullable|string|min:6|confirmed',
         ]);
         $phone = Admin::normalizePhoneNumber($request->phone_number);
-        if (!$phone) {
+        if (! $phone) {
             return redirect()->back()->with('message', ['name' => 'Invalid phone number', 'type' => 'error']);
         }
         if ($phone !== $admin->phone && Admin::where('phone', $phone)->where('id', '!=', $admin->id)->exists()) {
@@ -220,10 +229,11 @@ class AdminController extends Controller {
         }
         $fields = $request->only(['first_name', 'last_name']);
         $fields['phone'] = $phone;
-        if (!empty($request->password)) {
+        if (! empty($request->password)) {
             $fields['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
         }
         $admin->update($fields);
+
         return redirect()->back()->with('message', ['name' => 'Admin profile updated', 'type' => 'success']);
     }
 }

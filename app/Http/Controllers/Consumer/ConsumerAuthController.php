@@ -8,7 +8,6 @@ use App\Models\Subcity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Inertia\Inertia;
 
 class ConsumerAuthController extends Controller
 {
@@ -16,14 +15,14 @@ class ConsumerAuthController extends Controller
     {
         $subcities = Subcity::all(['subcity_name', 'id']);
 
-        return Inertia::render('Consumer/Auth/Signup', [
+        return inertia('Consumer/Auth/Signup', [
             'subcities' => $subcities,
         ]);
     }
 
     public function showLogin()
     {
-        return Inertia::render('Consumer/Auth/Login');
+        return inertia('Consumer/Auth/Login');
     }
 
     public function login(Request $request)

@@ -8,22 +8,24 @@ use App\Models\AdminSecret;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
 
-class AuthController extends Controller {
-    public function showLogin() {
-        return Inertia::render('Admin/Auth/Login');
+class AuthController extends Controller
+{
+    public function showLogin()
+    {
+        return inertia('Admin/Auth/Login');
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'phone' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $phone = Admin::normalizePhoneNumber($request->phone); // Normalize the phone number
 
-        if (!$phone) {
+        if (! $phone) {
             return back()->withErrors(['phone' => 'Invalid phone number format']);
         }
 
@@ -34,23 +36,25 @@ class AuthController extends Controller {
         return back()->withErrors(['phone' => 'Invalid password or phone number']);
     }
 
-    public function showRegister() {
-        return Inertia::render('Admin/Auth/Signup');
+    public function showRegister()
+    {
+        return inertia('Admin/Auth/Signup');
     }
 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $makeSuperAdmin = false;
 
         $request->validate([
             'first_name' => 'required|string|min:3|max:255',
             'last_name' => 'required|string|min:3|max:255',
             'phone_number' => 'required',
-            'password' => 'required|min:6|confirmed'
+            'password' => 'required|min:6|confirmed',
         ]);
 
         $phone = Admin::normalizePhoneNumber($request->phone_number);
 
-        if (!$phone) {
+        if (! $phone) {
             return back()->withErrors(['phone_number' => 'Invalid phone number format']);
         }
 
@@ -92,8 +96,10 @@ class AuthController extends Controller {
         return redirect()->route('dashboard');
     }
 
-    public function logout() {
+    public function logout()
+    {
         Auth::guard('admin')->logout();
+
         return redirect()->route('admin.login');
     }
 }

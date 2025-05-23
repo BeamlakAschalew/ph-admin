@@ -7,7 +7,6 @@ use App\Models\Subcity;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
 
 class SupplierController extends Controller
 {
@@ -16,7 +15,7 @@ class SupplierController extends Controller
      */
     public function index(Request $request)
     {
-        return Inertia::render('Admin/Suppliers', [
+        return inertia('Admin/Suppliers', [
             'suppliers' => Supplier::withTrashed()->with('subcity')->where('approved', true)
                 ->when($request->input('search'), function ($query, $search) {
                     $query->where(function ($query) use ($search) {
@@ -43,7 +42,7 @@ class SupplierController extends Controller
 
     public function pendingIndex(Request $request)
     {
-        return Inertia::render('Admin/PendingSuppliers', [
+        return inertia('Admin/PendingSuppliers', [
             'suppliers' => fn () => Supplier::with('subcity')->where('approved', false)->when($request->input('search'), function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('first_name', 'like', "%{$search}%")

@@ -7,7 +7,6 @@ use App\Models\Consumer;
 use App\Models\Subcity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
 
 class ConsumerController extends Controller
 {
@@ -16,7 +15,7 @@ class ConsumerController extends Controller
      */
     public function index(Request $request)
     {
-        return Inertia::render('Admin/Consumers', [
+        return inertia('Admin/Consumers', [
             'consumers' => Consumer::withTrashed()->with('subcity')
                 ->where('approved', true)
                 ->when($request->input('search'), function ($query, $search) {
@@ -40,7 +39,7 @@ class ConsumerController extends Controller
 
     public function pendingIndex(Request $request)
     {
-        return Inertia::render('Admin/PendingConsumers', [
+        return inertia('Admin/PendingConsumers', [
             'consumers' => fn () => Consumer::with('subcity')
                 ->where('approved', false)
                 ->when($request->input('search'), function ($query, $search) {

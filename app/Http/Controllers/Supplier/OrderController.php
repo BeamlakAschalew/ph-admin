@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Consumer;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\CustomOrderItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OrderController extends Controller {
-    public function checkout(Request $request) {
+class OrderController extends Controller
+{
+    public function checkout(Request $request)
+    {
         try {
             $cart = $request->validate([
                 'products' => 'array',
@@ -19,19 +21,19 @@ class OrderController extends Controller {
                 'customProducts' => 'array',
                 'customProducts.*.name' => 'required|string',
                 'customProducts.*.quantity' => 'required|string',
-                'customProducts.*.unit' => 'nullable|integer|exists:product_units,id'
+                'customProducts.*.unit' => 'nullable|integer|exists:product_units,id',
             ]);
 
             if (empty($cart['products']) && empty($cart['customProducts'])) {
                 return redirect()->back()->with('message', [
                     'name' => 'Please add products to your cart.',
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
             }
 
             $order = Order::create([
                 'consumer_id' => auth()->guard('consumer')->user()->id,
-                'status' => 'Pending'
+                'status' => 'Pending',
             ]);
 
             foreach ($cart['products'] as $product) {
@@ -56,21 +58,23 @@ class OrderController extends Controller {
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->with('message', [
-                    'name' => 'Product order failed. ' . implode(' ', array_map(function ($messages) {
+                    'name' => 'Product order failed. '.implode(' ', array_map(function ($messages) {
                         return implode(' ', $messages);
                     }, $e->errors())),
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
         }
     }
 
-    public function pastOrders(Request $request) {
+    public function pastOrders(Request $request)
+    {
         $consumer = Auth::guard('consumer')->user();
         $orders = \App\Models\Order::with(['items.product.unit', 'customItems.unit'])
             ->where('consumer_id', $consumer->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return \Inertia\Inertia::render('Consumer/PastOrders', [
+
+        return inertia('Consumer/PastOrders', [
             'orders' => $orders,
         ]);
     }
