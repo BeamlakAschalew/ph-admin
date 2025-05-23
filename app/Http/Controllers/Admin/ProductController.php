@@ -43,7 +43,7 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'product_name' => 'required|string|max:255|min:3',
+                'product_name' => 'required|string|max:255|min:3|unique:products,product_name',
                 'product_unit_id' => 'nullable|exists:product_units,id',
             ]);
 
@@ -111,18 +111,48 @@ class ProductController extends Controller
                 'file' => 'required|mimes:xlsx,xls',
             ]);
 
-            $data = Excel::toArray([], $request->file('file'))[0];
+            $excelData = Excel::toArray([], $request->file('file'))[0];
 
-            foreach (array_slice($data, 1) as $row) {
-                if (! empty($row[0])) {
-                    Product::create([
-                        'product_name' => $row[0],
-                        'product_unit_id' => $row[1],
-                    ]);
-                }
+            // Prepare products from Excel, normalizing product_name for comparison
+            $productsFromExcel = collect(array_slice($excelData, 1))
+                ->filter(fn ($row) => ! empty(trim($row[0]))) // Filter out rows with empty product names
+                ->map(function ($row) {
+                    return [
+                        'original_product_name' => trim($row[0]), // Keep original for insertion
+                        'normalized_product_name' => strtolower(trim($row[0])), // For case-insensitive comparison
+                        'product_unit_id' => isset($row[1]) ? $row[1] : null,
+                    ];
+                });
+
+            if ($productsFromExcel->isEmpty()) {
+                return redirect()->back()->with('message', ['name' => 'No products found in the file to import.', 'type' => 'error']);
             }
 
-            return redirect()->back()->with('message', ['name' => 'Products imported successfully.', 'type' => 'success']);
+            // Get existing product names from DB, normalized for comparison
+            $existingNormalizedProductNames = Product::pluck('product_name')->map(function ($name) {
+                return strtolower(trim($name));
+            })->flip(); // flip() to use isset for faster lookups (O(1) on average)
+
+            // Filter out products that already exist (case-insensitive comparison)
+            // and prepare them for insertion with original names and timestamps
+            $productsToInsertData = $productsFromExcel->filter(function ($productData) use ($existingNormalizedProductNames) {
+                return ! isset($existingNormalizedProductNames[$productData['normalized_product_name']]);
+            })
+                ->map(function ($productData) {
+                    return [
+                        'product_name' => $productData['original_product_name'],
+                        'product_unit_id' => $productData['product_unit_id'],
+                    ];
+                })->all();
+
+            if (! empty($productsToInsertData)) {
+                Product::insert($productsToInsertData);
+                $message = count($productsToInsertData).' products imported successfully.';
+            } else {
+                $message = 'No new products to import. All products in the file already exist.';
+            }
+
+            return redirect()->back()->with('message', ['name' => $message, 'type' => 'success']);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
                 ->withErrors($e->errors())
