@@ -64,6 +64,7 @@ Route::prefix('admin')->group(function () {
         Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
 
         Route::get('/sales-report', [SalesReportController::class, 'index']);
+        Route::get('/sales-report/export', [SalesReportController::class, 'export'])->name('sales-report.export');
 
         Route::put('/superadmin-secret', [AdminController::class, 'updateSuperAdminSecret']);
     });

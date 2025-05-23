@@ -128,14 +128,18 @@ const submitEdit = () => {
                         href="/admin/products"
                         >Products</Link
                     >
-
                     <Link
                         v-if="$page.props.auth.user_role === 'superadmin'"
                         :class="dynamicNavClass('Admins')"
                         href="/admin/admins"
                         >Admins</Link
                     >
-
+                    <Link
+                        v-if="$page.props.auth.user_role === 'superadmin'"
+                        :class="dynamicNavClass('Sales')"
+                        href="/admin/sales-report"
+                        >Sales</Link
+                    >
                     <div
                         v-if="$page.props.auth.user_role === 'superadmin'"
                         class="hs-dropdown relative inline-flex"

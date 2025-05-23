@@ -1,6 +1,6 @@
 <script setup>
-import { router } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
+import { defineProps, ref, watch } from 'vue';
 import MainLayout from './MainLayout.vue';
 
 defineOptions({
@@ -9,12 +9,16 @@ defineOptions({
 
 const props = defineProps({
     orders: Object,
+    filters: Object,
 });
 
 const localOrders = ref(props.orders.data);
 
-const activeDropdown = ref(null);
 const activeTab = ref('All');
+
+const fromDate = ref(props.filters?.fromDate || '');
+const toDate = ref(props.filters?.toDate || '');
+
 const tabs = ref([
     { label: 'All Orders', value: 'All' },
     { label: 'Completed', value: 'Completed' },
@@ -22,14 +26,30 @@ const tabs = ref([
     { label: 'Cancelled', value: 'Cancelled' },
 ]);
 
-const filteredOrders = computed(() => {
-    if (activeTab.value === 'All') {
-        return localOrders.value;
-    }
-    return localOrders.value.filter(
-        (order) => order.status === activeTab.value,
+watch([fromDate, toDate], () => {
+    router.get(
+        '/admin/sales-report',
+        {
+            fromDate: fromDate.value,
+            toDate: toDate.value,
+        },
+        {
+            preserveState: true,
+            replace: true,
+            onSuccess: (page) => {
+                localOrders.value = page.props.orders.data;
+            },
+        },
     );
 });
+
+// Watch for changes in props.orders to update localOrders
+watch(
+    () => props.orders.data,
+    (newOrders) => {
+        localOrders.value = newOrders;
+    },
+);
 
 const toggleExpand = (id) => {
     const order = localOrders.value.find((o) => o.id === id);
@@ -37,31 +57,6 @@ const toggleExpand = (id) => {
         order.expanded = !order.expanded;
     }
 };
-
-const toggleStatusOptions = (id) => {
-    activeDropdown.value = activeDropdown.value === id ? null : id;
-};
-
-const setOrderStatus = (id, status) => {
-    const order = localOrders.value.find((o) => o.id === id);
-    if (order) {
-        router.put(
-            `/admin/orders/${order.id}`,
-            {
-                status: status,
-            },
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    order.status = status;
-                    order.expanded = false;
-                    activeDropdown.value = null;
-                },
-            },
-        );
-    }
-};
-
 const getOrderCountByStatus = (status) => {
     if (status === 'All') {
         return localOrders.value.length;
@@ -81,10 +76,29 @@ const getStatusBadgeClass = (status) => {
             return 'bg-gray-100 text-gray-800';
     }
 };
+
+const downloadReport = () => {
+    let reportUrl = '/admin/sales-report/export';
+    const queryParams = new URLSearchParams();
+
+    if (fromDate.value) {
+        queryParams.append('fromDate', fromDate.value);
+    }
+    if (toDate.value) {
+        queryParams.append('toDate', toDate.value);
+    }
+
+    const queryString = queryParams.toString();
+    if (queryString) {
+        reportUrl += `?${queryString}`;
+    }
+
+    window.location.href = reportUrl;
+};
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Sales report" />
     <div class="flex min-h-screen flex-col">
         <!-- Main Content -->
         <main class="bg-white-50 flex-1">
@@ -92,11 +106,48 @@ const getStatusBadgeClass = (status) => {
                 <div
                     class="flex flex-col items-center justify-center gap-6 2xl:flex-row"
                 >
-                    <!-- Orders List -->
+                    <!-- Sales Report -->
                     <div class="w-full max-w-7xl px-4 py-6">
-                        <h2 class="mb-4 text-xl font-bold text-gray-800">
-                            Orders List
-                        </h2>
+                        <div class="mb-4 flex items-center justify-between">
+                            <h2 class="text-xl font-bold text-gray-800">
+                                Sales Report
+                            </h2>
+                            <div class="flex items-end justify-end space-x-2">
+                                <div>
+                                    <label
+                                        for="fromDate"
+                                        class="mb-1 block text-sm font-medium text-gray-700"
+                                        >From</label
+                                    >
+                                    <input
+                                        type="date"
+                                        id="fromDate"
+                                        v-model="fromDate"
+                                        class="block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        for="toDate"
+                                        class="mb-1 block text-sm font-medium text-gray-700"
+                                        >To</label
+                                    >
+                                    <input
+                                        type="date"
+                                        id="toDate"
+                                        v-model="toDate"
+                                        class="block w-full rounded-md border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    />
+                                </div>
+                                <button
+                                    @click="downloadReport"
+                                    type="button"
+                                    class="rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                                >
+                                    Download Report (XLSX)
+                                </button>
+                            </div>
+                        </div>
 
                         <!-- Tabs -->
                         <div class="mb-4 border-b border-gray-200">
@@ -170,23 +221,24 @@ const getStatusBadgeClass = (status) => {
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
                                         <template
-                                            v-if="localOrders.length === 0"
+                                            v-if="
+                                                !props.orders ||
+                                                !props.orders.data ||
+                                                props.orders.data.length === 0
+                                            "
                                         >
                                             <tr>
                                                 <td
-                                                    colspan="5"
-                                                    class="px-6 py-8 text-center text-gray-500"
+                                                    colspan="100%"
+                                                    class="py-4 text-center"
                                                 >
-                                                    No
-                                                    {{
-                                                        activeTab.toLowerCase()
-                                                    }}
-                                                    orders found
+                                                    No orders found.
                                                 </td>
                                             </tr>
                                         </template>
                                         <template
-                                            v-for="order in filteredOrders"
+                                            v-else
+                                            v-for="order in props.orders.data"
                                             :key="order.id"
                                         >
                                             <!-- Main Row -->
@@ -250,7 +302,9 @@ const getStatusBadgeClass = (status) => {
                                                         {{
                                                             new Date(
                                                                 order.created_at,
-                                                            ).toLocaleString()
+                                                            ).toLocaleDateString(
+                                                                'en-GB',
+                                                            )
                                                         }}
                                                     </div>
                                                 </td>
@@ -296,78 +350,6 @@ const getStatusBadgeClass = (status) => {
                                                             }"
                                                         >
                                                             {{ order.status }}
-                                                        </button>
-
-                                                        <!-- Simple Status Options -->
-                                                        <div
-                                                            class="mt-1 flex flex-col gap-1"
-                                                            v-show="
-                                                                order.id ===
-                                                                activeDropdown
-                                                            "
-                                                        >
-                                                            <button
-                                                                v-if="
-                                                                    order.status !==
-                                                                    'Completed'
-                                                                "
-                                                                @click="
-                                                                    setOrderStatus(
-                                                                        order.id,
-                                                                        'Completed',
-                                                                    )
-                                                                "
-                                                                class="rounded bg-green-500 px-2 py-1 text-xs font-medium text-white hover:bg-green-600"
-                                                            >
-                                                                Set Completed
-                                                            </button>
-                                                            <button
-                                                                v-if="
-                                                                    order.status !==
-                                                                    'Pending'
-                                                                "
-                                                                @click="
-                                                                    setOrderStatus(
-                                                                        order.id,
-                                                                        'Pending',
-                                                                    )
-                                                                "
-                                                                class="rounded bg-yellow-500 px-2 py-1 text-xs font-medium text-white hover:bg-yellow-600"
-                                                            >
-                                                                Set Pending
-                                                            </button>
-                                                            <button
-                                                                v-if="
-                                                                    order.status !==
-                                                                    'Cancelled'
-                                                                "
-                                                                @click="
-                                                                    setOrderStatus(
-                                                                        order.id,
-                                                                        'Cancelled',
-                                                                    )
-                                                                "
-                                                                class="rounded bg-red-500 px-2 py-1 text-xs font-medium text-white hover:bg-red-600"
-                                                            >
-                                                                Set Cancelled
-                                                            </button>
-                                                        </div>
-
-                                                        <!-- Toggle Button -->
-                                                        <button
-                                                            @click="
-                                                                toggleStatusOptions(
-                                                                    order.id,
-                                                                )
-                                                            "
-                                                            class="rounded bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-300"
-                                                        >
-                                                            {{
-                                                                order.id ===
-                                                                activeDropdown
-                                                                    ? 'Hide Options'
-                                                                    : 'Change Status'
-                                                            }}
                                                         </button>
                                                     </div>
                                                 </td>
@@ -598,19 +580,24 @@ const getStatusBadgeClass = (status) => {
                             aria-label="Pagination"
                         >
                             <template
-                                v-if="orders.links && orders.links.length"
+                                v-if="
+                                    props.orders &&
+                                    props.orders.links &&
+                                    props.orders.links.length
+                                "
                             >
                                 <template
-                                    v-for="(link, index) in orders.links"
+                                    v-for="(link, index) in props.orders.links"
                                     :key="index"
                                 >
                                     <Link
                                         v-if="link.url"
-                                        prserve-scroll
+                                        preserve-scroll
                                         :href="link.url"
                                         :class="[
                                             index === 0 ? 'rounded-l-md' : '',
-                                            index === orders.links.length - 1
+                                            index ===
+                                            props.orders.links.length - 1
                                                 ? 'rounded-r-md'
                                                 : '',
                                             'min-h-9.5 min-w-9.5 flex items-center justify-center px-3 py-2 text-sm',
@@ -626,7 +613,8 @@ const getStatusBadgeClass = (status) => {
                                         v-html="link.label"
                                         :class="[
                                             index === 0 ? 'rounded-l-md' : '',
-                                            index === orders.links.length - 1
+                                            index ===
+                                            props.orders.links.length - 1
                                                 ? 'rounded-r-md'
                                                 : '',
                                             'min-h-9.5 min-w-9.5 flex items-center justify-center border border-gray-200 px-3 py-2 text-gray-800',
