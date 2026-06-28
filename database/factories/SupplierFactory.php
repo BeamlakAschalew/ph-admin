@@ -13,6 +13,55 @@ class SupplierFactory extends Factory
 {
     protected static ?string $password;
 
+    private static int $phoneCounter = 911000000;
+
+    /**
+     * Realistic pharmaceutical supplier institutions.
+     */
+    private static array $institutions = [
+        'Ethiopian Pharmaceuticals & Medical Supplies',
+        'Addis Pharmaceutical Distributors PLC',
+        'Pharma Ethio Supply Chain',
+        'East African Pharma PLC',
+        'Hilina Enriched Pharmacy PLC',
+        'National Medical Supplies Fund',
+        'Kadisco Pharmaceuticals',
+        'Ethio-Med Distributors',
+        'Addis Ababa Drug Supply Agency',
+        'Tena Medical Supplies PLC',
+        'Bishoftu Pharma Wholesale',
+        'Hawassa Pharmaceutical Distributors',
+        'Bahir Dar Medical Supply',
+        'Dire Dawa Pharma Center',
+        'Jimma Drug Wholesale PLC',
+        'Mekelle Pharma Distributors',
+        'Adama Medical Logistics',
+        'Gondar Pharmaceutical Supply',
+        'Debre Zeit Medical Distributors',
+        'Shashemene Pharma Supply',
+    ];
+
+    /**
+     * Realistic special places in Addis Ababa.
+     */
+    private static array $specialPlaces = [
+        'Near Bole Medhanialem Church',
+        'Around Merkato, near Commercial Bank',
+        'Kazanchis, behind EBC Building',
+        '22 Mazoriya, near Total Station',
+        'CMC Road, beside St. Michael Church',
+        'Gotera, opposite to Awash Bank',
+        'Saris, near Abadir Building',
+        'Megenagna, around Sheger Park',
+        'Ayat, near Summit Mosque',
+        'Jemo, behind Jemo Mall',
+        'Gofa Camp, near Mela Building',
+        'Old Airport, around Wabi Shebelle Hotel',
+        'Kera, near Addis Ketema Bus Station',
+        'Urael, around Bole Bridge',
+        'Gerji, near Mebrat Hail Garage',
+    ];
+
     /**
      * Define the model's default state.
      *
@@ -20,31 +69,31 @@ class SupplierFactory extends Factory
      */
     public function definition(): array
     {
+        $primaryPhone = $this->generateUniquePhone();
+        $secondaryPhone = $this->generateUniquePhone();
+
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'password' => static::$password ??= Hash::make('password'),
-            'institution_name' => fake()->company(),
-            'primary_phone' => $this->generatePhoneNumber(),
-            'secondary_phone' => $this->generatePhoneNumber(),
-            'license_number' => fake()->unique()->randomNumber(8),
-            'tin_number' => fake()->unique()->randomNumber(9),
+            'institution_name' => fake()->randomElement(self::$institutions),
+            'primary_phone' => $primaryPhone,
+            'secondary_phone' => $secondaryPhone,
+            'license_number' => 'SUP-LIC-'.str_pad((string) fake()->unique()->numberBetween(1, 999999), 6, '0', STR_PAD_LEFT),
+            'tin_number' => 'TIN-'.str_pad((string) fake()->unique()->numberBetween(1, 999999999), 9, '0', STR_PAD_LEFT),
             'subcity_id' => fake()->numberBetween(1, 11),
-            'special_place' => fake()->address(),
+            'special_place' => fake()->randomElement(self::$specialPlaces),
             'woreda' => fake()->numberBetween(1, 12),
-            'approved' => fake()->boolean(),
+            'approved' => true,
             'remember_token' => Str::random(10),
             'deleted_at' => null,
-            'created_at' => now(),
+            'created_at' => fake()->dateTimeBetween('-6 months', 'now'),
             'updated_at' => now(),
         ];
     }
 
-    private function generatePhoneNumber(): string
+    private function generateUniquePhone(): string
     {
-        $prefix = fake()->randomElement(['9', '7']);
-        $number = $prefix.fake()->numerify('########');
-
-        return $number;
+        return (string) self::$phoneCounter++;
     }
 }

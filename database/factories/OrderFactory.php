@@ -8,15 +8,18 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
  */
-class OrderFactory extends Factory {
+class OrderFactory extends Factory
+{
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-    public function definition(): array {
+    public function definition(): array
+    {
         return [
-            'consumer_id' => Consumer::inRandomOrder()->first()->id,
+            'consumer_id' => Consumer::inRandomOrder()->first()->id ?? Consumer::factory(),
+            'total_amount' => 0,
             'status' => $this->faker->randomElement(['Pending', 'Completed', 'Cancelled']),
         ];
     }

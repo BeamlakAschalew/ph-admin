@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (
-            env('MAINTENANCE', true) &&
+            env('MAINTENANCE', false) &&
             ! (
                 request()->is('sys/env/add') &&
                 request()->method() === 'GET'
