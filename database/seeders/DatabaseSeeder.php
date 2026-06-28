@@ -49,9 +49,17 @@ class DatabaseSeeder extends Seeder
         $this->command?->info('📋 Seeding orders with items...');
         $this->call(OrderSeeder::class);
 
+        $this->command?->info('🔑 Seeding demo accounts...');
+        $this->call(DemoAccountSeeder::class);
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->command?->info('');
         $this->command?->info('✅ Database seeding completed successfully!');
+        $this->command?->info('');
+        $this->command?->info('🔑 Demo Accounts:');
+        $this->command?->info('   Admin    → phone: 900000001  password: password');
+        $this->command?->info('   Consumer → phone: 900000002  password: password');
+        $this->command?->info('   Supplier → phone: 900000004  password: password');
     }
 }

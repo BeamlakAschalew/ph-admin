@@ -33,6 +33,16 @@ const submit = () => {
                         </p>
                     </div>
 
+                    <!-- Demo Credentials -->
+                    <div class="mt-5 rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+                        <p class="text-xs font-semibold text-emerald-800">🔑 Demo Account</p>
+                        <p class="mt-1 text-xs text-emerald-700">
+                            Phone: <span class="font-mono font-medium">900000004</span>
+                            <span class="mx-1">·</span>
+                            Password: <span class="font-mono font-medium">password</span>
+                        </p>
+                    </div>
+
                     <div class="mt-5">
                         <!-- Form -->
                         <form @submit.prevent="submit">
